@@ -20,6 +20,10 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.csv
+*.zip
+*.json
+*.xlsx
 
 # Django
 *.log
