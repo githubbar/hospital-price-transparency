@@ -7,8 +7,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            sql='CREATE FULLTEXT INDEX idx_fulltext_search ON hospital_prices (description, code_1, code_2, code_3)',
-            reverse_sql='DROP INDEX idx_fulltext_search ON hospital_prices'
-        ),
+        # Fulltext index skipped for SQLite compatibility
     ]

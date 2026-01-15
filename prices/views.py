@@ -1,9 +1,7 @@
 from django.shortcuts import render
-from django.db.models import Q
 from django.conf import settings
 from django.core.paginator import Paginator
-from itertools import groupby
-from .models import HospitalPrices
+from elasticsearch import Elasticsearch
 import csv
 import os
 import time
@@ -95,101 +93,140 @@ def generate_distribution_svg(prices):
 
 def search(request):
     query = request.GET.get('q', '')
-    results = []
+    try:
+        page_number = int(request.GET.get('page', 1))
+    except (ValueError, TypeError):
+        page_number = 1
+        
+    items_per_page = 20
     grouped_results = []
     results_count = 0
     elapsed_time = 0
+    page_obj = None
+    total_records = 0
+
+    # es = Elasticsearch(settings.ELASTICSEARCH_URL)
     
+    # Support for Auth
+    es_params = {'hosts': settings.ELASTICSEARCH_URL}
+    if hasattr(settings, 'ELASTICSEARCH_USERNAME') and settings.ELASTICSEARCH_USERNAME:
+        es_params['basic_auth'] = (settings.ELASTICSEARCH_USERNAME, settings.ELASTICSEARCH_PASSWORD)
+
+    if settings.ELASTICSEARCH_URL.startswith('https'):
+        es_params['verify_certs'] = False
+        es_params['ssl_show_warn'] = False
+
+    es = Elasticsearch(**es_params)
+
+    # Get total records count (best effort)
+    try:
+        # Check if index exists first to avoid 404
+        if es.indices.exists(index=settings.ELASTICSEARCH_INDEX):
+            total_records = es.count(index=settings.ELASTICSEARCH_INDEX)['count']
+    except Exception:
+        pass
+
     if query:
         start_time = time.time()
-        # Search using Full Text Search (MySQL)
-        # Note: This requires the Full Text Index created in migration 0002
-        sql_query = """
-            SELECT * FROM hospital_prices 
-            WHERE MATCH(description, code_1, code_2, code_3)
-            AGAINST (%s IN NATURAL LANGUAGE MODE)
-            ORDER BY description, payer_name
-            LIMIT 5000
-        """
-        results_qs = HospitalPrices.objects.raw(sql_query, [query])
         
-        # Force evaluation and convert to list for groupby
-        results = list(results_qs)
-        results_count = len(results)
-        
-        # Group results by description
-        for description, items in groupby(results, key=lambda x: x.description):
-            # Convert iterator to list to use multiple times
-            item_list = list(items)
-            
-            # Calculate stats and sort
-            stats = None
-            priced_items = [i for i in item_list if i.standard_charge_negotiated_dollar is not None]
-            
-            if priced_items:
-                prices = [float(i.standard_charge_negotiated_dollar) for i in priced_items]
-                min_price = min(prices)
-                max_price = max(prices)
-                avg_price = sum(prices) / len(prices)
-                
-                stats = {
-                    'min': min_price,
-                    'max': max_price,
-                    'avg': avg_price,
-                    'count': len(prices)
+        body = {
+            "from": (page_number - 1) * items_per_page,
+            "size": items_per_page,
+            "query": {
+                "multi_match": {
+                    "query": query,
+                    "fields": ["description", "code^2", "code_type", "rev_code"],
+                    "type": "best_fields",
+                    "fuzziness": "AUTO"
                 }
+            }
+        }
+        
+        try:
+            res = es.search(index=settings.ELASTICSEARCH_INDEX, body=body)
+            hits = res['hits']['hits']
+            total_hits = res['hits']['total']['value']
+            
+            results_count = total_hits
+            
+            for hit in hits:
+                source = hit['_source']
                 
-                # Generate distribution plot
-                stats['distribution_svg'] = generate_distribution_svg(prices)
+                # Extract basic info
+                code = source.get('code', '')
+                code_type = source.get('code_type', '')
+                desc = source.get('description', '')
+                rev_code = source.get('rev_code', '')
+                
+                prices_data = source.get('prices', [])
+                stats = source.get('stats', {})
+                
+                # Prepare items with hue
+                price_values = [float(p.get('price', 0)) for p in prices_data]
+                
+                # Determine min/max for coloring this specific group
+                local_min = stats.get('min', 0)
+                local_max = stats.get('max', 0)
+                
+                items = []
+                for p in prices_data:
+                    val = float(p.get('price', 0))
+                    
+                    # Calculate hue: 120 (Green) for low, 0 (Red) for high
+                    hue = 120
+                    if local_max > local_min:
+                        ratio = (val - local_min) / (local_max - local_min)
+                        hue = int(120 - (ratio * 120))
+                    
+                    items.append({
+                        'payer_name': p.get('payer_name', 'Unknown'),
+                        'plan_name': p.get('plan_name', 'Unknown'),
+                        'hospital_id': p.get('hospital_id', 'Unknown'),
+                        'hospital_name': p.get('hospital_name', ''),
+                        'standard_charge_negotiated_dollar': val,
+                        'price_hue': hue,
+                        'setting': p.get('setting', 'Unknown')
+                    })
+                
+                # Generate Dist SVG
+                dist_svg = generate_distribution_svg(price_values)
+                stats['distribution_svg'] = dist_svg
+                
+                # Common setting from first item
+                common_setting = items[0]['setting'] if items else 'Unknown'
+                
+                grouped_results.append({
+                    'common_code': code,
+                    'common_code_type': code_type,
+                    'description': desc,
+                    'common_setting': common_setting, 
+                    'items': items,
+                    'stats': stats,
+                    'rev_code': rev_code
+                })
 
-                # Sort item_list: items with price (asc) first, then None
-                item_list.sort(key=lambda x: float(x.standard_charge_negotiated_dollar) if x.standard_charge_negotiated_dollar is not None else float('inf'))
+            elapsed_time = time.time() - start_time
+            
+            # Setup Pagination
+            paginator = Paginator(range(results_count), items_per_page)
+            page_obj = paginator.get_page(page_number)
+            page_obj.object_list = grouped_results
 
-                # Calculate Hue for Heatmap (Green 120 -> Red 0)
-                price_range = max_price - min_price
-                for item in item_list:
-                    if item.standard_charge_negotiated_dollar is not None:
-                        current_price = float(item.standard_charge_negotiated_dollar)
-                        if price_range > 0:
-                            ratio = (current_price - min_price) / price_range
-                            hue = 120 - (ratio * 120)
-                        else:
-                            hue = 120 # Default green if single price
-                        
-                        # Attach attribute dynamically
-                        item.price_hue = int(hue)
 
-            # Take the first item to get common fields like code/setting if we want to display them in the header
-            # For now, just passing the description and the list of items
-            first_item = item_list[0]
-            grouped_results.append({
-                'description': description,
-                'common_code': first_item.code_1,
-                'common_code_type': first_item.code_1_type,
-                'common_setting': first_item.setting,
-                'items': item_list,
-                'stats': stats
-            })
-
-        elapsed_time = time.time() - start_time
-
-    # Pagination
-    paginator = Paginator(grouped_results, 10) # 10 groups per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    total_records = HospitalPrices.objects.count()
-    hospital_name = get_hospital_name()
-    
+        except Exception as e:
+            print(f"Error searching Elastic: {e}")
+            grouped_results = []
+            results_count = 0
+            
     context = {
         'query': query,
-        'results': results, # Keep for backward compatibility if needed, but we mostly use grouped_results now
-        'grouped_results': page_obj, # Pass the page object as grouped_results so the template loop works
-        'page_obj': page_obj,
+        'grouped_results': grouped_results,
         'results_count': results_count,
-        'tooltips': FIELD_TOOLTIPS,
-        'hospital_name': hospital_name,
-        'total_records': total_records,
-        'elapsed_time': round(elapsed_time, 4)
+        'elapsed_time': f"{elapsed_time:.4f}",
+        'page_obj': page_obj,
+        'hospital_name': get_hospital_name(),
+        'field_tooltips': FIELD_TOOLTIPS,
+        'total_records': total_records
     }
+    
     return render(request, 'prices/search.html', context)
