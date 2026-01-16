@@ -149,7 +149,7 @@ def clean_hospital_name(raw_name):
 
 def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
     print(f"Parsing {os.path.basename(csv_path)}...")
-    LIMIT_PER_DOC = 999999999
+    LIMIT_PER_DOC = 5000
 
     try:
         with open(csv_path, 'r', encoding='utf-8', errors='replace') as f:
@@ -271,7 +271,7 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
             final_h_name = clean_hospital_name(final_h_name)
 
             records_processed = 0
-            MAX_RECORDS = 1000
+            MAX_RECORDS = 999999999
 
             for row in tqdm(reader, desc=f"Parsing {final_h_name}", unit="rows"):
                 if records_processed >= MAX_RECORDS:
@@ -416,9 +416,12 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
         print(f"Error parsing {csv_path}: {e}")
         import traceback
         traceback.print_exc()
+    
+    return records_processed
 
 def main():
     parser = argparse.ArgumentParser(description='Load hospital price data into Elasticsearch')
+    parser.add_argument('--input_file', type=str, help='Path to a specific CSV file to process')
     parser.add_argument('--mock', action='store_true', help='Skip indexing and print parsed records instead')
     parser.add_argument('--clean', action='store_true', help='Delete existing index before adding data')
     args = parser.parse_args()
@@ -445,26 +448,35 @@ def main():
             print("[MOCK MODE] Skipping connection check and index creation.")
 
         # 2. Parse All CSVs
-        if not os.path.exists(DATA_DIR):
-            print(f"Data directory not found found: {DATA_DIR}")
-            return
-
         procedures_map = {}
         active_group_tracker = {} # Global tracker for splits
-        files_found = False
+        files_to_process = []
 
-        for filename in os.listdir(DATA_DIR):
-            if filename.lower().endswith(".csv"):
-                files_found = True
-                csv_path = os.path.join(DATA_DIR, filename)
-                
-                parse_csv_into_map(csv_path, procedures_map, active_group_tracker)
-
-        if not files_found:
-            print("No CSV files found in 'data' directory.")
+        if args.input_file:
+            if os.path.exists(args.input_file):
+                files_to_process.append(args.input_file)
+            else:
+                print(f"Input file not found: {args.input_file}")
+                return
+        elif os.path.exists(DATA_DIR):
+             for filename in os.listdir(DATA_DIR):
+                if filename.lower().endswith(".csv"):
+                    files_to_process.append(os.path.join(DATA_DIR, filename))
+        else:
+            print(f"Data directory not found: {DATA_DIR}")
             return
 
-        print(f"Finished parsing all files. Found {len(procedures_map)} unique procedure group documents.")
+        if not files_to_process:
+            print("No CSV files found to process.")
+            return
+
+        total_records = 0
+        for csv_path in files_to_process:
+            count = parse_csv_into_map(csv_path, procedures_map, active_group_tracker)
+            print(f"  > File '{os.path.basename(csv_path)}' -> {count} records extracted.")
+            total_records += count
+
+        print(f"Finished parsing. Found {len(procedures_map)} unique procedure group documents from {total_records} total price records.")
         
         # 3. Calculate Stats
         final_procedures = []
