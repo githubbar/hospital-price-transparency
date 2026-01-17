@@ -45,6 +45,12 @@ ELASTICSEARCH_PASSWORD = os.environ.get('ELASTICSEARCH_PASSWORD', None)
 ELASTICSEARCH_API_KEY = os.environ.get('ES_API_KEY', None)
 ELASTICSEARCH_INDEX = 'hospital_prices'
 
+# Turnstile Config
+# Default to Cloudflare Test Keys (Always Pass)
+# the keys are deployed but i get server errror 500 now
+TURNSTILE_SECRET_KEY = os.environ.get('TURNSTILE_SECRET_KEY', '1x0000000000000000000000000000000AA')
+TURNSTILE_BASKET_KEY = os.environ.get('TURNSTILE_SITE_KEY', '1x00000000000000000000AA')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -140,6 +146,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Enable Whitenoise compression and caching
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Use Cookie-based sessions (No DB required) - Ideal for serverless/Cloud Run
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_HTTPONLY = True
 
 # Always include app static dirs
 STATICFILES_DIRS = [
