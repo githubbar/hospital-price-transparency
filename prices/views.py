@@ -38,7 +38,7 @@ def get_hospital_name():
 def generate_distribution_svg(prices):
     if not prices or len(prices) < 2:
         return None
-        
+
     try:
         min_p = min(prices)
         max_p = max(prices)

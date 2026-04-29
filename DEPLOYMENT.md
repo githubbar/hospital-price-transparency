@@ -24,18 +24,20 @@ Since we cannot run Elasticsearch on serverless Firebase, we use a VM.
         *   Reserve a **Static External IP** for this VM so your app configuration doesn't break on reboot.
 
 2.  **Install Elasticsearch**:
-    *   SSH into the VM.
+    *   **!!!!!!!!!!!!!!!!!!!!!!! SSH into the VM: DO NOT RUN THIS IN CLOUD SHELL**
     *   Install Docker:
         ```bash
         sudo apt-get update && sudo apt-get install -y docker.io
         ```
     *   Run Elasticsearch:
         ```bash
-        sudo docker run -d --name es01 -p 9200:9200 --restart always \
-          -e "discovery.type=single-node" \
-          -e "xpack.security.enabled=false" \
-          -e "ES_JAVA_OPTS=-Xms2g -Xmx2g" \
-          docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+        sudo docker stop es01 && sudo docker rm es01
+        sudo docker run -d --name es01 -p 0.0.0.0:9200:9200 --restart always \
+        -v es_data:/usr/share/elasticsearch/data \
+        -e "discovery.type=single-node" \
+        -e "xpack.security.enabled=false" \
+        -e "ES_JAVA_OPTS=-Xms1500m -Xmx1500m" \
+        docker.elastic.co/elasticsearch/elasticsearch:9.0.0
         ```
 
 3.  **Allow Traffic**:
@@ -44,10 +46,24 @@ Since we cannot run Elasticsearch on serverless Firebase, we use a VM.
     *   **Targets**: All instances in network.
     *   **Source IP**: `0.0.0.0/0` (For testing) OR the specific subnet of your Cloud Run setup (Serverless VPC Access) for security.
     *   **Ports**: `tcp:9200`.
+    or from cloud shell:
+        gcloud compute firewall-rules delete allow-es-9200 --quiet
+        gcloud compute firewall-rules create allow-es-9200 \
+        --direction=INGRESS \
+        --action=ALLOW \
+        --rules=tcp:9200 \
+        --source-ranges=0.0.0.0/0 \
+        --network=default \
+        --priority=1000
 
 ---
 
 ## Phase 2: Data Population (Run Locally)
+TODO: Get External VM IP
+
+    Go to Compute Engine > VM Instances in the Google Cloud Console.
+    Find the VM where Elasticsearch is installed.
+    Copy the External IP.
 
 Now that the VM is up, fill it with data from your local machine.
 
@@ -55,10 +71,9 @@ Now that the VM is up, fill it with data from your local machine.
 2.  **Run the Loader**:
     ```powershell
     # In VS Code Terminal
-    $env:ELASTICSEARCH_URL = "http://35.x.x.x:9200"
+    $env:ELASTICSEARCH_URL = "http://34.72.209.69:9200"
     & "X:/Hospital Price Transparency/.venv/Scripts/python.exe" load_to_es.py
     ```
-
 ---
 
 ## Phase 3: The Application (Cloud Run)
@@ -66,20 +81,17 @@ Now that the VM is up, fill it with data from your local machine.
 Deploy the Django code to Google Cloud Run.
 
 1.  **Install gcloud CLI** (if not installed) or use Cloud Shell.
-2.  **Deploy**:
-    Run this command in your project root:
-    ```bash
-    gcloud run deploy hospital-price-search \
-      --source . \
-      --platform managed \
-      --region us-central1 \
-      --allow-unauthenticated \
-      --set-env-vars ELASTICSEARCH_URL="https://elastic:password@34.171.2
-03.95:9200/"
+2.  **Deploy** (full build + deploy, reads credentials from `.env`):
+    ```powershell
+    .\deploy.ps1
+    ```
+    To update only environment variables without rebuilding:
+    ```powershell
+    .\update-env.ps1
     ```
 
 3.  **Visit the URL**:
-    Cloud Run will output a Service URL (e.g., `https://hospital-price-search-xyz-uc.a.run.app`).
+    Cloud Run (previous step) will output a Service URL (e.g., `https://hospital-price-search-xyz-uc.a.run.app`).
 
 ## Troubleshooting
 

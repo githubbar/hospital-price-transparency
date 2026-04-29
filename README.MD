@@ -28,18 +28,7 @@ TODO: the data only comes from hospitals, how to get smaller providers?
 TODO: why certain imaging centers show and others don't on https://hospitalpricingfiles.org/
 
 ## Deployment
-**PowerShell (Windows)**
-```powershell
-gcloud run deploy hospital-price-search `
-      --source . `
-      --platform managed `
-      --region us-central1 `
-      --allow-unauthenticated `
-      --update-env-vars ELASTICSEARCH_URL="
-      https://elastic:your_password@34.171.203.95:9200/,
-      TURNSTILE_SECRET_KEY=MY_SECRET_KEY,
-      TURNSTILE_SITE_KEY=MY_SITE_KEY"
-```
+    see DEPLOYMENT.md
 
 ## Print env vars in GCP
 gcloud run services describe hospital-price-search --region us-central1 --format="value(spec.template.spec.containers[0].env)"
