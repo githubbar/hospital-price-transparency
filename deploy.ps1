@@ -1,3 +1,6 @@
+# Activate virtual environment
+. .\.venv\Scripts\Activate.ps1
+
 # Load .env values into shell variables
 $envVars = @{}
 Get-Content .env | ForEach-Object {
@@ -12,6 +15,11 @@ $envVars['ELASTICSEARCH_URL'] = $ELASTICSEARCH_URL -replace '^(https?://)', "`${
 
 # Build KEY=VALUE string for --set-env-vars
 $envVarsString = ($envVars.GetEnumerator() | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ','
+
+# Load data into Elasticsearch
+Write-Host "Loading data into Elasticsearch..."
+& ".venv\Scripts\python.exe" load_to_es.py
+if ($LASTEXITCODE -ne 0) { Write-Warning "load_to_es.py exited with code $LASTEXITCODE" }
 
 gcloud run deploy hospital-price-search `
   --source . `

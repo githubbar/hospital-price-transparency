@@ -132,28 +132,15 @@ TURNSTILE_SECRET_KEY=<your_cloudflare_turnstile_secret_key>
 
 ---
 
-## Step 5 — Load Data into Elasticsearch
+## Step 5 — Deploy the Application to Cloud Run
 
-Run this from your local machine to index all hospital pricing data from the `data/` directory:
-
-```powershell
-# Activate virtual environment first
-.\.venv\Scripts\Activate.ps1
-
-python load_to_es.py
-```
-
-The script reads `ELASTICSEARCH_URL` from your `.env` file automatically. Wait for it to finish — this may take several minutes depending on file size.
-
----
-
-## Step 6 — Deploy the Application to Cloud Run
-
-Run the deploy script, which builds the Docker image and deploys it to Cloud Run using the values in your `.env` file:
+Run the deploy script. It will automatically activate the virtual environment, load all hospital pricing data into Elasticsearch, build the Docker image, and deploy to Cloud Run:
 
 ```powershell
 .\deploy.ps1
 ```
+
+The data load reads `ELASTICSEARCH_URL` from your `.env` file — this may take several minutes depending on file size.
 
 When the deployment finishes, `gcloud` will print a **Service URL** like:
 ```
@@ -164,9 +151,9 @@ Open that URL in a browser to verify the app is working.
 
 ---
 
-## Updating Environment Variables Only
+## Updating Environment Variables and Reloading Data
 
-To push updated `.env` values to Cloud Run **without rebuilding the Docker image**:
+To push updated `.env` values to Cloud Run and reload Elasticsearch data **without rebuilding the Docker image**:
 
 ```powershell
 .\update-env.ps1
@@ -183,4 +170,4 @@ To push updated `.env` values to Cloud Run **without rebuilding the Docker image
 | Elasticsearch container keeps restarting | The VM may be out of memory; upgrade to `e2-standard-2` (8 GB) |
 | `curl` to Elasticsearch returns nothing | SSH into the VM and run `sudo docker ps` to confirm `es01` is running; if not, run `sudo docker start es01` |
 | Elasticsearch doesn't start after VM reboot | Run `sudo systemctl is-enabled docker` — if not `enabled`, run `sudo systemctl enable docker`; also verify the startup script is set (see Step 2.5) |
-| Search returns no results | Re-run `load_to_es.py` and confirm it completed without errors |
+| Search returns no results | Re-run `.\deploy.ps1` or `.\update-env.ps1` and confirm `load_to_es.py` completed without errors |
