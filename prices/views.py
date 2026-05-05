@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+from django.core.cache import cache
 from elasticsearch import Elasticsearch
 import csv
 import os
@@ -26,7 +29,7 @@ def get_hospital_name():
             with open(csv_path, 'r', encoding='utf-8') as f:
                 reader = csv.reader(f)
                 # Skip header
-                next(reader) 
+                next(reader)
                 # Read second line which contains the hospital name
                 row = next(reader)
                 if row:
@@ -94,6 +97,12 @@ def generate_distribution_svg(prices):
 
 def verify_turnstile(token, ip=None):
     print("verify_turnstile: Test message")
+
+    # Skip verification in debug mode
+    if settings.DEBUG:
+        print("verify_turnstile: DEBUG mode, skipping verification")
+        return True
+
     secret = getattr(settings, 'TURNSTILE_SECRET_KEY', None)
     if not secret:
         print("verify_turnstile: No secret key configured")
@@ -108,7 +117,7 @@ def verify_turnstile(token, ip=None):
         data = {'secret': secret, 'response': token}
         if ip:
             data['remoteip'] = ip
-            
+
         print(f"verify_turnstile: Verifying token with secret ending in ...{secret[-4:]}")
         r = requests.post('https://challenges.cloudflare.com/turnstile/v0/siteverify', data=data, timeout=5)
         result = r.json()
@@ -128,8 +137,13 @@ def search(request):
     # Turnstile Verification
     error_message = None
     if query:
+        # Skip verification in debug mode
+        if settings.DEBUG:
+            pass
         # If already verified in session, skip
-        if not request.session.get('is_human', False):
+        elif request.session.get('is_human', False):
+            pass
+        else:
             token = request.GET.get('cf-turnstile-response')
             if token:
                 # Handle proxy headers for correct IP
@@ -430,7 +444,60 @@ def search(request):
         'payers_list': payers_list,
         'selected_payer': selected_payer,
         'error_message': error_message,
-        'turnstile_site_key': getattr(settings, 'TURNSTILE_BASKET_KEY', '')
+        'turnstile_site_key': getattr(settings, 'TURNSTILE_BASKET_KEY', ''),
+        'debug': settings.DEBUG,
+        'is_human': request.session.get('is_human', False),
     }
     
     return render(request, 'prices/search.html', context)
+
+
+@require_GET
+def explain_code(request):
+    code = request.GET.get('code', '').strip()
+    description = request.GET.get('description', '').strip()
+
+    if not code and not description:
+        return JsonResponse({'error': 'code or description required'}, status=400)
+
+    cache_key = f'explain_{code}_{description[:80]}'
+    cached = cache.get(cache_key)
+    if cached:
+        return JsonResponse({'explanation': cached})
+
+    project = getattr(settings, 'GOOGLE_CLOUD_PROJECT', '')
+    if not project:
+        return JsonResponse({'error': 'Google Gen AI not configured'}, status=503)
+
+    try:
+        from google import genai
+        from google.genai.types import HttpOptions
+
+        client = genai.Client(
+            vertexai=True,
+            project=project,
+            location=getattr(settings, 'GOOGLE_CLOUD_LOCATION', 'global'),
+            http_options=HttpOptions(api_version='v1'),
+        )
+
+        prompt = (
+            f"Explain the medical procedure or service described below in plain English for a patient. "
+            f"Be concise (2-3 sentences): what it is, why it's typically done, and what to expect.\n\n"
+            f"Code: {code}\n"
+            f"Description: {description}"
+        )
+
+        response = client.models.generate_content(
+            model='gemini-3.1-flash-lite-preview',
+            contents=prompt,
+        )
+        explanation = response.text.strip()
+
+        cache.set(cache_key, explanation, 3600)  # cache 1 hour
+        return JsonResponse({'explanation': explanation})
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        error_detail = str(e) if settings.DEBUG else 'Could not generate explanation'
+        return JsonResponse({'error': error_detail}, status=500)

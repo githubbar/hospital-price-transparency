@@ -1,16 +1,21 @@
 # Load .env values into shell variables
+$envVars = @{}
 Get-Content .env | ForEach-Object {
-    if ($_ -match '^([^#][^=]+)=(.+)$') {
-        Set-Variable -Name $matches[1] -Value $matches[2]
+    if ($_ -match '^([^#][^=]+)=(.*)$') {
+        $envVars[$matches[1].Trim()] = $matches[2].Trim()
+        Set-Variable -Name $matches[1].Trim() -Value $matches[2].Trim()
     }
 }
 
-# Build URL with embedded credentials
-$ES_URL_WITH_CREDS = $ELASTICSEARCH_URL -replace '^(https?://)', "`${1}${ELASTICSEARCH_USERNAME}:${ELASTICSEARCH_PASSWORD}@"
+# Override ELASTICSEARCH_URL with embedded credentials
+$envVars['ELASTICSEARCH_URL'] = $ELASTICSEARCH_URL -replace '^(https?://)', "`${1}${ELASTICSEARCH_USERNAME}:${ELASTICSEARCH_PASSWORD}@"
+
+# Build KEY=VALUE string for --set-env-vars
+$envVarsString = ($envVars.GetEnumerator() | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ','
 
 gcloud run deploy hospital-price-search `
   --source . `
   --platform managed `
   --region us-central1 `
   --allow-unauthenticated `
-  --set-env-vars "ELASTICSEARCH_URL=$ES_URL_WITH_CREDS,TURNSTILE_SITE_KEY=$TURNSTILE_SITE_KEY,TURNSTILE_SECRET_KEY=$TURNSTILE_SECRET_KEY"
+  --set-env-vars $envVarsString

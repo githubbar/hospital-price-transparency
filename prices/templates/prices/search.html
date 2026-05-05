@@ -11,7 +11,20 @@
 
     {% comment %} {% if not debug %} {% endcomment %}
     <link rel="preconnect" href="https://challenges.cloudflare.com">
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script>
+        function onloadTurnstileCallback() {
+            turnstile.render('#cf-turnstile-container', {
+                sitekey: '{{ turnstile_site_key|default:"0x4AAAAAACMuH_igU2ym2hfR" }}',
+                theme: 'light',
+                size: 'compact',
+                callback: function(token) {
+                    var wrapper = document.getElementById('turnstile-wrapper');
+                    if (wrapper) wrapper.remove();
+                }
+            });
+        }
+    </script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" async defer></script>
     {% comment %} {% endif %} {% endcomment %}
 
     <style>
@@ -110,13 +123,10 @@
                 <button class="btn btn-primary search-btn" type="submit">Search</button>
             </div>
             
-            <div class="mt-3 d-flex justify-content-center">
-                <div
-                    class="cf-turnstile"
-                    data-theme="light"
-                    data-size="compact"
-                    data-sitekey="{{ turnstile_site_key|default:'0x4AAAAAACMuH_igU2ym2hfR' }}">
-                </div>
+            <div id="turnstile-wrapper" class="mt-3 d-flex justify-content-center">
+                {% if not debug and not is_human %}
+                <div id="cf-turnstile-container"></div>
+                {% endif %}
             </div>
         </form>
     </div>
@@ -189,6 +199,18 @@
                                             <span class="badge bg-light text-muted border ms-1" title="Rev Code">{{ variant.rev_code }}</span>
                                         {% endif %}
                                     </div>
+                                    {% if variant.code %}
+                                    <div class="mt-1">
+                                        <button class="btn btn-link btn-sm p-0 text-muted"
+                                                style="font-size:0.75rem;"
+                                                data-code="{{ variant.code }}"
+                                                data-description="{{ group.description }}"
+                                                onclick="explainCode(this)">
+                                            <i class="bi bi-lightbulb"></i> What is this procedure?
+                                        </button>
+                                        <div class="explain-text text-secondary mt-1 p-2 rounded" style="font-size:0.82rem; background:#f8f9fa; display:none;"></div>
+                                    </div>
+                                    {% endif %}
                                     
                                     <div class="d-flex align-items-center">
                                         {% if variant.stats.distribution_svg %}
@@ -315,6 +337,42 @@
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+    async function explainCode(btn) {
+        const code = btn.dataset.code;
+        const description = btn.dataset.description;
+        const explainDiv = btn.nextElementSibling;
+
+        if (explainDiv.style.display !== 'none') {
+            explainDiv.style.display = 'none';
+            btn.innerHTML = '<i class="bi bi-lightbulb"></i> What is this procedure?';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Loading…';
+
+        try {
+            const params = new URLSearchParams({ code, description });
+            const resp = await fetch(`/explain/?${params}`);
+            const data = await resp.json();
+            if (data.explanation) {
+                explainDiv.textContent = data.explanation;
+                explainDiv.style.display = 'block';
+                btn.innerHTML = '<i class="bi bi-lightbulb-fill text-warning"></i> Hide explanation';
+            } else {
+                explainDiv.textContent = `Couldn't generate explanation: ${data.error || 'unknown error'}`;
+                explainDiv.style.display = 'block';
+                btn.innerHTML = '<i class="bi bi-lightbulb"></i> What is this procedure?';
+            }
+        } catch (err) {
+            explainDiv.textContent = `Couldn't generate explanation: ${err.message}`;
+            explainDiv.style.display = 'block';
+            btn.innerHTML = '<i class="bi bi-lightbulb"></i> What is this procedure?';
+        } finally {
+            btn.disabled = false;
+        }
+    }
 
     function sortTable(th, colIndex) {
         const table = th.closest('table');
