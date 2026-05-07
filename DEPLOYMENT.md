@@ -120,13 +120,15 @@ Create a `.env` file in the project root with the following values:
 
 ```env
 ELASTICSEARCH_URL=http://<VM_EXTERNAL_IP>:9200
+ELASTICSEARCH_URL_INTERNAL=http://<VM_INTERNAL_IP>:9200
 ELASTICSEARCH_USERNAME=
 ELASTICSEARCH_PASSWORD=
 TURNSTILE_SITE_KEY=<your_cloudflare_turnstile_site_key>
 TURNSTILE_SECRET_KEY=<your_cloudflare_turnstile_secret_key>
 ```
 
-- **`ELASTICSEARCH_URL`**: The external IP of the VM from Step 1 (e.g. `http://34.72.x.x:9200`). Find it under **Compute Engine > VM Instances**.
+- **`ELASTICSEARCH_URL`**: The **external** IP of the VM (e.g. `http://34.x.x.x:9200`). Used by `load_to_es.py` when run locally. Find it under **Compute Engine > VM Instances**.
+- **`ELASTICSEARCH_URL_INTERNAL`**: The **internal** IP of the VM (e.g. `http://10.128.0.x:9200`). Used by Cloud Run to reach Elasticsearch via the Serverless VPC connector. Find the internal IP under **Compute Engine > VM Instances** (the `10.x.x.x` address).
 - **`TURNSTILE_*`**: Get these from the [Cloudflare Turnstile dashboard](https://dash.cloudflare.com/?to=/:account/turnstile). For local testing, leave them as the default test values already in `config/settings.py`.
 - Leave `ELASTICSEARCH_USERNAME` and `ELASTICSEARCH_PASSWORD` blank if `xpack.security.enabled=false`.
 

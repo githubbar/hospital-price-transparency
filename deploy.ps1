@@ -10,16 +10,19 @@ Get-Content .env | ForEach-Object {
     }
 }
 
-# Override ELASTICSEARCH_URL with embedded credentials
-$envVars['ELASTICSEARCH_URL'] = $ELASTICSEARCH_URL -replace '^(https?://)', "`${1}${ELASTICSEARCH_USERNAME}:${ELASTICSEARCH_PASSWORD}@"
+# Use internal IP for Cloud Run (reachable via VPC connector); external IP is used locally by load_to_es.py
+if ($envVars.ContainsKey('ELASTICSEARCH_URL_INTERNAL')) {
+    $envVars['ELASTICSEARCH_URL'] = $envVars['ELASTICSEARCH_URL_INTERNAL']
+    $envVars.Remove('ELASTICSEARCH_URL_INTERNAL')
+}
 
 # Build KEY=VALUE string for --set-env-vars
 $envVarsString = ($envVars.GetEnumerator() | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ','
 
 # Load data into Elasticsearch
-Write-Host "Loading data into Elasticsearch..."
-& ".venv\Scripts\python.exe" load_to_es.py
-if ($LASTEXITCODE -ne 0) { Write-Warning "load_to_es.py exited with code $LASTEXITCODE" }
+# Write-Host "Loading data into Elasticsearch..."
+# & ".venv\Scripts\python.exe" load_to_es.py
+# if ($LASTEXITCODE -ne 0) { Write-Warning "load_to_es.py exited with code $LASTEXITCODE" }
 
 gcloud run deploy hospital-price-search `
   --source . `

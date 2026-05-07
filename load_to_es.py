@@ -350,7 +350,7 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
                 else:
                     group_key = description
                     is_standard_group = False
-                
+
                 # --- Splitting Logic ---
                 if group_key not in active_group_tracker:
                     active_group_tracker[group_key] = {
@@ -408,7 +408,7 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
                         'setting': p_setting,
                         'price': p_val
                     }
-                    
+
                     procedures_map[current_doc_id]['prices'].append(price_record)
                     procedures_map[current_doc_id]['price_values'].append(p_val)
 

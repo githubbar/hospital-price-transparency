@@ -300,8 +300,8 @@ def search(request):
                         'payer_name': p_name,
                         'plan_name': p.get('plan_name', 'Unknown'),
                         'hospital_id': p.get('hospital_id', 'Unknown'),
-                        'hospital_name': p.get('hospital_name', ''),
-                        'standard_charge_negotiated_dollar': val,
+                        'hospital_name': p.get('hospital_name', 'Unnamed Hospital'),  # Fallback for missing hospital_name
+                        'standard_charge_negotiated_dollar': val if val > 0 else 0.0,  # Fallback for missing or invalid price
                         'price_hue': hue,
                         'setting': p.get('setting', 'Unknown')
                     })
@@ -390,11 +390,20 @@ def search(request):
                         # Gather hospital info (unique list)
                         hosps = sorted(list(set([r['hospital_name'] or r['hospital_id'] for r in rows])))
                         hosp_display = ", ".join(hosps) if len(hosps) <= 2 else f"{len(hosps)} Hospitals"
-                        
+
+                        # Build per-hospital breakdown for tooltip
+                        hosp_prices = {}
+                        for r in rows:
+                            h = r['hospital_name'] or r['hospital_id']
+                            if h not in hosp_prices:
+                                hosp_prices[h] = r['standard_charge_negotiated_dollar']
+                        hospitals_list = [{'name': h, 'price': p} for h, p in sorted(hosp_prices.items())]
+
                         consolidated_items.append({
                             'payer_name': p_name,
                             'plan_name': pl_name,
                             'hospital_display': hosp_display,
+                            'hospitals': hospitals_list,
                             'price_min': c_min,
                             'price_max': c_max,
                             'price_avg': c_avg,
