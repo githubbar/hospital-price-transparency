@@ -23,6 +23,7 @@ Notes:
       - Existing data in the target index may be overwritten depending on the script's configuration.
 """
 import csv
+import gzip
 import hashlib
 import json
 import os
@@ -31,6 +32,7 @@ import sys
 import argparse
 import django
 from elasticsearch import Elasticsearch, helpers
+from elasticsearch.helpers import parallel_bulk
 from tqdm import tqdm
 
 # Setup Django environment
@@ -47,6 +49,7 @@ ES_PASS = getattr(settings, 'ELASTICSEARCH_PASSWORD', None)
 INDEX_NAME = getattr(settings, 'ELASTICSEARCH_INDEX', 'hospital_prices')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
+REFERENCE_DIR = os.path.join(BASE_DIR, 'reference')
 
 print(f"Configuration:")
 print(f"  ES_URL: {ES_URL}")
@@ -54,6 +57,40 @@ print(f"  ES_USER: {ES_USER}")
 print(f"  ES_PASS: {'******' if ES_PASS else None}")
 print(f"  INDEX_NAME: {INDEX_NAME}")
 print(f"  DATA_DIR: {DATA_DIR}")
+
+def load_shoppable_codes(csv_path=None):
+    """Load the CMS shoppable services code list and return a set of code values."""
+    if csv_path is None:
+        csv_path = os.path.join(REFERENCE_DIR, 'shoppable_codes.csv')
+    codes = set()
+    if not os.path.exists(csv_path):
+        print(f"WARNING: Shoppable codes file not found at {csv_path}")
+        return codes
+    with open(csv_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            codes.add(row['code'].strip())
+    print(f"Loaded {len(codes)} shoppable codes from {os.path.basename(csv_path)}")
+    return codes
+
+
+def normalize_payer_name(name):
+    """Normalize payer name to deduplicate variants like 'J&J' vs 'J and J'."""
+    if not name:
+        return name
+    # Replace underscores with spaces (e.g. negotiated_dollar -> negotiated dollar)
+    name = name.replace('_', ' ')
+    name = re.sub(r'\s*&\s*', ' and ', name)
+    name = re.sub(r'\s+', ' ', name).strip()
+    # Title-case known pinned values for display consistency
+    _title_map = {
+        'negotiated dollar': 'Negotiated Dollar',
+        'discounted cash': 'Discounted Cash',
+        'gross charge': 'Gross Charge',
+        'cash': 'Cash',
+        'gross': 'Gross',
+    }
+    return _title_map.get(name.lower(), name)
 
 def parse_currency(value):
     if not value or value.strip() == '':
@@ -91,7 +128,19 @@ def create_index(es, clean=False):
                 "description": {"type": "text", "analyzer": "english"},
                 "code": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
                 "code_type": {"type": "keyword"},
-                "rev_code": {"type": "keyword"},
+                "ms_drg": {"type": "keyword"},
+                "apr_drg": {"type": "keyword"},
+                "rc": {"type": "keyword"},
+                "apc": {"type": "keyword"},
+                "ndc": {"type": "keyword"},
+                "cdm": {"type": "keyword"},
+                "codes": {
+                    "type": "nested",
+                    "properties": {
+                        "value": {"type": "keyword"},
+                        "type": {"type": "keyword"}
+                    }
+                },
                 "is_standard_group": {"type": "boolean"},
                 "stats": {
                     "properties": {
@@ -147,8 +196,8 @@ def clean_hospital_name(raw_name):
     
     return s.title()
 
-def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
-    print(f"Parsing {os.path.basename(csv_path)}...")
+def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable_codes=None):
+    print(f"Parsing {os.path.basename(csv_path)}{'  [shoppable-only filter active]' if shoppable_codes else ''}...")
     LIMIT_PER_DOC = 5000
 
     try:
@@ -242,17 +291,21 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
                 if len(parts) >= 2 and parts[0] == 'standard_charge':
                     last_part = parts[-1] 
                     if last_part == 'negotiated_dollar':
+                        # Generic column with no payer embedded (e.g. standard_charge|negotiated_dollar)
+                        if len(parts) == 2:
+                            payer = 'Negotiated Dollar'
+                            plan = 'Negotiated Dollar'
                         # Try to extract payer/plan from middle parts
-                        if len(parts) == 4:
-                            payer = parts[1]
-                            plan = parts[2]
+                        elif len(parts) == 4:
+                            payer = normalize_payer_name(parts[1])
+                            plan = normalize_payer_name(parts[2])
                         elif len(parts) == 3:
-                            payer = parts[1]
+                            payer = normalize_payer_name(parts[1])
                             plan = "Standard"
                         else:
                             # Fallback for complex headers
-                            payer = parts[1]
-                            plan = " / ".join(parts[2:-1])
+                            payer = normalize_payer_name(parts[1])
+                            plan = " / ".join(normalize_payer_name(p) for p in parts[2:-1])
                         
                         wide_price_cols.append((idx, payer, plan))
 
@@ -283,14 +336,13 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
                 # Safe description extraction
                 description = row[col_desc] if col_desc is not None and col_desc < len(row) else "Unknown"
                 
-                # Extract CPT/HCPCS/DRG/RC code manually
+                # Extract all codes from all code|N / code|N|type columns
+                all_codes = []
                 primary_code = ""
                 primary_code_type = ""
-                rev_code = ""
-                found_code = False
+                found_primary = False
                 
-                # Loop for additional codes
-                for i in range(1, 6):
+                for i in range(1, 7):
                     c_key = f"code|{i}"
                     t_key = f"code|{i}|type"
                     
@@ -302,20 +354,37 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
                             c_val = row[idx_c].strip()
                             t_val = row[idx_t].strip().upper()
                             
-                            if not c_val: continue
-                            if t_val == "RC": rev_code = c_val
-                                
-                            if not found_code:
-                                if t_val == "CPT":
-                                    primary_code = c_val; primary_code_type = "CPT"; found_code = True
-                                elif t_val == "HCPCS":
-                                    primary_code = c_val; primary_code_type = "HCPCS"; found_code = True
+                            if not c_val:
+                                continue
+                            
+                            all_codes.append({"value": c_val, "type": t_val})
+                            
+                            if not found_primary:
+                                if t_val in ("CPT", "HCPCS"):
+                                    primary_code = c_val; primary_code_type = t_val; found_primary = True
                                 elif "DRG" in t_val:
-                                    primary_code = c_val; primary_code_type = t_val; found_code = True
-                
+                                    primary_code = c_val; primary_code_type = t_val; found_primary = True
+
                 if not primary_code:
                     primary_code = row[col_code] if col_code is not None and col_code < len(row) else ""
                     primary_code_type = row[col_code_type] if col_code_type is not None and col_code_type < len(row) else ""
+                    if primary_code and primary_code_type:
+                        all_codes.insert(0, {"value": primary_code, "type": primary_code_type.strip().upper()})
+
+                # Promote frequently-queried code types to flat fields
+                flat_codes = {}
+                _type_to_field = {
+                    "MS-DRG": "ms_drg", "DRG": "ms_drg",
+                    "APR-DRG": "apr_drg", "TRIS-DRG": "apr_drg",
+                    "RC": "rc",
+                    "APC": "apc",
+                    "NDC": "ndc",
+                    "CDM": "cdm",
+                }
+                for c in all_codes:
+                    field = _type_to_field.get(c["type"])
+                    if field and field not in flat_codes:
+                        flat_codes[field] = c["value"]
 
                 # --- EXTRACT PRICES FOR THIS ROW ---
                 row_prices = [] # (price_val, payer_name, plan_name, setting_val)
@@ -332,13 +401,21 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
                     price = parse_currency(row[col_price_generic]) if col_price_generic is not None and col_price_generic < len(row) else None
                     if price is not None:
                         # Ensure payer/plan are strings
-                        payer = row[col_payer_generic] if col_payer_generic is not None and col_payer_generic < len(row) else "Unknown"
-                        plan = row[col_plan_generic] if col_plan_generic is not None and col_plan_generic < len(row) else "Unknown"
+                        payer = normalize_payer_name(row[col_payer_generic]) if col_payer_generic is not None and col_payer_generic < len(row) else "Unknown"
+                        plan = normalize_payer_name(row[col_plan_generic]) if col_plan_generic is not None and col_plan_generic < len(row) else "Unknown"
                         # setting_val already extracted
                         row_prices.append((price, payer, plan, setting_val))
 
                 if not row_prices:
                     continue
+
+                # Apply shoppable-only filter if requested
+                if shoppable_codes is not None:
+                    row_code_values = {c['value'] for c in all_codes}
+                    if primary_code:
+                        row_code_values.add(primary_code)
+                    if not row_code_values.intersection(shoppable_codes):
+                        continue
 
                 records_processed += 1
 
@@ -369,12 +446,22 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
                         'description': description,
                         'code': primary_code,
                         'code_type': primary_code_type,
-                        'rev_code': rev_code,
+                        **flat_codes,
+                        'codes': all_codes,
                         'prices': [], 
                         'price_values': []
                     }
-                elif rev_code and not procedures_map[current_doc_id].get('rev_code'):
-                    procedures_map[current_doc_id]['rev_code'] = rev_code
+                else:
+                    # Merge flat code fields if not yet set
+                    for field, val in flat_codes.items():
+                        if not procedures_map[current_doc_id].get(field):
+                            procedures_map[current_doc_id][field] = val
+                    # Merge any new code entries not already present
+                    existing_codes = {(c['value'], c['type']) for c in procedures_map[current_doc_id].get('codes', [])}
+                    for c in all_codes:
+                        if (c['value'], c['type']) not in existing_codes:
+                            procedures_map[current_doc_id].setdefault('codes', []).append(c)
+                            existing_codes.add((c['value'], c['type']))
 
                 # Check for Overflow
                 if len(procedures_map[current_doc_id]['prices']) + len(row_prices) >= LIMIT_PER_DOC:
@@ -394,7 +481,8 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker):
                         'description': description + f" (Part {tracker['part_count'] + 1})", 
                         'code': primary_code,
                         'code_type': primary_code_type,
-                        'rev_code': rev_code,
+                        **flat_codes,
+                        'codes': all_codes,
                         'prices': [], 
                         'price_values': [] 
                     }
@@ -424,6 +512,12 @@ def main():
     parser.add_argument('--input_file', type=str, help='Path to a specific CSV file to process')
     parser.add_argument('--mock', action='store_true', help='Skip indexing and print parsed records instead')
     parser.add_argument('--clean', action='store_true', help='Delete existing index before adding data')
+    parser.add_argument('--shoppable-only', action='store_true',
+                        help='Only index the ~70 CMS shoppable services (reference/shoppable_codes.csv). '
+                             'Reduces index size by ~97%% for large hospital files.')
+    parser.add_argument('--cached-file', type=str, metavar='PATH',
+                        help='Load from a pre-built shoppable_cache.json.gz (created by extract_shoppable.py). '
+                             'Skips all CSV parsing.')
     args = parser.parse_args()
 
     try:
@@ -447,51 +541,77 @@ def main():
         else:
             print("[MOCK MODE] Skipping connection check and index creation.")
 
-        # 2. Parse All CSVs
-        procedures_map = {}
-        active_group_tracker = {} # Global tracker for splits
-        files_to_process = []
-
-        if args.input_file:
-            if os.path.exists(args.input_file):
-                files_to_process.append(args.input_file)
-            else:
-                print(f"Input file not found: {args.input_file}")
-                return
-        elif os.path.exists(DATA_DIR):
-             for filename in os.listdir(DATA_DIR):
-                if filename.lower().endswith(".csv"):
-                    files_to_process.append(os.path.join(DATA_DIR, filename))
-        else:
-            print(f"Data directory not found: {DATA_DIR}")
-            return
-
-        if not files_to_process:
-            print("No CSV files found to process.")
-            return
-
-        total_records = 0
-        for csv_path in files_to_process:
-            count = parse_csv_into_map(csv_path, procedures_map, active_group_tracker)
-            print(f"  > File '{os.path.basename(csv_path)}' -> {count} records extracted.")
-            total_records += count
-
-        print(f"Finished parsing. Found {len(procedures_map)} unique procedure group documents from {total_records} total price records.")
-        
-        # 3. Calculate Stats
+        # 2. Parse All CSVs (or load from cache)
         final_procedures = []
-        for pid, data in procedures_map.items():
-            values = data.pop('price_values')
-            if values:
-                data['stats'] = {
-                    'min': min(values),
-                    'max': max(values),
-                    'avg': round(sum(values) / len(values), 2),
-                    'count': len(values)
-                }
-            final_procedures.append(data)
 
-        # 4. Bulk Index
+        if args.cached_file:
+            # Fast path: load pre-extracted shoppable cache
+            cache_path = args.cached_file
+            if not os.path.exists(cache_path):
+                print(f"ERROR: Cached file not found: {cache_path}")
+                return
+            print(f"Loading from cache: {cache_path} ...")
+            with gzip.open(cache_path, 'rt', encoding='utf-8') as f:
+                final_procedures = json.load(f)
+            print(f"Loaded {len(final_procedures)} documents from cache.")
+            # Normalize payer names in cached data (cache may pre-date normalization)
+            for doc in final_procedures:
+                for price in doc.get('prices', []):
+                    if 'payer_name' in price:
+                        price['payer_name'] = normalize_payer_name(price['payer_name'])
+                    if 'plan_name' in price:
+                        price['plan_name'] = normalize_payer_name(price['plan_name'])
+        else:
+            procedures_map = {}
+            active_group_tracker = {}  # Global tracker for splits
+            files_to_process = []
+
+            shoppable_codes = None
+            if args.shoppable_only:
+                shoppable_codes = load_shoppable_codes()
+                if not shoppable_codes:
+                    print("ERROR: Could not load shoppable codes. Aborting.")
+                    return
+
+            if args.input_file:
+                if os.path.exists(args.input_file):
+                    files_to_process.append(args.input_file)
+                else:
+                    print(f"Input file not found: {args.input_file}")
+                    return
+            elif os.path.exists(DATA_DIR):
+                for filename in os.listdir(DATA_DIR):
+                    if filename.lower().endswith(".csv"):
+                        files_to_process.append(os.path.join(DATA_DIR, filename))
+            else:
+                print(f"Data directory not found: {DATA_DIR}")
+                return
+
+            if not files_to_process:
+                print("No CSV files found to process.")
+                return
+
+            total_records = 0
+            for csv_path in files_to_process:
+                count = parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable_codes)
+                print(f"  > File '{os.path.basename(csv_path)}' -> {count} records extracted.")
+                total_records += count
+
+            print(f"Finished parsing. Found {len(procedures_map)} unique procedure group documents from {total_records} total price records.")
+
+            # Calculate Stats
+            for pid, data in procedures_map.items():
+                values = data.pop('price_values')
+                if values:
+                    data['stats'] = {
+                        'min': min(values),
+                        'max': max(values),
+                        'avg': round(sum(values) / len(values), 2),
+                        'count': len(values)
+                    }
+                final_procedures.append(data)
+
+        # 3. Bulk Index
         if args.mock:
             print("\n[MOCK MODE] Documents that would be indexed:")
             print("-" * 50)
@@ -504,14 +624,47 @@ def main():
             print(f"... and {len(final_procedures) - sample_count} more documents.")
         else:
             print("Indexing documents...")
-            success, failed = helpers.bulk(
-                es, 
-                generate_actions(tqdm(final_procedures, desc="Indexing", unit="docs")), 
-                stats_only=False, 
-                raise_on_error=False,
-                chunk_size=50, 
-                max_chunk_bytes=10 * 1024 * 1024
-            )
+
+            # Speed up indexing: disable refresh and replicas during bulk load
+            es.indices.put_settings(index=INDEX_NAME, body={
+                "index": {
+                    "refresh_interval": "-1",
+                    "number_of_replicas": 0
+                }
+            })
+
+            success = 0
+            failed = []
+            try:
+                actions = generate_actions(tqdm(final_procedures, desc="Indexing", unit="docs"))
+                for ok, result in parallel_bulk(
+                    es,
+                    actions,
+                    thread_count=4,
+                    chunk_size=500,
+                    max_chunk_bytes=20 * 1024 * 1024,
+                    raise_on_error=False,
+                ):
+                    if ok:
+                        success += 1
+                    else:
+                        failed.append(result)
+            finally:
+                # Always restore refresh — ignore errors if connection dropped after bulk load
+                try:
+                    es.indices.put_settings(index=INDEX_NAME, body={
+                        "index": {
+                            "refresh_interval": "1s",
+                            "number_of_replicas": 0
+                        }
+                    })
+                    es.indices.refresh(index=INDEX_NAME)
+                    print("Index refreshed.")
+                except Exception as refresh_err:
+                    print(f"Warning: could not restore index settings after indexing ({refresh_err}). "
+                          "Data was indexed successfully — run: "
+                          f"curl -X POST {ES_URL}/{INDEX_NAME}/_refresh to refresh manually.")
+
             print(f"Successfully indexed {success} documents.")
             if failed:
                 print(f"Failed to index {len(failed)} documents.")

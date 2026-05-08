@@ -6,6 +6,8 @@ __pycache__
 env/
 venv/
 .venv/
+data/
+!data/shoppable_cache.json.gz
 pip-log.txt
 pip-delete-this-directory.txt
 .tox/
@@ -23,4 +25,3 @@ coverage.xml
 .vscode
 *.sqlite3
 firebase_migration/
-*.csv

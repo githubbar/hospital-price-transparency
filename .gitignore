@@ -45,3 +45,6 @@ ENV/
 *.zip
 *.json
 *.xlsx
+
+# Local Notes
+NOTES.md

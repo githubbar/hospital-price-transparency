@@ -127,6 +127,10 @@ def verify_turnstile(token, ip=None):
         print(f"verify_turnstile: Exception -> {e}")
         return True
 
+def faq(request):
+    return render(request, 'prices/faq.html')
+
+
 def search(request):
     query = request.GET.get('q', '')
     try:
@@ -136,9 +140,11 @@ def search(request):
 
     # Turnstile Verification
     error_message = None
+    remote_addr = request.META.get('REMOTE_ADDR', '')
+    is_local = remote_addr in ('127.0.0.1', '::1', 'localhost')
     if query:
-        # Skip verification in debug mode
-        if settings.DEBUG:
+        # Skip verification in debug mode or on localhost
+        if settings.DEBUG or is_local:
             pass
         # If already verified in session, skip
         elif request.session.get('is_human', False):
@@ -207,7 +213,21 @@ def search(request):
         agg_res = es.search(index=settings.ELASTICSEARCH_INDEX, body=aggs_body)
         if 'aggregations' in agg_res and 'prices' in agg_res['aggregations']:
             buckets = agg_res['aggregations']['prices']['unique_payers']['buckets']
-            payers_list = [b['key'] for b in buckets]
+            all_payers_raw = [b['key'] for b in buckets if b['key'].strip()]
+            # Deduplicate near-identical names (e.g. 'J&J' vs 'J and J')
+            def _norm_key(n):
+                import re as _re
+                return _re.sub(r'\s+', ' ', _re.sub(r'\s*&\s*', ' and ', n)).strip().lower()
+            seen_keys = {}
+            all_payers = []
+            for p in all_payers_raw:
+                k = _norm_key(p)
+                if k not in seen_keys:
+                    seen_keys[k] = p
+                    all_payers.append(p)
+            pinned = ['Negotiated Dollar', 'Cash', 'Gross']
+            payers_list = [p for p in pinned if p in all_payers] + \
+                          sorted([p for p in all_payers if p not in pinned], key=str.lower)
     except Exception as e:
         print(f"Error fetching payers: {e}")
 
@@ -332,7 +352,10 @@ def search(request):
                     'common_setting': common_setting, 
                     'items': items,
                     'stats': stats,
-                    'rev_code': rev_code
+                    'rev_code': source.get('rc', '') or source.get('rev_code', ''),
+                    'ms_drg':  source.get('ms_drg', ''),
+                    'apr_drg': source.get('apr_drg', ''),
+                    'rc':      source.get('rc', ''),
                 }
                 
                 if desc not in matches_by_desc:
@@ -412,8 +435,12 @@ def search(request):
                             'price_hue': rows[0]['price_hue'] # Just take the first one's hue as approximation
                         })
                     
-                    # 3. Sort by Payer Name
-                    consolidated_items.sort(key=lambda x: x['payer_name'].lower())
+                    # 3. Sort by Payer Name (pin Negotiated Dollar/Cash/Gross first)
+                    _pinned = ['negotiated dollar', 'cash', 'gross']
+                    consolidated_items.sort(key=lambda x: (
+                        _pinned.index(x['payer_name'].lower()) if x['payer_name'].lower() in _pinned else len(_pinned),
+                        x['payer_name'].lower()
+                    ))
                     variant['items'] = consolidated_items
 
                 # Attach Group Stats
@@ -456,9 +483,74 @@ def search(request):
         'turnstile_site_key': getattr(settings, 'TURNSTILE_BASKET_KEY', ''),
         'debug': settings.DEBUG,
         'is_human': request.session.get('is_human', False),
+        'is_local': is_local,
     }
     
     return render(request, 'prices/search.html', context)
+
+
+@require_GET
+def related_procedures(request):
+    """Return procedures that share the same DRG (or RC) as the given code."""
+    ms_drg   = request.GET.get('ms_drg', '').strip()
+    apr_drg  = request.GET.get('apr_drg', '').strip()
+    rc       = request.GET.get('rc', '').strip()
+    exclude  = request.GET.get('exclude', '').strip()  # the CPT/code to exclude
+
+    # Pick the best grouping key available
+    if ms_drg:
+        group_field, group_value = 'ms_drg', ms_drg
+    elif apr_drg:
+        group_field, group_value = 'apr_drg', apr_drg
+    elif rc:
+        group_field, group_value = 'rc', rc
+    else:
+        return JsonResponse({'error': 'ms_drg, apr_drg, or rc is required'}, status=400)
+
+    cache_key = f'related_{group_field}_{group_value}_{exclude}'
+    cached = cache.get(cache_key)
+    if cached:
+        return JsonResponse({'results': cached})
+
+    es_params = {'hosts': settings.ELASTICSEARCH_URL}
+    if getattr(settings, 'ELASTICSEARCH_USERNAME', None):
+        es_params['basic_auth'] = (settings.ELASTICSEARCH_USERNAME, settings.ELASTICSEARCH_PASSWORD)
+    if settings.ELASTICSEARCH_URL.startswith('https'):
+        es_params['verify_certs'] = False
+        es_params['ssl_show_warn'] = False
+    es = Elasticsearch(**es_params)
+
+    query_body = {
+        "size": 8,
+        "_source": ["code", "code_type", "description", "stats", "ms_drg", "apr_drg", "rc"],
+        "query": {
+            "bool": {
+                "must": [{"term": {group_field: group_value}}],
+                "must_not": (
+                    [{"term": {"code.keyword": exclude}}] if exclude else []
+                )
+            }
+        }
+    }
+
+    try:
+        res = es.search(index=settings.ELASTICSEARCH_INDEX, body=query_body)
+        results = []
+        for hit in res['hits']['hits']:
+            s = hit['_source']
+            results.append({
+                'code':        s.get('code', ''),
+                'code_type':   s.get('code_type', ''),
+                'description': s.get('description', ''),
+                'avg_price':   s.get('stats', {}).get('avg'),
+                'ms_drg':      s.get('ms_drg', ''),
+                'apr_drg':     s.get('apr_drg', ''),
+                'rc':          s.get('rc', ''),
+            })
+        cache.set(cache_key, results, 3600)
+        return JsonResponse({'results': results, 'group_field': group_field, 'group_value': group_value})
+    except Exception as e:
+        return JsonResponse({'error': str(e) if settings.DEBUG else 'Query failed'}, status=500)
 
 
 @require_GET

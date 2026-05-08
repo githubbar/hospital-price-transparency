@@ -20,5 +20,10 @@ COPY . /app/
 # Set a dummy SECRET_KEY for building purposes if not present
 RUN SECRET_KEY=build_secret_key python manage.py collectstatic --noinput
 
-# Run gunicorn
-CMD exec gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 0
+# Copy and enable the startup entrypoint
+COPY startup.sh /app/startup.sh
+RUN chmod +x /app/startup.sh
+
+# startup.sh launches check_and_reload.py in the background (auto-reloads ES data
+# when the index is empty, e.g. after a Spot VM preemption) then starts gunicorn.
+CMD ["/app/startup.sh"]
