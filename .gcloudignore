@@ -1,0 +1,42 @@
+# Files to exclude when uploading source to Cloud Build for gcloud run deploy.
+# .gitignore is NOT automatically used when this file is present.
+
+# Python artifacts
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Data files (large CSVs — excluded from upload, but keep the shoppable cache)
+data/*
+!data/shoppable_cache.json.gz
+
+# Dev/tooling
+.git
+.gitignore
+.gcloudignore
+.mypy_cache
+.pytest_cache
+.vscode
+.coverage
+.coverage.*
+.cache
+*.log
+*.sqlite3
+
+# Test artifacts
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Other
+firebase_migration/

@@ -40,11 +40,24 @@
         body {
             background-color: #f8f9fa;
         }
-        .search-container {
-            max-width: 800px;
-            margin: 30px auto 30px;
-            text-align: center;
+        /* ── Layout ── */
+        .page-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem 0;
         }
+        .filter-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 1rem;
+        }
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+        /* ── Search bar ── */
         .search-box {
             position: relative;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -59,20 +72,49 @@
             border-radius: 50px;
             font-size: 1.1rem;
         }
-        .search-input:focus {
-            box-shadow: none;
-        }
+        .search-input:focus { box-shadow: none; }
         .search-btn {
             border-radius: 50px;
             padding: 10px 30px;
         }
-        .results-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        /* ── Sidebar panels ── */
+        .filter-panel {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 1rem;
             overflow: hidden;
-            margin-bottom: 2rem;
         }
+        .filter-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #374151;
+            cursor: pointer;
+            user-select: none;
+        }
+        .filter-panel-header:hover { background: #f1f3f5; }
+        .filter-panel-body { padding: 10px 12px; }
+        .filter-checklist {
+            max-height: 240px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 4px 6px;
+        }
+        .filter-checklist .form-check {
+            padding: 4px 0 4px 1.6em;
+            margin: 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        .filter-checklist .form-check:last-child { border-bottom: none; }
+        .filter-checklist .form-check-label { cursor: pointer; font-size: 0.82rem; }
+        /* ── Results ── */
         .table th {
             font-weight: 600;
             color: #495057;
@@ -80,19 +122,8 @@
             cursor: help;
             border-top: none;
         }
-        .price-tag {
-            font-weight: bold;
-            color: #198754;
-        }
-        .hero {
-            margin-bottom: 2rem;
-        }
-        /* Adjusted hero h1 if it still exists, but we are removing it */
-        .tooltip-icon {
-            font-size: 0.8em;
-            color: #6c757d;
-            margin-left: 5px;
-        }
+        .price-tag { font-weight: bold; color: #198754; }
+        .tooltip-icon { font-size: 0.8em; color: #6c757d; margin-left: 5px; }
         .hospital-tooltip .tooltip-inner {
             background-color: #1e2a38;
             color: #e0e0e0;
@@ -103,9 +134,12 @@
             max-width: 320px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .hospital-tooltip .tooltip-arrow::before {
-            border-right-color: #1e2a38;
+        .hospital-tooltip .tooltip-arrow::before { border-right-color: #1e2a38; }
+        /* ── Mobile: offcanvas trigger ── */
+        @media (max-width: 767px) {
+            .filter-sidebar { display: none; }
         }
+        .offcanvas-filter .filter-checklist { max-height: 180px; }
     </style>
 </head>
 <body>
@@ -132,38 +166,159 @@
 </nav>
 
 
-<div class="container">
-    <div class="search-container">
-        <div class="hero mb-4">
+<div class="container-fluid px-3">
+
+<!-- ── Mobile: offcanvas filter trigger ───────────────────────────────── -->
+<div class="d-md-none py-2">
+    <button class="btn btn-sm btn-outline-secondary" type="button"
+            data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+        <i class="bi bi-funnel me-1"></i> Filters
+        <span id="mobile-filter-badge" class="badge bg-primary ms-1" style="display:none;"></span>
+    </button>
+</div>
+
+<div class="offcanvas offcanvas-start offcanvas-filter" tabindex="-1" id="filterOffcanvas">
+    <div class="offcanvas-header">
+        <h6 class="offcanvas-title">Filters</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-2" id="offcanvas-filter-body">
+        <!-- JS will clone sidebar content here on mobile -->
+    </div>
+</div>
+
+<!-- ── Main page-wrapper ──────────────────────────────────────────────── -->
+<div class="page-wrapper">
+
+    <!-- ── Sidebar ── -->
+    <aside class="filter-sidebar d-none d-md-block" id="filter-sidebar">
+
+        <!-- Insurer panel -->
+        <div class="filter-panel">
+            <div class="filter-panel-header" data-bs-toggle="collapse" data-bs-target="#sb-insurer-body">
+                <span><i class="bi bi-shield-check me-1"></i> Insurer</span>
+                <span id="payer-filter-badge" class="badge bg-primary"
+                      style="{% if not selected_payers %}display:none{% endif %}">
+                    {{ selected_payers|length }}
+                </span>
+            </div>
+            <div class="collapse show" id="sb-insurer-body">
+                <div class="filter-panel-body">
+                    <input type="text" id="payer-search" class="form-control form-control-sm mb-2"
+                           placeholder="Search insurers…" autocomplete="off">
+                    <div class="filter-checklist" id="payer-checklist">
+                        {% for p in payers_list %}
+                        <div class="form-check payer-check-item">
+                            <input class="form-check-input" type="checkbox"
+                                   name="payer" value="{{ p }}"
+                                   id="payer_{{ forloop.counter }}"
+                                   form="search-form"
+                                   {% if p in selected_payers %}checked{% endif %}>
+                            <label class="form-check-label" for="payer_{{ forloop.counter }}">{{ p|title }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="text-muted" id="payer-status"></small>
+                        <button type="button" id="clear-payers" class="btn btn-link btn-sm p-0 text-danger">Clear</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- Hospital panel -->
+        <div class="filter-panel">
+            <div class="filter-panel-header" data-bs-toggle="collapse" data-bs-target="#sb-hospital-body">
+                <span><i class="bi bi-hospital me-1"></i> Hospital</span>
+                <span id="hosp-filter-badge" class="badge bg-primary"
+                      style="{% if not selected_hospitals %}display:none{% endif %}">
+                    {{ selected_hospitals|length }}
+                </span>
+            </div>
+            <div class="collapse show" id="sb-hospital-body">
+                <div class="filter-panel-body">
+                    <!-- Location search -->
+                    <div class="input-group input-group-sm mb-1">
+                        <input type="text" id="location-input" class="form-control"
+                               placeholder="City or ZIP code…" autocomplete="off">
+                        <select id="radius-select" class="form-select" style="max-width:75px;">
+                            <option value="10">10 mi</option>
+                            <option value="25" selected>25 mi</option>
+                            <option value="50">50 mi</option>
+                            <option value="100">100 mi</option>
+                        </select>
+                        <button type="button" id="location-search-btn"
+                                class="btn btn-outline-secondary px-2"
+                                title="Find hospitals near this location">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                    <div class="mb-2">
+                        <button type="button" id="near-me-btn"
+                                class="btn btn-link btn-sm p-0 text-secondary"
+                                style="font-size:0.78rem;">
+                            <i class="bi bi-geo-alt-fill me-1"></i>Use my location
+                        </button>
+                    </div>
+                    <div class="filter-checklist" id="hospital-checklist">
+                        {% for hospital in hospitals_list %}
+                        <div class="form-check hospital-check-item"
+                             data-city="{{ hospital.city }}"
+                             data-lat="{{ hospital.lat }}"
+                             data-lng="{{ hospital.lng }}">
+                            <input class="form-check-input" type="checkbox"
+                                   name="hospital" value="{{ hospital.id }}"
+                                   id="hosp_{{ hospital.id }}"
+                                   form="search-form"
+                                   {% if hospital.id in selected_hospitals %}checked{% endif %}>
+                            <label class="form-check-label" for="hosp_{{ hospital.id }}">
+                                {{ hospital.name }} <span class="text-muted">({{ hospital.city }})</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="text-muted" id="hosp-status"></small>
+                        <span>
+                            <a href="#" id="hosp-show-all" class="text-secondary me-2" style="font-size:0.78rem;display:none;">Show all</a>
+                            <button type="button" id="clear-hospitals" class="btn btn-link btn-sm p-0 text-danger">Clear</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+    <!-- ── End Sidebar ── -->
+
+    <!-- ── Main content ── -->
+    <div class="main-content">
         {% if error_message %}
         <div class="alert alert-danger" role="alert">
             <i class="bi bi-shield-exclamation me-2"></i> {{ error_message }}
         </div>
         {% endif %}
 
-        <form action="" method="get">
-            <div class="input-group search-box">
-                <input type="text" name="q" class="form-control search-input" placeholder="Search for a procedure (e.g. 'MRI', 'Catheter') or code..." value="{{ query }}">
-                
-                <select name="payer" class="form-select border-0" style="max-width: 200px; border-radius: 0; background-color: #f8f9fa;">
-                    <option value="">All Insurers</option>
-                    {% for p in payers_list %}
-                    <option value="{{ p }}" {% if selected_payer == p %}selected{% endif %}>{{ p|title }}</option>
-                    {% endfor %}
-                </select>
+        {% if token_expired %}
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-clock-history me-2"></i> Your saved hospital filter has expired. Please reselect hospitals and search again.
+        </div>
+        {% endif %}
 
+        <form id="search-form" action="" method="get">
+            <div class="input-group search-box mb-3">
+                <input type="text" name="q" class="form-control search-input"
+                       placeholder="Search for a procedure (e.g. 'MRI', 'Catheter') or code…"
+                       value="{{ query }}">
                 <button class="btn btn-primary search-btn" type="submit">Search</button>
             </div>
-            
-            <div id="turnstile-wrapper" class="mt-3 d-flex justify-content-center">
+
+            <div id="turnstile-wrapper" class="mt-2 d-flex justify-content-center">
                 {% if not debug and not is_human and not is_local %}
                 <div id="cf-turnstile-container"></div>
                 {% endif %}
             </div>
         </form>
-    </div>
 
     {% if query %}
         {% if grouped_results %}
@@ -339,7 +494,7 @@
             <ul class="pagination justify-content-center">
                 {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?q={{ query }}&page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
+                    <a class="page-link" href="?{{ base_query_string }}&page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
                 </li>
                 {% else %}
                 <li class="page-item disabled">
@@ -354,14 +509,14 @@
                     </li>
                     {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
                     <li class="page-item">
-                        <a class="page-link" href="?q={{ query }}&page={{ i }}">{{ i }}</a>
+                        <a class="page-link" href="?{{ base_query_string }}&page={{ i }}">{{ i }}</a>
                     </li>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?q={{ query }}&page={{ page_obj.next_page_number }}">Next</a>
+                    <a class="page-link" href="?{{ base_query_string }}&page={{ page_obj.next_page_number }}">Next</a>
                 </li>
                 {% else %}
                 <li class="page-item disabled">
@@ -381,11 +536,13 @@
         {% endif %}
     {% endif %}
 
-
     <div class="text-center mt-4 mb-3">
         <span class="badge bg-secondary">Total Procedure Codes: {{ total_records }}</span>
     </div>
-</div>
+
+    </div><!-- end .main-content -->
+</div><!-- end .page-wrapper -->
+</div><!-- end .container-fluid -->
 
 <footer style="background-color: #374151;" class="py-3 mt-2">
     <div class="container text-center">
@@ -421,6 +578,208 @@
         title: html
       });
     });
+
+    // ── Insurer Filter ───────────────────────────────────────────────────────
+    (function () {
+        const payerItems  = document.querySelectorAll('.payer-check-item');
+        const badge       = document.getElementById('payer-filter-badge');
+        const statusEl    = document.getElementById('payer-status');
+        const searchInput = document.getElementById('payer-search');
+        const clearBtn    = document.getElementById('clear-payers');
+
+        function updatePayerCounts() {
+            const visible = [...payerItems].filter(el => el.style.display !== 'none').length;
+            const total   = payerItems.length;
+            const checked = [...document.querySelectorAll('input[name="payer"]:checked')].length;
+            if (statusEl) statusEl.textContent = visible < total ? `${visible} of ${total} shown` : '';
+            if (badge) { badge.textContent = checked; badge.style.display = checked ? '' : 'none'; }
+            // sync mobile badge
+            const mb = document.getElementById('mobile-filter-badge');
+            if (mb) {
+                const tot = checked + [...document.querySelectorAll('input[name="hospital"]:checked')].length;
+                mb.textContent = tot; mb.style.display = tot ? '' : 'none';
+            }
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                const q = searchInput.value.toLowerCase();
+                payerItems.forEach(el => {
+                    el.style.display = (!q || el.querySelector('label').textContent.toLowerCase().includes(q)) ? '' : 'none';
+                });
+                updatePayerCounts();
+            });
+        }
+        document.querySelectorAll('input[name="payer"]').forEach(cb => cb.addEventListener('change', updatePayerCounts));
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                document.querySelectorAll('input[name="payer"]').forEach(cb => cb.checked = false);
+                if (searchInput) searchInput.value = '';
+                payerItems.forEach(el => el.style.display = '');
+                updatePayerCounts();
+            });
+        }
+        updatePayerCounts();
+    })();
+
+    // ── Hospital Filter ──────────────────────────────────────────────────────
+    (function () {
+        const hospitalData    = {{ hospitals_json|safe }};
+        const items           = document.querySelectorAll('.hospital-check-item');
+        const badge           = document.getElementById('hosp-filter-badge');
+        const statusEl        = document.getElementById('hosp-status');
+        const radiusSelect    = document.getElementById('radius-select');
+        const nearMeBtn       = document.getElementById('near-me-btn');
+        const locationInput   = document.getElementById('location-input');
+        const locationSearchBtn = document.getElementById('location-search-btn');
+        const clearBtn        = document.getElementById('clear-hospitals');
+        const showAllLink     = document.getElementById('hosp-show-all');
+
+        let lastPos = null; // { lat, lng } — set by Near Me or geocode
+        let filteredToNearby = false;
+
+        function haversine(lat1, lng1, lat2, lng2) {
+            const R = 3958.8, toRad = Math.PI / 180;
+            const dLat = (lat2 - lat1) * toRad, dLng = (lng2 - lng1) * toRad;
+            const a = Math.sin(dLat/2)**2 + Math.cos(lat1*toRad)*Math.cos(lat2*toRad)*Math.sin(dLng/2)**2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        function applyNearby(userLat, userLng, radius, label) {
+            const nearby = new Set(
+                hospitalData
+                    .filter(h => {
+                        const lat = parseFloat(h.lat), lng = parseFloat(h.lng);
+                        return lat && lng && haversine(userLat, userLng, lat, lng) <= radius;
+                    })
+                    .map(h => h.id)
+            );
+            // Check nearby; hide non-nearby rows
+            document.querySelectorAll('input[name="hospital"]').forEach(cb => {
+                cb.checked = nearby.has(cb.value);
+            });
+            items.forEach(el => {
+                const id = el.querySelector('input').value;
+                el.style.display = nearby.has(id) ? '' : 'none';
+            });
+            filteredToNearby = true;
+            if (showAllLink) showAllLink.style.display = '';
+            updateCounts();
+            if (statusEl) statusEl.textContent =
+                `${nearby.size} hospital${nearby.size !== 1 ? 's' : ''} within ${radius} mi${label ? ' of ' + label : ''}`;
+        }
+
+        function updateCounts() {
+            const checked = [...document.querySelectorAll('input[name="hospital"]:checked')].length;
+            if (badge) { badge.textContent = checked; badge.style.display = checked ? '' : 'none'; }
+            const mb = document.getElementById('mobile-filter-badge');
+            if (mb) {
+                const tot = checked + [...document.querySelectorAll('input[name="payer"]:checked')].length;
+                mb.textContent = tot; mb.style.display = tot ? '' : 'none';
+            }
+        }
+
+        // Geocode via Nominatim and apply filter
+        async function geocodeAndFilter(query) {
+            if (!query.trim()) return;
+            if (locationSearchBtn) {
+                locationSearchBtn.disabled = true;
+                locationSearchBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            }
+            if (statusEl) statusEl.textContent = 'Searching…';
+            try {
+                const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Indiana, USA')}&format=json&limit=1&countrycodes=us`;
+                const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+                const data = await res.json();
+                if (!data.length) {
+                    if (statusEl) statusEl.textContent = 'Location not found. Try a city name or ZIP.';
+                    return;
+                }
+                const { lat, lon, display_name } = data[0];
+                lastPos = { lat: parseFloat(lat), lng: parseFloat(lon), accuracy: 0 };
+                const radius = parseFloat(radiusSelect ? radiusSelect.value : 25);
+                // Use the first part of display_name as the label
+                const shortLabel = display_name.split(',')[0];
+                applyNearby(lastPos.lat, lastPos.lng, radius, shortLabel);
+            } catch (e) {
+                if (statusEl) statusEl.textContent = 'Geocoding error — check your connection.';
+            } finally {
+                if (locationSearchBtn) {
+                    locationSearchBtn.disabled = false;
+                    locationSearchBtn.innerHTML = '<i class="bi bi-search"></i>';
+                }
+            }
+        }
+
+        if (locationSearchBtn)
+            locationSearchBtn.addEventListener('click', () => geocodeAndFilter(locationInput.value));
+        if (locationInput)
+            locationInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); geocodeAndFilter(locationInput.value); } });
+
+        // Radius change: reapply with stored position
+        if (radiusSelect) {
+            radiusSelect.addEventListener('change', () => {
+                if (lastPos) {
+                    const radius = parseFloat(radiusSelect.value);
+                    applyNearby(lastPos.lat, lastPos.lng, radius,
+                                locationInput && locationInput.value.trim() ? locationInput.value.trim() : null);
+                }
+            });
+        }
+
+        document.querySelectorAll('input[name="hospital"]').forEach(cb => cb.addEventListener('change', updateCounts));
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                lastPos = null;
+                filteredToNearby = false;
+                if (locationInput) locationInput.value = '';
+                if (statusEl) statusEl.textContent = '';
+                if (showAllLink) showAllLink.style.display = 'none';
+                items.forEach(el => el.style.display = '');
+                document.querySelectorAll('input[name="hospital"]').forEach(cb => cb.checked = false);
+                updateCounts();
+            });
+        }
+
+        if (showAllLink) {
+            showAllLink.addEventListener('click', e => {
+                e.preventDefault();
+                filteredToNearby = false;
+                items.forEach(el => el.style.display = '');
+                showAllLink.style.display = 'none';
+                if (statusEl) statusEl.textContent = '';
+            });
+        }
+
+        if (nearMeBtn) {
+            nearMeBtn.addEventListener('click', () => {
+                if (!navigator.geolocation) {
+                    if (statusEl) statusEl.textContent = 'Geolocation not supported by your browser.';
+                    return;
+                }
+                nearMeBtn.disabled = true;
+                if (statusEl) statusEl.textContent = 'Locating\u2026';
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        lastPos = { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
+                        if (locationInput) locationInput.value = '';
+                        const radius = parseFloat(radiusSelect ? radiusSelect.value : 25);
+                        applyNearby(lastPos.lat, lastPos.lng, radius, null);
+                        nearMeBtn.disabled = false;
+                    },
+                    err => {
+                        const msgs = {1:'Permission denied.',2:'Position unavailable.',3:'Request timed out.'};
+                        if (statusEl) statusEl.textContent = msgs[err.code] || err.message;
+                        nearMeBtn.disabled = false;
+                    },
+                    { timeout: 10000, enableHighAccuracy: false }
+                );
+            });
+        }
+
+        updateCounts();
+    })();
 
     async function loadRelated(btn) {
         const panel = btn.nextElementSibling;

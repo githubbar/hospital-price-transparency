@@ -1,18 +1,22 @@
 """
-Startup health check: runs as a background process when the container starts.
+Startup health check + watchdog: runs as a background process when the container starts.
 If Elasticsearch is unreachable (VM stopped), it starts the GCE VM automatically
 via the Compute Engine API. Once ES is up, if the index is empty it reloads all
 hospital pricing data.
+
+After the initial check, a watchdog loop runs every WATCHDOG_INTERVAL_SECONDS and
+re-triggers the full recover+reload cycle if the index drops to 0 (e.g. after a
+mid-session Spot VM preemption while the Cloud Run container is still alive).
 
 Required environment variables for VM auto-start:
   GCE_PROJECT   — GCP project ID  (e.g. my-project-123)
   GCE_ZONE      — VM zone         (e.g. us-central1-c)
   GCE_INSTANCE  — VM name         (e.g. elasticsearch-vm)
 """
+import gzip
 import os
 import sys
 import time
-import subprocess
 
 sys.path.insert(0, '/app')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
@@ -22,6 +26,7 @@ django.setup()
 
 from django.conf import settings
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import streaming_bulk
 
 INDEX_NAME = getattr(settings, 'ELASTICSEARCH_INDEX', 'hospital_prices')
 ES_URL = settings.ELASTICSEARCH_URL
@@ -32,6 +37,39 @@ auth = (ES_USER, ES_PASS) if ES_USER and ES_PASS else None
 GCE_PROJECT  = os.environ.get('GCE_PROJECT')
 GCE_ZONE     = os.environ.get('GCE_ZONE')
 GCE_INSTANCE = os.environ.get('GCE_INSTANCE')
+
+# How often the watchdog checks the document count after initial startup (seconds)
+WATCHDOG_INTERVAL_SECONDS = 5 * 60  # 5 minutes
+
+CACHE_FILE = '/app/data/shoppable_cache.json.gz'
+
+def _count_cache_docs():
+    """Count documents in the cache file.
+    Uses a pre-computed .count file (written by Dockerfile) for instant lookup.
+    Falls back to streaming through the gzip file if the count file is absent.
+    """
+    count_file = CACHE_FILE + '.count'
+    if os.path.exists(count_file):
+        try:
+            with open(count_file) as f:
+                return int(f.read().strip())
+        except Exception:
+            pass
+    if not os.path.exists(CACHE_FILE):
+        return 0
+    try:
+        import ijson
+        count = 0
+        with gzip.open(CACHE_FILE, 'rb') as f:
+            for _ in ijson.items(f, 'item'):
+                count += 1
+        return count
+    except Exception as exc:
+        print(f"[startup] Could not count cache docs: {exc}", flush=True)
+        return 0
+
+CACHE_DOC_COUNT = _count_cache_docs()
+print(f"[startup] Cache contains {CACHE_DOC_COUNT} documents.", flush=True)
 
 
 def get_es():
@@ -59,66 +97,172 @@ def try_start_vm():
         return False
 
 
-# --- Phase 1: quick check (5 attempts / 10s) to see if ES is already up ---
-print("[startup] Checking if Elasticsearch is ready...", flush=True)
-es = None
-for attempt in range(5):
-    try:
-        es = get_es()
-        es.info()
-        print(f"[startup] Elasticsearch ready (attempt {attempt + 1})", flush=True)
-        break
-    except Exception as exc:
-        print(f"[startup] ES not ready (attempt {attempt + 1}/5): {exc}", flush=True)
-        time.sleep(2)
-        es = None
-
-# --- Phase 2: if still down, try to start the VM then keep waiting ---
-if es is None:
-    vm_started = try_start_vm()
-    # Elasticsearch takes ~90s to start after a VM boot
-    wait_attempts = 60 if vm_started else 25  # up to 120s if we started the VM, 50s otherwise
-    for attempt in range(wait_attempts):
+def ensure_data_loaded(label="startup"):
+    """
+    Ensure Elasticsearch is reachable and the index is populated.
+    Starts the VM if ES is unreachable, waits for it to boot, then reloads
+    data if the index is empty. Returns True if data is confirmed loaded.
+    """
+    # --- Phase 1: quick check (5 attempts / 10s) to see if ES is already up ---
+    print(f"[{label}] Checking if Elasticsearch is ready...", flush=True)
+    es = None
+    for attempt in range(5):
         try:
             es = get_es()
             es.info()
-            print(f"[startup] Elasticsearch ready after VM start (attempt {attempt + 1})", flush=True)
+            print(f"[{label}] Elasticsearch ready (attempt {attempt + 1})", flush=True)
             break
         except Exception as exc:
-            print(f"[startup] ES not ready (attempt {attempt + 1}/{wait_attempts}): {exc}", flush=True)
+            print(f"[{label}] ES not ready (attempt {attempt + 1}/5): {exc}", flush=True)
             time.sleep(2)
             es = None
 
-if es is None:
-    print("[startup] Elasticsearch unreachable. Skipping data reload.", flush=True)
-    sys.exit(0)
+    # --- Phase 2: if still down, try to start the VM then keep waiting ---
+    if es is None:
+        vm_started = try_start_vm()
+        # Elasticsearch takes ~90s to start after a VM boot
+        wait_attempts = 60 if vm_started else 25  # up to 120s if we started the VM, 50s otherwise
+        for attempt in range(wait_attempts):
+            try:
+                es = get_es()
+                es.info()
+                print(f"[{label}] Elasticsearch ready after VM start (attempt {attempt + 1})", flush=True)
+                break
+            except Exception as exc:
+                print(f"[{label}] ES not ready (attempt {attempt + 1}/{wait_attempts}): {exc}", flush=True)
+                time.sleep(2)
+                es = None
 
-# Check how many documents are indexed
-try:
-    if es.indices.exists(index=INDEX_NAME):
-        count = es.count(index=INDEX_NAME)['count']
+    if es is None:
+        print(f"[{label}] Elasticsearch unreachable. Skipping data reload.", flush=True)
+        return False
+
+    # Check how many documents are indexed
+    try:
+        if es.indices.exists(index=INDEX_NAME):
+            count = es.count(index=INDEX_NAME)['count']
+        else:
+            count = 0
+    except Exception as exc:
+        print(f"[{label}] Could not check document count: {exc}", flush=True)
+        return False
+
+    print(f"[{label}] Elasticsearch document count: {count}", flush=True)
+
+    if CACHE_DOC_COUNT > 0 and count >= CACHE_DOC_COUNT:
+        print(f"[{label}] Data already loaded ({count}/{CACHE_DOC_COUNT} docs). Nothing to do.", flush=True)
+        return True
+    if count > 0:
+        print(f"[{label}] Only {count}/{CACHE_DOC_COUNT} docs — re-indexing all from scratch (idempotent).", flush=True)
     else:
-        count = 0
-except Exception as exc:
-    print(f"[startup] Could not check document count: {exc}", flush=True)
-    sys.exit(0)
+        print(f"[{label}] Index is empty. Loading cache: {CACHE_FILE}", flush=True)
 
-print(f"[startup] Elasticsearch document count: {count}", flush=True)
+    # Index is incomplete or empty — stream all docs from the beginning.
+    # Bulk indexing by _id is idempotent: re-indexing already-present docs is safe
+    # and much faster than skipping through the gzip stream to find a resume offset.
+    if not os.path.exists(CACHE_FILE):
+        print(f"[{label}] Cache file not found at {CACHE_FILE}. Cannot reload.", flush=True)
+        return False
 
-if count > 0:
-    print("[startup] Data already loaded. Nothing to do.", flush=True)
-    sys.exit(0)
+    try:
+        # Create index with explicit mappings if it doesn't exist.
+        # Mappings must match load_to_es.py — keyword fields are required for
+        # terms aggregations (e.g. payer_name). Without them ES auto-maps as
+        # text and the Insurer filter fails.
+        if not es.indices.exists(index=INDEX_NAME):
+            es.indices.create(index=INDEX_NAME, body={
+                "settings": {
+                    "number_of_shards": 1,
+                    "number_of_replicas": 0,
+                    "index.mapping.nested_objects.limit": 10000,
+                },
+                "mappings": {
+                    "properties": {
+                        "id":              {"type": "keyword"},
+                        "group_key":       {"type": "keyword"},
+                        "description":     {"type": "text", "analyzer": "english"},
+                        "code":            {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                        "code_type":       {"type": "keyword"},
+                        "ms_drg":          {"type": "keyword"},
+                        "apr_drg":         {"type": "keyword"},
+                        "rc":              {"type": "keyword"},
+                        "apc":             {"type": "keyword"},
+                        "ndc":             {"type": "keyword"},
+                        "cdm":             {"type": "keyword"},
+                        "codes": {
+                            "type": "nested",
+                            "properties": {
+                                "value": {"type": "keyword"},
+                                "type":  {"type": "keyword"},
+                            },
+                        },
+                        "is_standard_group": {"type": "boolean"},
+                        "stats": {
+                            "properties": {
+                                "min":   {"type": "float"},
+                                "max":   {"type": "float"},
+                                "avg":   {"type": "float"},
+                                "count": {"type": "integer"},
+                            },
+                        },
+                        "prices": {
+                            "type": "nested",
+                            "properties": {
+                                "hospital_id": {"type": "keyword"},
+                                "payer_name":  {"type": "keyword"},
+                                "plan_name":   {"type": "keyword"},
+                                "setting":     {"type": "keyword"},
+                                "price":       {"type": "float"},
+                            },
+                        },
+                    }
+                },
+            })
 
-# Index is empty — reload from the pre-built shoppable cache (fast path, no CSV parsing)
-CACHE_FILE = '/app/data/shoppable_cache.json.gz'
-if os.path.exists(CACHE_FILE):
-    print(f"[startup] Index is empty. Reloading from cache: {CACHE_FILE}", flush=True)
-    cmd = [sys.executable, '/app/load_to_es.py', '--cached-file', CACHE_FILE, '--clean']
-else:
-    print("[startup] Index is empty. Cache file not found, falling back to full CSV reload...", flush=True)
-    cmd = [sys.executable, '/app/load_to_es.py', '--clean']
-result = subprocess.run(cmd, cwd='/app')
-if result.returncode == 0:
-    print("[startup] Data reload completed successfully.", flush=True)
-else:
-    print(f"[startup] Data reload finished with exit code {result.returncode}.", flush=True)
+        # Stream the full gzip JSON array from the beginning.
+        # Indexing by _id is idempotent, so re-indexing existing docs is safe.
+        import ijson
+
+        def _actions():
+            with gzip.open(CACHE_FILE, 'rb') as f:
+                for doc in ijson.items(f, 'item'):
+                    yield {"_index": INDEX_NAME, "_id": doc.get("id"), "_source": doc}
+
+        success = 0
+        for ok, _ in streaming_bulk(es, _actions(), chunk_size=200, raise_on_error=False):
+            if ok:
+                success += 1
+            if success % 1000 == 0 and success > 0:
+                print(f"[{label}] ...{success}/{CACHE_DOC_COUNT} documents indexed", flush=True)
+
+        es.indices.refresh(index=INDEX_NAME)
+        print(f"[{label}] Indexed {success} docs. Total in index: {success}/{CACHE_DOC_COUNT}.", flush=True)
+        return success >= CACHE_DOC_COUNT
+    except Exception as exc:
+        print(f"[{label}] Inline reload failed: {exc}", flush=True)
+        return False
+
+
+# --- Initial startup check ---
+ensure_data_loaded(label="startup")
+
+# --- Watchdog loop: re-check every WATCHDOG_INTERVAL_SECONDS ---
+# This handles mid-session Spot VM preemptions where the Cloud Run container
+# stays alive but ES restarts empty after the VM reboots.
+print(f"[watchdog] Starting watchdog loop (interval: {WATCHDOG_INTERVAL_SECONDS}s).", flush=True)
+while True:
+    time.sleep(WATCHDOG_INTERVAL_SECONDS)
+    try:
+        es = get_es()
+        es.info()
+        if es.indices.exists(index=INDEX_NAME):
+            count = es.count(index=INDEX_NAME)['count']
+        else:
+            count = 0
+        if CACHE_DOC_COUNT > 0 and count < CACHE_DOC_COUNT:
+            print(f"[watchdog] Only {count}/{CACHE_DOC_COUNT} docs — triggering recovery.", flush=True)
+            ensure_data_loaded(label="watchdog")
+    except Exception as exc:
+        # ES is down — trigger the full recover+reload cycle
+        print(f"[watchdog] ES unreachable ({exc}) — triggering recovery.", flush=True)
+        ensure_data_loaded(label="watchdog")

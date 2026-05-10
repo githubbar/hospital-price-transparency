@@ -210,9 +210,9 @@ Spot VMs are preempted by Google Cloud roughly once per day. When this happens t
 1. Quickly checks if Elasticsearch is reachable (5 attempts over ~10 seconds).
 2. If unreachable, calls the **Compute Engine API** to start the stopped VM automatically.
 3. Waits up to **120 seconds** for the VM to boot and Elasticsearch to initialize.
-4. If the index is empty after ES comes up, re-indexes all hospital pricing CSVs.
+4. If the index is empty after ES comes up, re-indexes all 7,724 documents from the pre-built cache baked into the container image (`data/shoppable_cache.json.gz`).
 
-No manual action is required. The first visitor after a preemption triggers the recovery. The site responds immediately (gunicorn starts before the health check), but search results may be empty for ~10–15 minutes while the VM boots and data reloads.
+No manual action is required. The first visitor after a preemption triggers the recovery. The site responds immediately (gunicorn starts before the health check), but search results may be empty for ~10 minutes while the VM boots and data reloads (~2 min VM boot + ~90 s Elasticsearch startup + ~6 min data indexing).
 
 **Manual reload:** If you need to force a data reload immediately:
 ```powershell
@@ -231,6 +231,7 @@ No manual action is required. The first visitor after a preemption triggers the 
 | Cloud Run app returns 500 | Check logs: **Cloud Run > hospital-price-search > Logs** |
 | Site shows `Total Procedure Codes: 0` | Spot VM was preempted. The first visitor will trigger auto-recovery (VM start + data reload). Wait ~15 minutes, then refresh. If it persists, check Cloud Run logs for `[startup]` lines. |
 | Elasticsearch container keeps restarting | The VM may be out of memory; upgrade to `e2-standard-2` (8 GB) |
+| Cloud Run container restarts every ~20 s during data load, index never reaches 7,724 docs | OOM kill — Cloud Run hit the 2 GiB memory limit during indexing. Ensure `check_and_reload.py` uses `streaming_bulk` (not `parallel_bulk`) with `chunk_size=200` |
 | `curl` to Elasticsearch returns nothing | SSH into the VM and run `sudo docker ps` to confirm `es01` is running; if not, run `sudo docker start es01` |
 | Elasticsearch doesn't start after VM reboot | Run `sudo systemctl is-enabled docker` — if not `enabled`, run `sudo systemctl enable docker`; also verify the startup script is set (see Step 2.5) |
 | Search returns no results after reload | Re-run `.\load_data.ps1` and confirm it completed without errors |

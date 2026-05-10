@@ -1,8 +1,12 @@
 #!/bin/sh
 # Container entrypoint.
-# Launches a background check that auto-reloads Elasticsearch data if the
-# index is empty (e.g. after a Spot VM preemption), then starts gunicorn
-# immediately so Cloud Run considers the instance healthy right away.
+# Runs DB migrations and creates the cache table, launches a background check
+# that auto-reloads Elasticsearch data if the index is empty (e.g. after a
+# Spot VM preemption), then starts gunicorn immediately so Cloud Run considers
+# the instance healthy right away.
+
+python /app/manage.py migrate --run-syncdb
+python /app/manage.py createcachetable
 
 python /app/check_and_reload.py &
 

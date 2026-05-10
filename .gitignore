@@ -41,10 +41,10 @@ ENV/
 .env
 
 # Large Files (Data)
-*.csv
 *.zip
-*.json
 *.xlsx
+data/*.csv
+data/*.json
 
 # Local Notes
 NOTES.md

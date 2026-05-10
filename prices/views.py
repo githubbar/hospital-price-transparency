@@ -1,14 +1,69 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.http import require_GET
 from django.core.cache import cache
 from elasticsearch import Elasticsearch
+from urllib.parse import urlencode as _urlencode
 import csv
+import hashlib
+import json
 import os
+import re
 import time
+import uuid
 import requests
+
+
+def _load_hospitals():
+    """Load Indiana hospital list from reference file with computed ES-compatible IDs."""
+    cache_key = 'indiana_hospitals_list_v1'
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+    try:
+        ref_path = os.path.join(settings.BASE_DIR, 'reference', 'indiana_hospitals.json')
+        with open(ref_path, 'r', encoding='utf-8') as f:
+            raw = json.load(f)
+        result = []
+        for h in raw:
+            name = h.get('name', '').strip()
+            if not name:
+                continue
+            # Apply same cleaning as load_to_es.py clean_hospital_name()
+            cleaned = re.sub(r'^\d+[\W_]+', '', name)
+            cleaned = cleaned.replace('_', ' ').replace('-', ' ').replace('.', ' ')
+            cleaned = re.sub(r'\s+', ' ', cleaned).strip().title()
+            h_id = hashlib.md5(cleaned.lower().encode('utf-8')).hexdigest()
+            result.append({
+                'id': h_id,
+                'name': cleaned,
+                'city': h.get('city', '').title(),
+                'zip': h.get('zip', ''),
+                'lat': float(h.get('lat', 0) or 0),
+                'lng': float(h.get('long', 0) or 0),
+            })
+        result.sort(key=lambda h: (h['city'], h['name']))
+        cache.set(cache_key, result, 86400)  # cache 24 h
+        return result
+    except Exception as e:
+        print(f'Error loading hospital registry: {e}')
+        return []
+
+
+def _save_filter_token(hospital_ids):
+    """Store selected hospital IDs in cache under a short token. Returns the token."""
+    token = uuid.uuid4().hex[:16]
+    cache.set(f'filt:{token}', hospital_ids, 30 * 86400)  # 30-day expiry
+    return token
+
+
+def _load_filter_token(token):
+    """Retrieve hospital IDs for a token. Returns None if expired or invalid."""
+    if not token or len(token) != 16:
+        return None
+    return cache.get(f'filt:{token}')
 
 FIELD_TOOLTIPS = {
     'description': "Description of each item or service provided by the hospital that corresponds to the standard charge the hospital has established.",
@@ -231,7 +286,41 @@ def search(request):
     except Exception as e:
         print(f"Error fetching payers: {e}")
 
-    selected_payer = request.GET.get('payer', '')
+    selected_payers = request.GET.getlist('payer')  # multi-select list; always kept in URL
+    selected_payers_set = set(selected_payers)
+    hospitals_list = _load_hospitals()
+    hospital_cities = sorted(set(h['city'] for h in hospitals_list if h['city']))
+
+    # ── Hospital filter via shareable token ───────────────────────────────────
+    # Flow A – ?hospital=<md5>&... submitted (fresh form submit): create token, redirect.
+    # Flow B – ?s=<token> present: restore hospital IDs from cache.
+    # Payers always stay in the URL (?payer=X&payer=Y); only hospitals go into the token.
+    filter_token = request.GET.get('s', '')
+    token_expired = False
+    raw_hospital_ids = request.GET.getlist('hospital')
+
+    if raw_hospital_ids:
+        # Flow A: pack hospitals into a token and redirect to clean URL
+        token = _save_filter_token(raw_hospital_ids)
+        redirect_params = [('q', query), ('s', token)] + [('payer', p) for p in selected_payers]
+        return HttpResponseRedirect(f"{request.path}?{_urlencode(redirect_params)}")
+    elif filter_token:
+        # Flow B: restore from cache
+        cached_ids = _load_filter_token(filter_token)
+        if cached_ids is not None:
+            selected_hospitals = cached_ids
+        else:
+            token_expired = True
+            selected_hospitals = []
+    else:
+        selected_hospitals = []
+
+    selected_hospitals_set = set(selected_hospitals)  # MD5 IDs used for ES filtering
+
+    # Build base query string for pagination (preserves all filters except page)
+    _params = request.GET.copy()
+    _params.pop('page', None)
+    base_query_string = _params.urlencode()
 
     if query and not error_message:
         start_time = time.time()
@@ -249,13 +338,35 @@ def search(request):
         ]
         
         filter_clauses = []
-        if selected_payer:
+        # Both filters must be combined into ONE nested query so the conditions
+        # apply to the same price entry. Two separate nested clauses would match
+        # documents where payer and hospital appear in different entries.
+        if selected_payers and selected_hospitals:
             filter_clauses.append({
                 "nested": {
                     "path": "prices",
                     "query": {
-                        "term": { "prices.payer_name": selected_payer }
+                        "bool": {
+                            "must": [
+                                {"terms": {"prices.payer_name": selected_payers}},
+                                {"terms": {"prices.hospital_id": selected_hospitals}},
+                            ]
+                        }
                     }
+                }
+            })
+        elif selected_payers:
+            filter_clauses.append({
+                "nested": {
+                    "path": "prices",
+                    "query": {"terms": {"prices.payer_name": selected_payers}}
+                }
+            })
+        elif selected_hospitals:
+            filter_clauses.append({
+                "nested": {
+                    "path": "prices",
+                    "query": {"terms": {"prices.hospital_id": selected_hospitals}}
                 }
             })
 
@@ -304,8 +415,12 @@ def search(request):
                 for p in prices_data:
                     p_name = p.get('payer_name', 'Unknown')
                     
-                    # Filter displayed items if payer selected
-                    if selected_payer and p_name != selected_payer:
+                    # Filter displayed items if payers selected
+                    if selected_payers_set and p_name not in selected_payers_set:
+                        continue
+
+                    # Filter displayed items if hospitals selected
+                    if selected_hospitals_set and p.get('hospital_id') not in selected_hospitals_set:
                         continue
                         
                     val = float(p.get('price', 0))
@@ -327,7 +442,7 @@ def search(request):
                     })
                 
                 # Determine Stats (Recalculate if filtered)
-                if selected_payer and items:
+                if (selected_payers_set or selected_hospitals_set) and items:
                    filtered_vals = [i['standard_charge_negotiated_dollar'] for i in items]
                    stats = {
                        'min': min(filtered_vals),
@@ -420,13 +535,13 @@ def search(request):
                             h = r['hospital_name'] or r['hospital_id']
                             if h not in hosp_prices:
                                 hosp_prices[h] = r['standard_charge_negotiated_dollar']
-                        hospitals_list = [{'name': h, 'price': p} for h, p in sorted(hosp_prices.items())]
+                        hosp_list = [{'name': h, 'price': p} for h, p in sorted(hosp_prices.items())]
 
                         consolidated_items.append({
                             'payer_name': p_name,
                             'plan_name': pl_name,
                             'hospital_display': hosp_display,
-                            'hospitals': hospitals_list,
+                            'hospitals': hosp_list,
                             'price_min': c_min,
                             'price_max': c_max,
                             'price_avg': c_avg,
@@ -478,7 +593,15 @@ def search(request):
         'field_tooltips': FIELD_TOOLTIPS,
         'total_records': total_records,
         'payers_list': payers_list,
-        'selected_payer': selected_payer,
+        'selected_payers': selected_payers_set,
+        'hospitals_list': hospitals_list,
+        'hospital_cities': hospital_cities,
+        'selected_hospitals': selected_hospitals_set,
+        'hospitals_json': json.dumps([{'id': h['id'], 'name': h['name'], 'city': h['city'],
+                                       'lat': h['lat'], 'lng': h['lng']} for h in hospitals_list]),
+        'base_query_string': base_query_string,
+        'filter_token': filter_token,
+        'token_expired': token_expired,
         'error_message': error_message,
         'turnstile_site_key': getattr(settings, 'TURNSTILE_BASKET_KEY', ''),
         'debug': settings.DEBUG,
