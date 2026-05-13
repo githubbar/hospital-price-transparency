@@ -46,5 +46,6 @@ ENV/
 data/*.csv
 data/*.json
 
-# Local Notes
+# Internal Docs
+internal docs/
 NOTES.md

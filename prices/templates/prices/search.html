@@ -183,7 +183,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body p-2" id="offcanvas-filter-body">
-        <!-- JS will clone sidebar content here on mobile -->
     </div>
 </div>
 
@@ -902,6 +901,28 @@
 
         rows.forEach(row => tbody.appendChild(row));
     }
+
+    // ── Mobile offcanvas: teleport sidebar filters in/out ────────────────────
+    (function () {
+        const offcanvasEl   = document.getElementById('filterOffcanvas');
+        const sidebar       = document.getElementById('filter-sidebar');
+        const offcanvasBody = document.getElementById('offcanvas-filter-body');
+        if (!offcanvasEl || !sidebar || !offcanvasBody) return;
+
+        offcanvasEl.addEventListener('show.bs.offcanvas', function () {
+            // Move sidebar's filter panels into the offcanvas body
+            while (sidebar.firstChild) {
+                offcanvasBody.appendChild(sidebar.firstChild);
+            }
+        });
+
+        offcanvasEl.addEventListener('hide.bs.offcanvas', function () {
+            // Move them back so desktop view still works
+            while (offcanvasBody.firstChild) {
+                sidebar.appendChild(offcanvasBody.firstChild);
+            }
+        });
+    })();
 </script>
 
 {% if query %}

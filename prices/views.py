@@ -259,7 +259,7 @@ def search(request):
                     "nested": {"path": "prices"},
                     "aggs": {
                         "unique_payers": {
-                            "terms": {"field": "prices.payer_name", "size": 1000, "order": {"_key": "asc"}} 
+                            "terms": {"field": "prices.payer_name", "size": 1000, "order": {"_key": "asc"}}
                         }
                     }
                 }
@@ -338,9 +338,6 @@ def search(request):
         ]
         
         filter_clauses = []
-        # Both filters must be combined into ONE nested query so the conditions
-        # apply to the same price entry. Two separate nested clauses would match
-        # documents where payer and hospital appear in different entries.
         if selected_payers and selected_hospitals:
             filter_clauses.append({
                 "nested": {

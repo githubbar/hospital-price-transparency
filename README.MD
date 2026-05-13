@@ -69,7 +69,7 @@ Alternatively, you can use the **Web Console**:
 2. Add keys under the **Variables & Secrets** tab and click **Deploy**.
 
 ## Other products
-https://turquoise.health/ 
+https://turquoise.health/
 https://www.fairhealthconsumer.org/medical
 https://app.billy.app/
 https://www.healthprices.org/
