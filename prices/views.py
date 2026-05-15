@@ -255,34 +255,44 @@ def search(request):
         aggs_body = {
             "size": 0,
             "aggs": {
-                "prices": {
-                    "nested": {"path": "prices"},
-                    "aggs": {
-                        "unique_payers": {
-                            "terms": {"field": "prices.payer_name", "size": 1000, "order": {"_key": "asc"}}
-                        }
-                    }
+                "unique_payers": {
+                    "terms": {"field": "prices.payer_name.keyword", "size": 1000, "order": {"_key": "asc"}}
                 }
             }
         }
         agg_res = es.search(index=settings.ELASTICSEARCH_INDEX, body=aggs_body)
-        if 'aggregations' in agg_res and 'prices' in agg_res['aggregations']:
-            buckets = agg_res['aggregations']['prices']['unique_payers']['buckets']
+        if 'aggregations' in agg_res and 'unique_payers' in agg_res['aggregations']:
+            buckets = agg_res['aggregations']['unique_payers']['buckets']
             all_payers_raw = [b['key'] for b in buckets if b['key'].strip()]
+
+            def _humanize_payer(raw):
+                """Turn raw ES values like negotiated_dollar into Negotiated Dollar."""
+                if '_' in raw:
+                    return raw.replace('_', ' ').title()
+                return raw  # Already human-readable (e.g. 'Gross', 'BCBS PPO')
+
             # Deduplicate near-identical names (e.g. 'J&J' vs 'J and J')
             def _norm_key(n):
                 import re as _re
-                return _re.sub(r'\s+', ' ', _re.sub(r'\s*&\s*', ' and ', n)).strip().lower()
+                return _re.sub(r'\s+', ' ', _re.sub(r'\s*&\s*', ' and ', n.replace('_', ' '))).strip().lower()
+
             seen_keys = {}
-            all_payers = []
+            all_payers = []  # list of {'raw': ..., 'display': ...}
             for p in all_payers_raw:
                 k = _norm_key(p)
                 if k not in seen_keys:
                     seen_keys[k] = p
-                    all_payers.append(p)
-            pinned = ['Negotiated Dollar', 'Cash', 'Gross']
-            payers_list = [p for p in pinned if p in all_payers] + \
-                          sorted([p for p in all_payers if p not in pinned], key=str.lower)
+                    all_payers.append({'raw': p, 'display': _humanize_payer(p)})
+
+            _pinned_display = {'negotiated dollar', 'cash', 'gross', 'gross charge', 'discounted cash'}
+            def _pin_order(item):
+                d = item['display'].lower()
+                order = ['negotiated dollar', 'cash', 'gross charge', 'gross', 'discounted cash']
+                return order.index(d) if d in order else len(order)
+
+            pinned_items = sorted([i for i in all_payers if i['display'].lower() in _pinned_display], key=_pin_order)
+            other_items  = sorted([i for i in all_payers if i['display'].lower() not in _pinned_display], key=lambda x: x['display'].lower())
+            payers_list = pinned_items + other_items
     except Exception as e:
         print(f"Error fetching payers: {e}")
 
@@ -340,32 +350,17 @@ def search(request):
         filter_clauses = []
         if selected_payers and selected_hospitals:
             filter_clauses.append({
-                "nested": {
-                    "path": "prices",
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {"terms": {"prices.payer_name": selected_payers}},
-                                {"terms": {"prices.hospital_id": selected_hospitals}},
-                            ]
-                        }
-                    }
+                "bool": {
+                    "must": [
+                        {"terms": {"prices.payer_name.keyword": selected_payers}},
+                        {"terms": {"prices.hospital_id": selected_hospitals}},
+                    ]
                 }
             })
         elif selected_payers:
-            filter_clauses.append({
-                "nested": {
-                    "path": "prices",
-                    "query": {"terms": {"prices.payer_name": selected_payers}}
-                }
-            })
+            filter_clauses.append({"terms": {"prices.payer_name.keyword": selected_payers}})
         elif selected_hospitals:
-            filter_clauses.append({
-                "nested": {
-                    "path": "prices",
-                    "query": {"terms": {"prices.hospital_id": selected_hospitals}}
-                }
-            })
+            filter_clauses.append({"terms": {"prices.hospital_id": selected_hospitals}})
 
         body = {
             "from": (page_number - 1) * items_per_page,
@@ -385,9 +380,15 @@ def search(request):
             
             results_count = total_hits
             
-            # Grouping Dictionary: Description -> List of Variants
-            from collections import OrderedDict
-            matches_by_desc = OrderedDict()
+            # Grouping Dictionary: Code -> List of Variants (same code, different desc → collapsed)
+            from collections import OrderedDict, Counter
+            import re as _re
+
+            def _normalize_desc(d):
+                """Lowercase, strip punctuation/extra whitespace for fuzzy grouping."""
+                return _re.sub(r'\s+', ' ', _re.sub(r'[^\w\s]', '', d.lower())).strip()
+
+            matches_by_code = OrderedDict()
 
             for hit in hits:
                 source = hit['_source']
@@ -470,14 +471,58 @@ def search(request):
                     'rc':      source.get('rc', ''),
                 }
                 
-                if desc not in matches_by_desc:
-                    matches_by_desc[desc] = {
+                # Group by code (uppercased); fall back to normalized description if no code
+                group_key = code.strip().upper() if code and code.strip() else _normalize_desc(desc)
+
+                if group_key not in matches_by_code:
+                    matches_by_code[group_key] = {
                         'description': desc,
+                        '_raw_descriptions': [desc],
                         'variants': []
                     }
-                matches_by_desc[desc]['variants'].append(variant_data)
+                else:
+                    matches_by_code[group_key]['_raw_descriptions'].append(desc)
+                matches_by_code[group_key]['variants'].append(variant_data)
 
-            grouped_results = list(matches_by_desc.values())
+            # Set canonical title-cased description for each group (most common wins)
+            for group in matches_by_code.values():
+                raw = group.pop('_raw_descriptions')
+                canonical = Counter(raw).most_common(1)[0][0]
+                group['description'] = canonical.title()
+
+            grouped_results = list(matches_by_code.values())
+
+            # --- Merge overflow variant-parts (same code+code_type split across multiple ES docs) ---
+            # When a code's prices exceed LIMIT_PER_DOC they become separate ES documents,
+            # each appearing as a separate variant. Re-merge them so payer rows are not duplicated.
+            for group in grouped_results:
+                if len(group['variants']) <= 1:
+                    continue
+                merged_map = {}
+                order = []
+                for variant in group['variants']:
+                    key = (variant['code'].strip().upper(), variant['code_type'])
+                    if key not in merged_map:
+                        merged_map[key] = variant
+                        order.append(key)
+                    else:
+                        merged_map[key]['items'].extend(variant['items'])
+
+                if len(order) < len(group['variants']):
+                    # At least one merge happened — recalculate per-variant stats
+                    for key in order:
+                        v = merged_map[key]
+                        all_vals = [i['standard_charge_negotiated_dollar'] for i in v['items']
+                                    if i.get('standard_charge_negotiated_dollar')]
+                        if all_vals:
+                            v['stats'] = {
+                                'min': min(all_vals),
+                                'max': max(all_vals),
+                                'avg': sum(all_vals) / len(all_vals),
+                                'count': len(all_vals),
+                                'distribution_svg': generate_distribution_svg(all_vals),
+                            }
+                    group['variants'] = [merged_map[k] for k in order]
 
             # --- Post-Processing for Groups ---
             for group in grouped_results:
@@ -497,13 +542,25 @@ def search(request):
                     # We will just use the stats for the header for now.
                     
                     # 2. Group Items by Payer/Plan within Variant
+                    def _human_payer_name(raw):
+                        """Make raw payer names human-readable (e.g. negotiated_dollar → Negotiated Dollar)."""
+                        s = (raw or "Unknown").strip().replace('_', ' ')
+                        return s.title()
+
+                    def _normalize_plan_name(raw):
+                        """Collapse punctuation/hyphen variants (e.g. Non-Par → Non Par)."""
+                        s = (raw or "Unknown").strip()
+                        s = _re.sub(r'[-/]', ' ', s)          # hyphens/slashes → space
+                        s = _re.sub(r'\s+', ' ', s).strip()   # collapse whitespace
+                        return s.title()
+
                     raw_items = variant['items']
                     payer_map = {}
                     
                     for item in raw_items:
                         # Normalize keys
-                        p_name = (item.get('payer_name') or "Unknown").strip()
-                        pl_name = (item.get('plan_name') or "Unknown").strip()
+                        p_name = _human_payer_name(item.get('payer_name') or "Unknown")
+                        pl_name = _normalize_plan_name(item.get('plan_name') or "Unknown")
                         key = (p_name, pl_name)
                         
                         if key not in payer_map:
@@ -548,9 +605,9 @@ def search(request):
                         })
                     
                     # 3. Sort by Payer Name (pin Negotiated Dollar/Cash/Gross first)
-                    _pinned = ['negotiated dollar', 'cash', 'gross']
+                    _pinned = ['negotiated dollar', 'cash price', 'cash', 'gross charge', 'gross']
                     consolidated_items.sort(key=lambda x: (
-                        _pinned.index(x['payer_name'].lower()) if x['payer_name'].lower() in _pinned else len(_pinned),
+                        next((i for i, p in enumerate(_pinned) if x['payer_name'].lower().startswith(p)), len(_pinned)),
                         x['payer_name'].lower()
                     ))
                     variant['items'] = consolidated_items

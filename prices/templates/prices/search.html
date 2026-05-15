@@ -209,11 +209,11 @@
                         {% for p in payers_list %}
                         <div class="form-check payer-check-item">
                             <input class="form-check-input" type="checkbox"
-                                   name="payer" value="{{ p }}"
+                                   name="payer" value="{{ p.raw }}"
                                    id="payer_{{ forloop.counter }}"
                                    form="search-form"
-                                   {% if p in selected_payers %}checked{% endif %}>
-                            <label class="form-check-label" for="payer_{{ forloop.counter }}">{{ p|title }}</label>
+                                   {% if p.raw in selected_payers %}checked{% endif %}>
+                            <label class="form-check-label" for="payer_{{ forloop.counter }}">{{ p.display }}</label>
                         </div>
                         {% endfor %}
                     </div>

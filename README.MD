@@ -54,6 +54,9 @@ python load_to_es.py --cached-file data/shoppable_cache.json.gz
 ## Deployment
     see DEPLOYMENT.md
 
+### Cloud Run Cost Note
+Avoid setting `--min-instances 1` combined with `--no-cpu-throttling` in `deploy.ps1`. That combination keeps an instance running 24/7 with CPU always allocated, which raises costs from near-zero to ~$1/day even with no traffic. The default (`--min-instances 0`) scales to zero when idle and is the recommended setting for low-traffic deployments.
+
 ## Print env vars in GCP
 gcloud run services describe hospital-price-search --region us-central1 --format="value(spec.template.spec.containers[0].env)"
 
