@@ -28,5 +28,6 @@ gcloud run deploy hospital-price-search `
   --platform managed `
   --region us-central1 `
   --allow-unauthenticated `
+  --min-instances 0 `
   --memory 2Gi `
   --set-env-vars $envVarsString

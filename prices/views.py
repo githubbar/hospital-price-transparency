@@ -255,14 +255,19 @@ def search(request):
         aggs_body = {
             "size": 0,
             "aggs": {
-                "unique_payers": {
-                    "terms": {"field": "prices.payer_name.keyword", "size": 1000, "order": {"_key": "asc"}}
+                "nested_prices": {
+                    "nested": {"path": "prices"},
+                    "aggs": {
+                        "unique_payers": {
+                            "terms": {"field": "prices.payer_name", "size": 1000, "order": {"_key": "asc"}}
+                        }
+                    }
                 }
             }
         }
         agg_res = es.search(index=settings.ELASTICSEARCH_INDEX, body=aggs_body)
-        if 'aggregations' in agg_res and 'unique_payers' in agg_res['aggregations']:
-            buckets = agg_res['aggregations']['unique_payers']['buckets']
+        if 'aggregations' in agg_res and 'nested_prices' in agg_res['aggregations']:
+            buckets = agg_res['aggregations']['nested_prices']['unique_payers']['buckets']
             all_payers_raw = [b['key'] for b in buckets if b['key'].strip()]
 
             def _humanize_payer(raw):
@@ -350,17 +355,32 @@ def search(request):
         filter_clauses = []
         if selected_payers and selected_hospitals:
             filter_clauses.append({
-                "bool": {
-                    "must": [
-                        {"terms": {"prices.payer_name.keyword": selected_payers}},
-                        {"terms": {"prices.hospital_id": selected_hospitals}},
-                    ]
+                "nested": {
+                    "path": "prices",
+                    "query": {
+                        "bool": {
+                            "must": [
+                                {"terms": {"prices.payer_name": selected_payers}},
+                                {"terms": {"prices.hospital_id": selected_hospitals}},
+                            ]
+                        }
+                    }
                 }
             })
         elif selected_payers:
-            filter_clauses.append({"terms": {"prices.payer_name.keyword": selected_payers}})
+            filter_clauses.append({
+                "nested": {
+                    "path": "prices",
+                    "query": {"terms": {"prices.payer_name": selected_payers}}
+                }
+            })
         elif selected_hospitals:
-            filter_clauses.append({"terms": {"prices.hospital_id": selected_hospitals}})
+            filter_clauses.append({
+                "nested": {
+                    "path": "prices",
+                    "query": {"terms": {"prices.hospital_id": selected_hospitals}}
+                }
+            })
 
         body = {
             "from": (page_number - 1) * items_per_page,
