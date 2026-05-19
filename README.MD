@@ -16,6 +16,10 @@ Starting January 1, 2021, hospitals operating in the United States are required 
 
 This repository focuses on processing the **comprehensive machine-readable files** to extract standard charges, discounted cash prices, and payer-specific negotiated charges.
 
+Readings on price transparency for independent imaging centers:
+https://ajronline.org/doi/10.2214/AJR.22.27326
+https://ajronline.org/doi/full/10.2214/AJR.21.25976
+
 
 ## Data format
 Described here: https://github.com/CMSgov/hospital-price-transparency?tab=readme-ov-file
