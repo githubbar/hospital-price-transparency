@@ -149,7 +149,10 @@ def ensure_data_loaded(label="startup"):
 
     print(f"[{label}] Elasticsearch document count: {count}", flush=True)
 
-    if CACHE_DOC_COUNT > 0 and count >= CACHE_DOC_COUNT:
+    # Treat >=98% as fully loaded — a small number of docs may consistently
+    # fail (e.g. oversized nested objects) and retrying endlessly is wasteful.
+    LOAD_THRESHOLD = max(CACHE_DOC_COUNT * 0.98, CACHE_DOC_COUNT - 50) if CACHE_DOC_COUNT > 0 else 0
+    if CACHE_DOC_COUNT > 0 and count >= LOAD_THRESHOLD:
         print(f"[{label}] Data already loaded ({count}/{CACHE_DOC_COUNT} docs). Nothing to do.", flush=True)
         return True
     if count > 0:
@@ -169,14 +172,17 @@ def ensure_data_loaded(label="startup"):
         # Mappings must match load_to_es.py — keyword fields are required for
         # terms aggregations (e.g. payer_name). Without them ES auto-maps as
         # text and the Insurer filter fails.
+        # NOTE: use keyword args, not body=, to stay compatible with
+        # elasticsearch-py 8.x which deprecated and then removed body=.
         if not es.indices.exists(index=INDEX_NAME):
-            es.indices.create(index=INDEX_NAME, body={
-                "settings": {
+            es.indices.create(
+                index=INDEX_NAME,
+                settings={
                     "number_of_shards": 1,
                     "number_of_replicas": 0,
                     "index.mapping.nested_objects.limit": 10000,
                 },
-                "mappings": {
+                mappings={
                     "properties": {
                         "id":              {"type": "keyword"},
                         "group_key":       {"type": "keyword"},
@@ -217,7 +223,7 @@ def ensure_data_loaded(label="startup"):
                         },
                     }
                 },
-            })
+            )
 
         # Stream the full gzip JSON array from the beginning.
         # Indexing by _id is idempotent, so re-indexing existing docs is safe.
@@ -228,16 +234,39 @@ def ensure_data_loaded(label="startup"):
                 for doc in ijson.items(f, 'item'):
                     yield {"_index": INDEX_NAME, "_id": doc.get("id"), "_source": doc}
 
-        success = 0
-        for ok, _ in streaming_bulk(es, _actions(), chunk_size=200, raise_on_error=False):
-            if ok:
-                success += 1
-            if success % 1000 == 0 and success > 0:
-                print(f"[{label}] ...{success}/{CACHE_DOC_COUNT} documents indexed", flush=True)
+        MAX_LOAD_ATTEMPTS = 10
+        RETRY_DELAY_SECONDS = 30
 
-        es.indices.refresh(index=INDEX_NAME)
-        print(f"[{label}] Indexed {success} docs. Total in index: {success}/{CACHE_DOC_COUNT}.", flush=True)
-        return success >= CACHE_DOC_COUNT
+        for attempt in range(1, MAX_LOAD_ATTEMPTS + 1):
+            try:
+                success = 0
+                # Use small chunks (10 docs / 2 MB max) so each bulk request
+                # completes in seconds and doesn't hit Cloud NAT idle-connection
+                # timeouts. Indexing by _id is idempotent so retrying from the
+                # start is safe — already-loaded docs are simply overwritten.
+                for ok, _ in streaming_bulk(
+                    es, _actions(),
+                    raise_on_error=False,
+                    request_timeout=300,
+                ):
+                    if ok:
+                        success += 1
+                    if success % 500 == 0 and success > 0:
+                        print(f"[{label}] ...{success}/{CACHE_DOC_COUNT} documents indexed", flush=True)
+
+                es.indices.refresh(index=INDEX_NAME)
+                print(f"[{label}] Indexed {success} docs. Total in index: {success}/{CACHE_DOC_COUNT}.", flush=True)
+                return success >= CACHE_DOC_COUNT
+
+            except Exception as exc:
+                print(f"[{label}] Load attempt {attempt}/{MAX_LOAD_ATTEMPTS} failed: {exc}", flush=True)
+                if attempt < MAX_LOAD_ATTEMPTS:
+                    print(f"[{label}] Retrying in {RETRY_DELAY_SECONDS}s...", flush=True)
+                    time.sleep(RETRY_DELAY_SECONDS)
+                    es = get_es()  # fresh connection for next attempt
+
+        print(f"[{label}] All {MAX_LOAD_ATTEMPTS} load attempts failed.", flush=True)
+        return False
     except Exception as exc:
         print(f"[{label}] Inline reload failed: {exc}", flush=True)
         return False
@@ -259,7 +288,8 @@ while True:
             count = es.count(index=INDEX_NAME)['count']
         else:
             count = 0
-        if CACHE_DOC_COUNT > 0 and count < CACHE_DOC_COUNT:
+        LOAD_THRESHOLD = max(CACHE_DOC_COUNT * 0.98, CACHE_DOC_COUNT - 50) if CACHE_DOC_COUNT > 0 else 0
+        if CACHE_DOC_COUNT > 0 and count < LOAD_THRESHOLD:
             print(f"[watchdog] Only {count}/{CACHE_DOC_COUNT} docs — triggering recovery.", flush=True)
             ensure_data_loaded(label="watchdog")
     except Exception as exc:
