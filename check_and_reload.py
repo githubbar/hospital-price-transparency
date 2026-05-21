@@ -137,25 +137,43 @@ def ensure_data_loaded(label="startup"):
         print(f"[{label}] Elasticsearch unreachable. Skipping data reload.", flush=True)
         return False
 
-    # Check how many documents are indexed
+    # Check doc count AND mapping correctness together.
+    # A full doc count alone is not enough: if ES auto-created the index with
+    # dynamic mapping (payer_name=text instead of keyword), aggregations break
+    # even though all 8050 docs are present. We must verify both before we
+    # declare the index healthy and return early.
+    index_exists = False
+    count = 0
+    mapping_ok = False
     try:
-        if es.indices.exists(index=INDEX_NAME):
+        index_exists = bool(es.indices.exists(index=INDEX_NAME))
+        if index_exists:
             count = es.count(index=INDEX_NAME)['count']
-        else:
-            count = 0
     except Exception as exc:
         print(f"[{label}] Could not check document count: {exc}", flush=True)
         return False
 
-    print(f"[{label}] Elasticsearch document count: {count}", flush=True)
+    if index_exists:
+        try:
+            m = es.indices.get_mapping(index=INDEX_NAME)
+            payer_type = (m[INDEX_NAME]['mappings']['properties']
+                          .get('prices', {}).get('properties', {})
+                          .get('payer_name', {}).get('type', ''))
+            mapping_ok = (payer_type == 'keyword')
+        except Exception as exc:
+            print(f"[{label}] Could not verify mapping: {exc}", flush=True)
+
+    print(f"[{label}] Elasticsearch: {count} docs, mapping_ok={mapping_ok}", flush=True)
 
     # Treat >=98% as fully loaded — a small number of docs may consistently
     # fail (e.g. oversized nested objects) and retrying endlessly is wasteful.
     LOAD_THRESHOLD = max(CACHE_DOC_COUNT * 0.98, CACHE_DOC_COUNT - 50) if CACHE_DOC_COUNT > 0 else 0
-    if CACHE_DOC_COUNT > 0 and count >= LOAD_THRESHOLD:
-        print(f"[{label}] Data already loaded ({count}/{CACHE_DOC_COUNT} docs). Nothing to do.", flush=True)
+    if CACHE_DOC_COUNT > 0 and count >= LOAD_THRESHOLD and mapping_ok:
+        print(f"[{label}] Data loaded and mapping correct ({count}/{CACHE_DOC_COUNT} docs). Nothing to do.", flush=True)
         return True
-    if count > 0:
+    if not mapping_ok and index_exists:
+        print(f"[{label}] Wrong mapping detected — forcing full re-index.", flush=True)
+    elif count > 0:
         print(f"[{label}] Only {count}/{CACHE_DOC_COUNT} docs — re-indexing all from scratch (idempotent).", flush=True)
     else:
         print(f"[{label}] Index is empty. Loading cache: {CACHE_FILE}", flush=True)
@@ -168,13 +186,64 @@ def ensure_data_loaded(label="startup"):
         return False
 
     try:
-        # Create index with explicit mappings if it doesn't exist.
-        # Mappings must match load_to_es.py — keyword fields are required for
-        # terms aggregations (e.g. payer_name). Without them ES auto-maps as
-        # text and the Insurer filter fails.
-        # NOTE: use keyword args, not body=, to stay compatible with
-        # elasticsearch-py 8.x which deprecated and then removed body=.
-        if not es.indices.exists(index=INDEX_NAME):
+        # Ensure index exists with the correct keyword mappings.
+        # If the index was auto-created by ES dynamic mapping (e.g. when the
+        # container loaded docs before this script could create it explicitly),
+        # payer_name ends up as 'text' and aggregations fail. Detect and fix.
+        def _correct_mappings():
+            return {
+                "properties": {
+                    "id":              {"type": "keyword"},
+                    "group_key":       {"type": "keyword"},
+                    "description":     {"type": "text", "analyzer": "english"},
+                    "code":            {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "code_type":       {"type": "keyword"},
+                    "ms_drg":          {"type": "keyword"},
+                    "apr_drg":         {"type": "keyword"},
+                    "rc":              {"type": "keyword"},
+                    "apc":             {"type": "keyword"},
+                    "ndc":             {"type": "keyword"},
+                    "cdm":             {"type": "keyword"},
+                    "codes": {
+                        "type": "nested",
+                        "properties": {
+                            "value": {"type": "keyword"},
+                            "type":  {"type": "keyword"},
+                        },
+                    },
+                    "is_standard_group": {"type": "boolean"},
+                    "stats": {
+                        "properties": {
+                            "min":   {"type": "float"},
+                            "max":   {"type": "float"},
+                            "avg":   {"type": "float"},
+                            "count": {"type": "integer"},
+                        },
+                    },
+                    "prices": {
+                        "type": "nested",
+                        "properties": {
+                            "hospital_id": {"type": "keyword"},
+                            "payer_name":  {"type": "keyword"},
+                            "plan_name":   {"type": "keyword"},
+                            "setting":     {"type": "keyword"},
+                            "price":       {"type": "float"},
+                        },
+                    },
+                }
+            }
+
+        # mapping_ok and index_exists were computed above; reuse them here.
+        needs_create = False
+        if index_exists and not mapping_ok:
+            print(f"[{label}] Deleting index with wrong mapping.", flush=True)
+            es.indices.delete(index=INDEX_NAME)
+            needs_create = True
+        elif not index_exists:
+            needs_create = True
+
+        if needs_create:
+            print(f"[{label}] Creating index with explicit keyword mappings.", flush=True)
             es.indices.create(
                 index=INDEX_NAME,
                 settings={
@@ -182,47 +251,7 @@ def ensure_data_loaded(label="startup"):
                     "number_of_replicas": 0,
                     "index.mapping.nested_objects.limit": 10000,
                 },
-                mappings={
-                    "properties": {
-                        "id":              {"type": "keyword"},
-                        "group_key":       {"type": "keyword"},
-                        "description":     {"type": "text", "analyzer": "english"},
-                        "code":            {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                        "code_type":       {"type": "keyword"},
-                        "ms_drg":          {"type": "keyword"},
-                        "apr_drg":         {"type": "keyword"},
-                        "rc":              {"type": "keyword"},
-                        "apc":             {"type": "keyword"},
-                        "ndc":             {"type": "keyword"},
-                        "cdm":             {"type": "keyword"},
-                        "codes": {
-                            "type": "nested",
-                            "properties": {
-                                "value": {"type": "keyword"},
-                                "type":  {"type": "keyword"},
-                            },
-                        },
-                        "is_standard_group": {"type": "boolean"},
-                        "stats": {
-                            "properties": {
-                                "min":   {"type": "float"},
-                                "max":   {"type": "float"},
-                                "avg":   {"type": "float"},
-                                "count": {"type": "integer"},
-                            },
-                        },
-                        "prices": {
-                            "type": "nested",
-                            "properties": {
-                                "hospital_id": {"type": "keyword"},
-                                "payer_name":  {"type": "keyword"},
-                                "plan_name":   {"type": "keyword"},
-                                "setting":     {"type": "keyword"},
-                                "price":       {"type": "float"},
-                            },
-                        },
-                    }
-                },
+                mappings=_correct_mappings(),
             )
 
         # Stream the full gzip JSON array from the beginning.
@@ -281,18 +310,9 @@ ensure_data_loaded(label="startup")
 print(f"[watchdog] Starting watchdog loop (interval: {WATCHDOG_INTERVAL_SECONDS}s).", flush=True)
 while True:
     time.sleep(WATCHDOG_INTERVAL_SECONDS)
+    # Always delegate to ensure_data_loaded — it checks both doc count AND
+    # mapping correctness, so a wrong-mapped-but-full index is caught too.
     try:
-        es = get_es()
-        es.info()
-        if es.indices.exists(index=INDEX_NAME):
-            count = es.count(index=INDEX_NAME)['count']
-        else:
-            count = 0
-        LOAD_THRESHOLD = max(CACHE_DOC_COUNT * 0.98, CACHE_DOC_COUNT - 50) if CACHE_DOC_COUNT > 0 else 0
-        if CACHE_DOC_COUNT > 0 and count < LOAD_THRESHOLD:
-            print(f"[watchdog] Only {count}/{CACHE_DOC_COUNT} docs — triggering recovery.", flush=True)
-            ensure_data_loaded(label="watchdog")
-    except Exception as exc:
-        # ES is down — trigger the full recover+reload cycle
-        print(f"[watchdog] ES unreachable ({exc}) — triggering recovery.", flush=True)
         ensure_data_loaded(label="watchdog")
+    except Exception as exc:
+        print(f"[watchdog] Unexpected error: {exc}", flush=True)
