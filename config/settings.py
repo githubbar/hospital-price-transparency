@@ -52,7 +52,7 @@ TURNSTILE_SECRET_KEY = os.environ.get('TURNSTILE_SECRET_KEY', '1x000000000000000
 TURNSTILE_BASKET_KEY = os.environ.get('TURNSTILE_SITE_KEY', '1x00000000000000000000AA')
 
 # Google Gen AI (Gemini Enterprise Agent Platform) — used for procedure code explanations
-GOOGLE_CLOUD_PROJECT = os.environ.get('GOOGLE_CLOUD_PROJECT', '')
+GCE_PROJECT = os.environ.get('GCE_PROJECT', '')
 GOOGLE_CLOUD_LOCATION = os.environ.get('GOOGLE_CLOUD_LOCATION', 'global')
 
 # Application definition

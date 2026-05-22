@@ -112,6 +112,18 @@ def create_index(es, clean=False):
             print(f"Index '{INDEX_NAME}' exists. Deleting it as requested...")
             es.indices.delete(index=INDEX_NAME)
         else:
+            # Verify payer_name mapping; if it was auto-created as 'text' aggregations break.
+            try:
+                m = es.indices.get_mapping(index=INDEX_NAME)
+                payer_type = (m[INDEX_NAME]['mappings']['properties']
+                              .get('prices', {}).get('properties', {})
+                              .get('payer_name', {}).get('type', ''))
+                if payer_type != 'keyword':
+                    print(f"WARNING: Index '{INDEX_NAME}' has wrong payer_name mapping "
+                          f"('{payer_type}' instead of 'keyword'). "
+                          f"Insurer filter will not work. Re-run with --clean to fix.")
+            except Exception:
+                pass
             print(f"Index '{INDEX_NAME}' already exists. Skipping creation to preserve text.")
             return
 
