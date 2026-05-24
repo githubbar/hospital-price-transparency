@@ -50,21 +50,22 @@ This app runs on two Google Cloud services:
    sudo systemctl start docker
    ```
 
-3. Start Elasticsearch:
+3. Start Elasticsearch with security enabled:
    ```bash
    sudo docker run -d --name es01 \
      -p 0.0.0.0:9200:9200 \
      --restart always \
      -v es_data:/usr/share/elasticsearch/data \
      -e "discovery.type=single-node" \
-     -e "xpack.security.enabled=false" \
+     -e "xpack.security.enabled=true" \
+     -e "ELASTIC_PASSWORD=your1687_not_so_strong_for_now_password" \
      -e "ES_JAVA_OPTS=-Xms1500m -Xmx1500m" \
      docker.elastic.co/elasticsearch/elasticsearch:9.0.0
    ```
 
 4. Verify it's running (Elasticsearch takes ~60 seconds to start — wait before running this):
    ```bash
-   curl http://localhost:9200
+   curl -u elastic:your1687_not_so_strong_for_now_password http://localhost:9200
    ```
    You should see a JSON response with `"tagline": "You Know, for Search"`.
 
@@ -87,7 +88,8 @@ This app runs on two Google Cloud services:
      --restart always \
      -v es_data:/usr/share/elasticsearch/data \
      -e "discovery.type=single-node" \
-     -e "xpack.security.enabled=false" \
+     -e "xpack.security.enabled=true" \
+     -e "ELASTIC_PASSWORD=your1687_not_so_strong_for_now_password" \
      -e "ES_JAVA_OPTS=-Xms1500m -Xmx1500m" \
      docker.elastic.co/elasticsearch/elasticsearch:9.0.0'
    ```
@@ -96,21 +98,24 @@ This app runs on two Google Cloud services:
 
 ---
 
-## Step 3 — Open Port 9200 in the Firewall
+## Step 3 — Secure Port 9200 in the Firewall
 
-Run the following from **Cloud Shell** or any terminal with `gcloud` authenticated:
+For production, do **NOT** expose port 9200 to the public internet (`0.0.0.0/0`). Instead, keep port 9200 closed to the public and rely on:
+
+1. **Internal VPC Access:** Cloud Run reaches Elasticsearch securely via the Serverless VPC Connector (`es-connector`) using the VM's internal IP (`http://10.128.0.x:9200`), which is automatically permitted by GCP's `default-allow-internal` firewall rule.
+2. **Secure SSH Tunneling for Local Commands:** To run administrative tasks locally, tunnel securely over SSH (see [Running Local Admin Commands](#running-local-admin-commands-secure-ssh-tunneling) below).
+
+If you must create a manual firewall rule to permit internal VPC subnet traffic, restrict the `--source-ranges` strictly to the internal IP range of your Serverless VPC Access connector subnet (e.g., `10.8.0.0/28`), rather than `0.0.0.0/0`:
 
 ```bash
 gcloud compute firewall-rules create allow-es-9200 \
   --direction=INGRESS \
   --action=ALLOW \
   --rules=tcp:9200 \
-  --source-ranges=0.0.0.0/0 \
+  --source-ranges=10.8.0.0/28 \
   --network=default \
   --priority=1000
 ```
-
-> For production, replace `0.0.0.0/0` with the specific IP range of your Cloud Run Serverless VPC connector.
 
 ---
 
@@ -198,6 +203,41 @@ To push updated `.env` values to Cloud Run **without rebuilding the Docker image
 ```powershell
 .\update-env.ps1
 ```
+
+---
+
+## Running Local Admin Commands (Secure SSH Tunneling)
+
+If you have closed port `9200` to the public internet (highly recommended), your local machine will not be able to connect to the GCE external IP directly. You must tunnel your connection securely over SSH.
+
+### Step 1: Start the SSH Tunnel
+Run this command in a dedicated terminal window and **keep it open**:
+```powershell
+gcloud compute ssh instance-20260501-152400 --zone us-central1-c --project hospital-price-transpare-6a9b0 --ssh-flag="-L 9200:localhost:9200"
+```
+*This binds port `9200` on your remote GCE VM to `localhost:9200` on your local PC.*
+
+### Step 2: Configure your local `.env` file
+Open your local `.env` file and temporarily set:
+```env
+ELASTICSEARCH_URL=http://localhost:9200
+```
+*(Don't worry—Cloud Run does not use this file directly; it routes via the VPC connector using the internal IP `ELASTICSEARCH_URL_INTERNAL=http://10.128.0.3:9200/` injected at deploy time).*
+
+### Step 3: Run your command
+In a **second** terminal window, you can now run any administrative scripts locally:
+
+* **Load all raw CSV data (re-parse + index):**
+  ```powershell
+  .\load_data.ps1
+  ```
+* **Quickly reload index from the shoppable cache file:**
+  ```powershell
+  .venv\Scripts\python _reload_from_cache.py
+  ```
+
+### Step 4: Clean up
+When finished, close the SSH tunnel terminal by pressing `Ctrl + C` or typing `exit`. Then restore your `.env` file's `ELASTICSEARCH_URL` back to the GCE external IP if you plan to use standard connections later.
 
 ---
 

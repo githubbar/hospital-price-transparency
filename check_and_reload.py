@@ -14,6 +14,7 @@ Required environment variables for VM auto-start:
   GCE_INSTANCE  — VM name         (e.g. elasticsearch-vm)
 """
 import gzip
+import json
 import os
 import sys
 import time
@@ -26,7 +27,7 @@ django.setup()
 
 from django.conf import settings
 from elasticsearch import Elasticsearch
-from elasticsearch.helpers import streaming_bulk
+from elasticsearch.helpers import parallel_bulk, streaming_bulk
 
 INDEX_NAME = getattr(settings, 'ELASTICSEARCH_INDEX', 'hospital_prices')
 ES_URL = settings.ELASTICSEARCH_URL
@@ -58,11 +59,11 @@ def _count_cache_docs():
     if not os.path.exists(CACHE_FILE):
         return 0
     try:
-        import ijson
         count = 0
-        with gzip.open(CACHE_FILE, 'rb') as f:
-            for _ in ijson.items(f, 'item'):
-                count += 1
+        with gzip.open(CACHE_FILE, 'rt', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    count += 1
         return count
     except Exception as exc:
         print(f"[startup] Could not count cache docs: {exc}", flush=True)
@@ -254,29 +255,35 @@ def ensure_data_loaded(label="startup"):
                 mappings=_correct_mappings(),
             )
 
-        # Stream the full gzip JSON array from the beginning.
-        # Indexing by _id is idempotent, so re-indexing existing docs is safe.
-        import ijson
-
+        # Read NDJSON line-by-line: one json.loads() call per doc is ~10x
+        # faster than ijson streaming and uses only one doc of memory at a time.
         def _actions():
-            with gzip.open(CACHE_FILE, 'rb') as f:
-                for doc in ijson.items(f, 'item'):
-                    yield {"_index": INDEX_NAME, "_id": doc.get("id"), "_source": doc}
+            with gzip.open(CACHE_FILE, 'rt', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        doc = json.loads(line)
+                        yield {"_index": INDEX_NAME, "_id": doc.get("id"), "_source": doc}
+
+        print(f"[{label}] Starting parallel bulk index ({CACHE_DOC_COUNT} docs)...", flush=True)
 
         MAX_LOAD_ATTEMPTS = 10
-        RETRY_DELAY_SECONDS = 30
+        RETRY_DELAY_SECONDS = 10
 
         for attempt in range(1, MAX_LOAD_ATTEMPTS + 1):
             try:
                 success = 0
-                # Use small chunks (10 docs / 2 MB max) so each bulk request
-                # completes in seconds and doesn't hit Cloud NAT idle-connection
-                # timeouts. Indexing by _id is idempotent so retrying from the
-                # start is safe — already-loaded docs are simply overwritten.
-                for ok, _ in streaming_bulk(
+                # parallel_bulk sends chunk_size docs per request across
+                # thread_count concurrent threads.  Small 50-doc / 2 MB chunks
+                # complete in seconds and avoid the Cloud NAT idle-connection
+                # timeout that caused streaming_bulk to hang on large requests.
+                for ok, _ in parallel_bulk(
                     es, _actions(),
-                    raise_on_error=False,
-                    request_timeout=300,
+                    thread_count=4,
+                    chunk_size=50,
+                    max_chunk_bytes=2 * 1024 * 1024,
+                    raise_on_exception=False,
+                    request_timeout=60,
                 ):
                     if ok:
                         success += 1

@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /explain/
+Disallow: /related/
+
+User-agent: *
+Allow: /
+Allow: /faq/

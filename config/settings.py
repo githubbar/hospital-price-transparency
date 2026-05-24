@@ -31,6 +31,10 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
+# Prevents RuntimeError on POST /admin (no trailing slash):
+# Django can't redirect POST requests, so disable the redirect entirely.
+APPEND_SLASH = False
+
 INTERNAL_IPS = [
     "127.0.0.1",
     "localhost",

@@ -21,6 +21,7 @@ Output:
       what load_to_es.py indexes), with stats pre-calculated.
 """
 import csv
+import ctypes
 import gzip
 import hashlib
 import json
@@ -28,6 +29,11 @@ import os
 import re
 import sys
 import argparse
+
+# Some hospital CSVs embed very long compliance attestation text in their
+# header rows (e.g. South_Campus_Surgery_Center.csv). Raise the limit to
+# the largest safe value on Windows (2^31-1) and sys.maxsize on Unix.
+csv.field_size_limit(min(sys.maxsize, 2 ** 31 - 1))
 from tqdm import tqdm
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -79,6 +85,15 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
     print(f"Parsing {os.path.basename(csv_path)}  [shoppable-only filter active]...")
     LIMIT_PER_DOC = 5000
 
+    shoppable_descriptions = {}
+    shoppable_csv_path = os.path.join(REFERENCE_DIR, 'shoppable_codes.csv')
+    if os.path.exists(shoppable_csv_path):
+        with open(shoppable_csv_path, 'r', encoding='utf-8') as sf:
+            s_reader = csv.DictReader(sf)
+            for s_row in s_reader:
+                s_desc = s_row['description'].strip().lower()
+                shoppable_descriptions[s_desc] = (s_row['code'].strip(), s_row['code_type'].strip())
+
     try:
         with open(csv_path, 'r', encoding='utf-8', errors='replace') as f:
             sample_lines = []
@@ -114,7 +129,7 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                         try:
                             meta_row_1 = next(csv.reader([sample_lines[0]]))
                             meta_row_2 = next(csv.reader([sample_lines[1]])) if len(sample_lines) > 1 else []
-                            meta_map = {h.strip().lower(): i for i, h in enumerate(meta_row_1)}
+                            meta_map = {h.strip().lower(): i for i, h in enumerate(meta_row_1) if len(h) < 200}
                             if "hospital_name" in meta_map and len(meta_row_2) > meta_map["hospital_name"]:
                                 Hospital_Name_From_Meta = meta_row_2[meta_map["hospital_name"]]
                             elif len(meta_row_2) > 0 and idx >= 2:
@@ -250,7 +265,19 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                 row_code_values = {c['value'] for c in all_codes}
                 if primary_code:
                     row_code_values.add(primary_code)
-                if not row_code_values.intersection(shoppable_codes):
+                
+                is_shoppable = bool(row_code_values.intersection(shoppable_codes))
+                if not is_shoppable:
+                    clean_desc = description.strip().lower()
+                    if clean_desc in shoppable_descriptions:
+                        matched_code, matched_type = shoppable_descriptions[clean_desc]
+                        if not primary_code or primary_code_type in ("CDM", "LOCAL"):
+                            primary_code = matched_code
+                            primary_code_type = matched_type
+                            all_codes.insert(0, {"value": matched_code, "type": matched_type})
+                        is_shoppable = True
+                
+                if not is_shoppable:
                     continue
 
                 records_processed += 1
@@ -388,11 +415,15 @@ def main():
             }
         final_procedures.append(data)
 
-    # Save as gzip-compressed JSON
+    # Save as gzip-compressed NDJSON (one JSON object per line).
+    # This format lets check_and_reload.py read docs line-by-line with
+    # json.loads(), which is ~10x faster than ijson streaming and uses only
+    # one doc of memory at a time (vs loading the full 2.6 GB array).
     os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)
     print(f"\nSaving cache to {args.output} ...")
     with gzip.open(args.output, 'wt', encoding='utf-8') as f:
-        json.dump(final_procedures, f)
+        for doc in final_procedures:
+            f.write(json.dumps(doc, separators=(',', ':')) + '\n')
 
     raw_size = os.path.getsize(args.output)
     print(f"Done. Cache file size: {raw_size / 1024 / 1024:.2f} MB  ({len(final_procedures)} documents)")

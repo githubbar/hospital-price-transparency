@@ -21,8 +21,9 @@ COPY . /app/
 RUN SECRET_KEY=build_secret_key python manage.py collectstatic --noinput
 
 # Pre-compute the cache doc count so check_and_reload.py doesn't stream the
-# entire file on every container restart just to get a count (~5-10s overhead).
-RUN python -c "import gzip, ijson, os; cache_file = 'data/shoppable_cache.json.gz'; count = sum(1 for _ in ijson.items(gzip.open(cache_file, 'rb'), 'item')) if os.path.exists(cache_file) else 0; open(cache_file + '.count', 'w').write(str(count)); print('Pre-computed cache doc count: ' + str(count))"
+# entire file on every container restart just to get a count.
+# NDJSON format: count non-empty lines — much faster than ijson streaming.
+RUN python -c "import gzip, os; cache_file = 'data/shoppable_cache.json.gz'; count = sum(1 for line in gzip.open(cache_file, 'rt', encoding='utf-8') if line.strip()) if os.path.exists(cache_file) else 0; open(cache_file + '.count', 'w').write(str(count)); print('Pre-computed cache doc count: ' + str(count))"
 
 # Copy and enable the startup entrypoint
 COPY startup.sh /app/startup.sh

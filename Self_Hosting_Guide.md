@@ -43,14 +43,11 @@ However, every Firebase project is backed by a **Google Cloud Platform (GCP)** p
     -e "ES_JAVA_OPTS=-Xms1g -Xmx1g" \
     docker.elastic.co/elasticsearch/elasticsearch:9.2.4
 
-4.  **Network Configuration (Crucial)**
-    - By default, port 9200 is blocked from the outside world.
-    - To connect from your **Local PC**, you need to create a VPC Firewall Rule:
-      - Go to **VPC Network** > **Firewall**.
-      - Create Rule: `allow-elastic`.
-      - Targets: `All instances in the network`.
-      - Source IP ranges: `0.0.0.0/0` (Or preferably, just your home IP).
-      - Protocols and ports: `tcp:9200`.
+4.  **Network Configuration (Crucial & Security)**
+    - Do **NOT** expose port 9200 to the public internet (`0.0.0.0/0`). This will invite immediate ransomware attacks.
+    - If you are deploying to **Cloud Run**, keep port 9200 closed to the outside world. Cloud Run uses a Serverless VPC connector to reach Elasticsearch securely via its internal GCE IP (`10.128.0.x:9200`).
+    - To connect from your **Local PC** for admin scripts, do **not** open a public firewall port. Instead, use an SSH tunnel over `gcloud` (see `DEPLOYMENT.md` for SSH tunneling instructions).
+    - If you absolutely must create a firewall rule for external access, restrict **Source IP ranges** strictly to your specific home/office public IP address, never `0.0.0.0/0`.
 
 5.  **Connect**
     - Get the **External IP** of your VM.
