@@ -20,6 +20,10 @@ COPY . /app/
 # Set a dummy SECRET_KEY for building purposes if not present
 RUN SECRET_KEY=build_secret_key python manage.py collectstatic --noinput
 
+# Run DB migrations and create cache tables at build time (so startup is instantaneous)
+RUN SECRET_KEY=build_secret_key python manage.py migrate --run-syncdb
+RUN SECRET_KEY=build_secret_key python manage.py createcachetable
+
 # Pre-compute the cache doc count so check_and_reload.py doesn't stream the
 # entire file on every container restart just to get a count.
 # NDJSON format: count non-empty lines — much faster than ijson streaming.
