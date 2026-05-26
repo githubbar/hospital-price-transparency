@@ -57,6 +57,7 @@ TURNSTILE_BASKET_KEY = os.environ.get('TURNSTILE_SITE_KEY', '1x00000000000000000
 
 # Google Gen AI (Gemini Enterprise Agent Platform) — used for procedure code explanations
 GCE_PROJECT = os.environ.get('GCE_PROJECT', '')
+GOOGLE_CLOUD_PROJECT = os.environ.get('GOOGLE_CLOUD_PROJECT', GCE_PROJECT)
 GOOGLE_CLOUD_LOCATION = os.environ.get('GOOGLE_CLOUD_LOCATION', 'global')
 
 # Application definition
@@ -106,19 +107,40 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if 'K_SERVICE' in os.environ:
+    # Use read-only SQLite inside serverless Cloud Run container to prevent RAM copy-on-write OOMs
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': f"file:{BASE_DIR / 'db.sqlite3'}?mode=ro",
+            'OPTIONS': {
+                'uri': True,
+            }
+        }
     }
-}
+    # Use RAM-based cache inside Cloud Run container to prevent SQLite database writes
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake-cache',
+        }
+    }
+    # Store session data in cryptographically signed browser cookies instead of writing to the SQLite database
+    SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'django_cache',
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'django_cache',
+        }
     }
-}
 
 
 

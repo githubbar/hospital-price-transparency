@@ -17,10 +17,10 @@ Get-Content .env | ForEach-Object {
     }
 }
 
-Write-Host "Loading data into Elasticsearch ($($env:ELASTICSEARCH_URL))..."
-& ".venv\Scripts\python.exe" load_to_es.py
+Write-Host "Loading data into SQLite..."
+& ".venv\Scripts\python.exe" load_to_sqlite.py --clean --cached-file data/shoppable_cache.json.gz
 if ($LASTEXITCODE -ne 0) {
-    Write-Warning "load_to_es.py exited with code $LASTEXITCODE"
+    Write-Warning "load_to_sqlite.py exited with code $LASTEXITCODE"
     exit $LASTEXITCODE
 }
 Write-Host "Done."

@@ -4,7 +4,8 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.http import require_GET
 from django.core.cache import cache
-from elasticsearch import Elasticsearch
+from django.db import connection
+import difflib
 from urllib.parse import urlencode as _urlencode
 import csv
 import hashlib
@@ -228,78 +229,22 @@ def search(request):
     page_obj = None
     total_records = 0
 
-    # es = Elasticsearch(settings.ELASTICSEARCH_URL)
-    
-    # Support for Auth
-    es_params = {'hosts': settings.ELASTICSEARCH_URL}
-    if hasattr(settings, 'ELASTICSEARCH_USERNAME') and settings.ELASTICSEARCH_USERNAME:
-        es_params['basic_auth'] = (settings.ELASTICSEARCH_USERNAME, settings.ELASTICSEARCH_PASSWORD)
-
-    if settings.ELASTICSEARCH_URL.startswith('https'):
-        es_params['verify_certs'] = False
-        es_params['ssl_show_warn'] = False
-
-    es = Elasticsearch(**es_params)
-
     # Get total records count (best effort)
     try:
-        # Check if index exists first to avoid 404
-        if es.indices.exists(index=settings.ELASTICSEARCH_INDEX):
-            total_records = es.count(index=settings.ELASTICSEARCH_INDEX)['count']
-    except Exception:
-        pass
-
-    # Fetch unique Payers for the dropdown
-    payers_list = []
-    try:
-        aggs_body = {
-            "size": 0,
-            "aggs": {
-                "nested_prices": {
-                    "nested": {"path": "prices"},
-                    "aggs": {
-                        "unique_payers": {
-                            "terms": {"field": "prices.payer_name", "size": 1000, "order": {"_key": "asc"}}
-                        }
-                    }
-                }
-            }
-        }
-        agg_res = es.search(index=settings.ELASTICSEARCH_INDEX, body=aggs_body)
-        if 'aggregations' in agg_res and 'nested_prices' in agg_res['aggregations']:
-            buckets = agg_res['aggregations']['nested_prices']['unique_payers']['buckets']
-            all_payers_raw = [b['key'] for b in buckets if b['key'].strip()]
-
-            def _humanize_payer(raw):
-                """Turn raw ES values like negotiated_dollar into Negotiated Dollar."""
-                if '_' in raw:
-                    return raw.replace('_', ' ').title()
-                return raw  # Already human-readable (e.g. 'Gross', 'BCBS PPO')
-
-            # Deduplicate near-identical names (e.g. 'J&J' vs 'J and J')
-            def _norm_key(n):
-                import re as _re
-                return _re.sub(r'\s+', ' ', _re.sub(r'\s*&\s*', ' and ', n.replace('_', ' '))).strip().lower()
-
-            seen_keys = {}
-            all_payers = []  # list of {'raw': ..., 'display': ...}
-            for p in all_payers_raw:
-                k = _norm_key(p)
-                if k not in seen_keys:
-                    seen_keys[k] = p
-                    all_payers.append({'raw': p, 'display': _humanize_payer(p)})
-
-            _pinned_display = {'negotiated dollar', 'cash', 'gross', 'gross charge', 'discounted cash'}
-            def _pin_order(item):
-                d = item['display'].lower()
-                order = ['negotiated dollar', 'cash', 'gross charge', 'gross', 'discounted cash']
-                return order.index(d) if d in order else len(order)
-
-            pinned_items = sorted([i for i in all_payers if i['display'].lower() in _pinned_display], key=_pin_order)
-            other_items  = sorted([i for i in all_payers if i['display'].lower() not in _pinned_display], key=lambda x: x['display'].lower())
-            payers_list = pinned_items + other_items
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) FROM procedures")
+            total_records = cursor.fetchone()[0]
     except Exception as e:
-        print(f"Error fetching payers: {e}")
+        print(f"Error fetching total records: {e}")
+
+    # Fetch unique Payers for the dropdown (pre-computed statically to avoid 14.4M row scans in serverless)
+    try:
+        json_path = os.path.join(settings.BASE_DIR, 'prices', 'static_payers.json')
+        with open(json_path, 'r', encoding='utf-8') as f:
+            payers_list = json.load(f)
+    except Exception as e:
+        print(f"Error loading static payers: {e}")
+        payers_list = []
 
     selected_payers = request.GET.getlist('payer')  # multi-select list; always kept in URL
     selected_payers_set = set(selected_payers)
@@ -330,7 +275,7 @@ def search(request):
     else:
         selected_hospitals = []
 
-    selected_hospitals_set = set(selected_hospitals)  # MD5 IDs used for ES filtering
+    selected_hospitals_set = set(selected_hospitals)  # MD5 IDs used for filtering
 
     # Build base query string for pagination (preserves all filters except page)
     _params = request.GET.copy()
@@ -340,65 +285,176 @@ def search(request):
     if query and not error_message:
         start_time = time.time()
         
-        # Build Query
-        must_clauses = [
-            {
-                "multi_match": {
-                    "query": query,
-                    "fields": ["description", "code^2", "code_type", "rev_code"],
-                    "type": "best_fields",
-                    "fuzziness": "AUTO"
-                }
-            }
-        ]
-        
-        filter_clauses = []
-        if selected_payers and selected_hospitals:
-            filter_clauses.append({
-                "nested": {
-                    "path": "prices",
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {"terms": {"prices.payer_name": selected_payers}},
-                                {"terms": {"prices.hospital_id": selected_hospitals}},
-                            ]
-                        }
-                    }
-                }
-            })
-        elif selected_payers:
-            filter_clauses.append({
-                "nested": {
-                    "path": "prices",
-                    "query": {"terms": {"prices.payer_name": selected_payers}}
-                }
-            })
-        elif selected_hospitals:
-            filter_clauses.append({
-                "nested": {
-                    "path": "prices",
-                    "query": {"terms": {"prices.hospital_id": selected_hospitals}}
-                }
-            })
+        # --- Spelling Auto-Correction (Typo Tolerance) ---
+        corrected_query = query
+        words_to_correct = re.findall(r'\b[a-zA-Z]{3,}\b', query) # Only correct words of length >= 3 containing letters
+        if words_to_correct:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT word FROM unique_words")
+                    vocab = [row[0] for row in cursor.fetchall()]
+                    vocab_set = set(vocab)
+                    
+                    query_changed = False
+                    for word in words_to_correct:
+                        clean_word = word.lower()
+                        if clean_word not in vocab_set:
+                            # Not found, search closest matches
+                            matches = difflib.get_close_matches(clean_word, vocab, n=1, cutoff=0.75)
+                            if matches:
+                                corrected_word = matches[0]
+                                corrected_query = re.sub(r'\b' + re.escape(word) + r'\b', corrected_word, corrected_query, flags=re.IGNORECASE)
+                                query_changed = True
+                    if query_changed:
+                        print(f"[spellcheck] Original: '{query}' -> Corrected: '{corrected_query}'")
+            except Exception as e:
+                print(f"Spellcheck error: {e}")
 
-        body = {
-            "from": (page_number - 1) * items_per_page,
-            "size": items_per_page,
-            "query": {
-                "bool": {
-                    "must": must_clauses,
-                    "filter": filter_clauses
-                }
-            }
-        }
+        # Smarter query formatting for SQLite FTS5:
+        # 1. Clean terms, ignore basic common English stopwords to avoid search failures
+        stopwords = {'a', 'an', 'the', 'of', 'and', 'or', 'for', 'with', 'in', 'on', 'at', 'by', 'to'}
         
+        search_terms = []
+        terms_raw = corrected_query.split()
+        
+        for i, t in enumerate(terms_raw):
+            t_lower = t.lower()
+            # Natively support 'OR' / 'AND' logical operators if the user typed them
+            if t_lower in ('or', 'and'):
+                if search_terms: # Only add if there is a preceding term
+                    search_terms.append(t_lower.upper())
+                continue
+                
+            t_clean = re.sub(r'[^\w\*-]', '', t)
+            if t_clean and t_lower not in stopwords:
+                if not t_clean.endswith('*'):
+                    search_terms.append(f"{t_clean}*")
+                else:
+                    search_terms.append(t_clean)
+                    
+        # Reassemble with spacing, but ensure we don't end up with consecutive operators
+        sqlite_query = ""
+        for term in search_terms:
+            if term in ('OR', 'AND'):
+                sqlite_query += f" {term} "
+            else:
+                if sqlite_query and not sqlite_query.strip().endswith(('OR', 'AND')):
+                    sqlite_query += " AND "
+                sqlite_query += term
+        sqlite_query = sqlite_query.strip()
+
+        # Prepare parameters & placeholders for SQL filters
+        sql_where_fts = ["fts_procedures MATCH %s"]
+        sql_params = [sqlite_query]
+
+        if selected_hospitals:
+            h_placeholders = []
+            for h_id in selected_hospitals:
+                h_placeholders.append("%s")
+                sql_params.append(h_id)
+            sql_where_fts.append(f"EXISTS (SELECT 1 FROM prices WHERE prices.procedure_id = fts_procedures.procedure_id AND prices.hospital_id IN ({','.join(h_placeholders)}))")
+
+        if selected_payers:
+            p_placeholders = []
+            for p_name in selected_payers:
+                p_placeholders.append("%s")
+                sql_params.append(p_name)
+            sql_where_fts.append(f"EXISTS (SELECT 1 FROM prices WHERE prices.procedure_id = fts_procedures.procedure_id AND prices.payer_name IN ({','.join(p_placeholders)}))")
+
+        where_clause_fts = " WHERE " + " AND ".join(sql_where_fts) if sql_where_fts else ""
+
         try:
-            res = es.search(index=settings.ELASTICSEARCH_INDEX, body=body)
-            hits = res['hits']['hits']
-            total_hits = res['hits']['total']['value']
-            
-            results_count = total_hits
+            with connection.cursor() as cursor:
+                # Count total matching records
+                count_sql = f"SELECT COUNT(DISTINCT procedure_id) FROM fts_procedures {where_clause_fts}"
+                cursor.execute(count_sql, sql_params)
+                total_hits = cursor.fetchone()[0]
+                results_count = total_hits
+
+                # Query matching procedures (paginated) ranked by FTS5 BM25 relevance score
+                results_sql = f"""
+                    SELECT procedures.id, procedures.description, procedures.code, procedures.code_type,
+                           procedures.ms_drg, procedures.apr_drg, procedures.rc, procedures.apc, procedures.ndc, procedures.cdm,
+                           procedures.stats_min, procedures.stats_max, procedures.stats_avg, procedures.stats_count,
+                           procedures.is_standard_group,
+                           bm25(fts_procedures) as rank
+                    FROM fts_procedures
+                    JOIN procedures ON procedures.id = fts_procedures.procedure_id
+                    {where_clause_fts}
+                    ORDER BY rank ASC
+                    LIMIT {items_per_page} OFFSET {(page_number - 1) * items_per_page}
+                """
+                cursor.execute(results_sql, sql_params)
+                proc_rows = cursor.fetchall()
+                
+                hits = []
+                if proc_rows:
+                    proc_ids = [row[0] for row in proc_rows]
+                    
+                    # Batch fetch all prices for these procedures
+                    price_placeholders = ",".join(["%s"] * len(proc_ids))
+                    cursor.execute(f"""
+                        SELECT procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price 
+                        FROM prices 
+                        WHERE procedure_id IN ({price_placeholders})
+                    """, proc_ids)
+                    prices_fetched = cursor.fetchall()
+                    
+                    # Batch fetch all auxiliary codes
+                    cursor.execute(f"""
+                        SELECT procedure_id, code_value, code_type 
+                        FROM procedure_codes 
+                        WHERE procedure_id IN ({price_placeholders})
+                    """, proc_ids)
+                    codes_fetched = cursor.fetchall()
+
+                    # Map prices & codes to their respective procedure IDs
+                    prices_by_proc = {}
+                    for p_row in prices_fetched:
+                        pid, h_id, h_name, payer_name, plan_name, setting, price = p_row
+                        prices_by_proc.setdefault(pid, []).append({
+                            'hospital_id': h_id,
+                            'hospital_name': h_name,
+                            'payer_name': payer_name,
+                            'plan_name': plan_name,
+                            'setting': setting,
+                            'price': price
+                        })
+
+                    codes_by_proc = {}
+                    for c_row in codes_fetched:
+                        pid, val, c_type = c_row
+                        codes_by_proc.setdefault(pid, []).append({
+                            'value': val,
+                            'type': c_type
+                        })
+
+                    # Construct Elasticsearch-compatible hit structures
+                    for row in proc_rows:
+                        pid = row[0]
+                        hits.append({
+                            '_source': {
+                                'id': pid,
+                                'description': row[1],
+                                'code': row[2],
+                                'code_type': row[3],
+                                'ms_drg': row[4],
+                                'apr_drg': row[5],
+                                'rc': row[6],
+                                'apc': row[7],
+                                'ndc': row[8],
+                                'cdm': row[9],
+                                'stats': {
+                                    'min': row[10],
+                                    'max': row[11],
+                                    'avg': row[12],
+                                    'count': row[13]
+                                },
+                                'is_standard_group': bool(row[14]),
+                                'prices': prices_by_proc.get(pid, []),
+                                'codes': codes_by_proc.get(pid, [])
+                            }
+                        })
             
             # Grouping Dictionary: Code -> List of Variants (same code, different desc → collapsed)
             from collections import OrderedDict, Counter
@@ -479,16 +535,37 @@ def search(request):
                 # Common setting from first item
                 common_setting = items[0]['setting'] if items else 'Unknown'
                 
+                # Check if there are actually other procedures sharing the same group key
+                ms_drg_val = (source.get('ms_drg') or '').strip()
+                apr_drg_val = (source.get('apr_drg') or '').strip()
+                rc_val = (source.get('rc') or '').strip()
+
+                with connection.cursor() as sub_cursor:
+                    if ms_drg_val:
+                        sub_cursor.execute("SELECT 1 FROM procedures WHERE ms_drg = %s AND code != %s LIMIT 1", [ms_drg_val, code])
+                        if not sub_cursor.fetchone():
+                            ms_drg_val = ""
+
+                    if apr_drg_val:
+                        sub_cursor.execute("SELECT 1 FROM procedures WHERE apr_drg = %s AND code != %s LIMIT 1", [apr_drg_val, code])
+                        if not sub_cursor.fetchone():
+                            apr_drg_val = ""
+
+                    if rc_val:
+                        sub_cursor.execute("SELECT 1 FROM procedures WHERE rc = %s AND code != %s LIMIT 1", [rc_val, code])
+                        if not sub_cursor.fetchone():
+                            rc_val = ""
+
                 variant_data = {
-                    'code': code,
-                    'code_type': code_type,
+                    'code': (code or '').strip(),
+                    'code_type': (code_type or '').strip(),
                     'common_setting': common_setting, 
                     'items': items,
                     'stats': stats,
-                    'rev_code': source.get('rc', '') or source.get('rev_code', ''),
-                    'ms_drg':  source.get('ms_drg', ''),
-                    'apr_drg': source.get('apr_drg', ''),
-                    'rc':      source.get('rc', ''),
+                    'rev_code': (source.get('rc') or source.get('rev_code') or '').strip(),
+                    'ms_drg':  ms_drg_val,
+                    'apr_drg': apr_drg_val,
+                    'rc':      rc_val,
                 }
                 
                 # Group by code (uppercased); fall back to normalized description if no code
@@ -709,41 +786,33 @@ def related_procedures(request):
     if cached:
         return JsonResponse({'results': cached})
 
-    es_params = {'hosts': settings.ELASTICSEARCH_URL}
-    if getattr(settings, 'ELASTICSEARCH_USERNAME', None):
-        es_params['basic_auth'] = (settings.ELASTICSEARCH_USERNAME, settings.ELASTICSEARCH_PASSWORD)
-    if settings.ELASTICSEARCH_URL.startswith('https'):
-        es_params['verify_certs'] = False
-        es_params['ssl_show_warn'] = False
-    es = Elasticsearch(**es_params)
-
-    query_body = {
-        "size": 8,
-        "_source": ["code", "code_type", "description", "stats", "ms_drg", "apr_drg", "rc"],
-        "query": {
-            "bool": {
-                "must": [{"term": {group_field: group_value}}],
-                "must_not": (
-                    [{"term": {"code.keyword": exclude}}] if exclude else []
-                )
-            }
-        }
-    }
-
     try:
-        res = es.search(index=settings.ELASTICSEARCH_INDEX, body=query_body)
-        results = []
-        for hit in res['hits']['hits']:
-            s = hit['_source']
-            results.append({
-                'code':        s.get('code', ''),
-                'code_type':   s.get('code_type', ''),
-                'description': s.get('description', ''),
-                'avg_price':   s.get('stats', {}).get('avg'),
-                'ms_drg':      s.get('ms_drg', ''),
-                'apr_drg':     s.get('apr_drg', ''),
-                'rc':          s.get('rc', ''),
-            })
+        with connection.cursor() as cursor:
+            # We want to select up to 8 procedures sharing the same group_field, excluding code 'exclude'
+            sql = f"""
+                SELECT code, code_type, description, stats_avg, ms_drg, apr_drg, rc 
+                FROM procedures 
+                WHERE {group_field} = %s 
+            """
+            params = [group_value]
+            if exclude:
+                sql += " AND code != %s"
+                params.append(exclude)
+            
+            sql += " LIMIT 8"
+            cursor.execute(sql, params)
+            
+            results = []
+            for row in cursor.fetchall():
+                results.append({
+                    'code':        row[0] or '',
+                    'code_type':   row[1] or '',
+                    'description': row[2] or '',
+                    'avg_price':   row[3],
+                    'ms_drg':      row[4] or '',
+                    'apr_drg':     row[5] or '',
+                    'rc':          row[6] or '',
+                })
         cache.set(cache_key, results, 3600)
         return JsonResponse({'results': results, 'group_field': group_field, 'group_value': group_value})
     except Exception as e:

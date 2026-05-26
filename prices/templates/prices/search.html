@@ -811,10 +811,10 @@
 
         try {
             const params = new URLSearchParams({
-                ms_drg:  btn.dataset.msDrg  || '',
-                apr_drg: btn.dataset.aprDrg || '',
-                rc:      btn.dataset.rc      || '',
-                exclude: btn.dataset.code   || '',
+                ms_drg:  (btn.dataset.msDrg && btn.dataset.msDrg !== 'None') ? btn.dataset.msDrg : '',
+                apr_drg: (btn.dataset.aprDrg && btn.dataset.aprDrg !== 'None') ? btn.dataset.aprDrg : '',
+                rc:      (btn.dataset.rc && btn.dataset.rc !== 'None') ? btn.dataset.rc : '',
+                exclude: btn.dataset.code || '',
             });
             const resp = await fetch(`/related/?${params}`);
             const data = await resp.json();
@@ -822,7 +822,7 @@
             if (data.error) {
                 panel.innerHTML = `<span class="text-danger" style="font-size:0.8rem;">${data.error}</span>`;
             } else if (!data.results || data.results.length === 0) {
-                panel.innerHTML = `<span class="text-muted" style="font-size:0.8rem;">No other commonly billed procedures found.</span>`;
+                btn.closest('.mt-1').style.display = 'none';
             } else {
                 let rows = data.results.map(r => {
                     const price = r.avg_price != null ? `<span class="fw-bold text-success">$${Math.round(r.avg_price).toLocaleString()}</span>` : '<span class="text-muted">-</span>';

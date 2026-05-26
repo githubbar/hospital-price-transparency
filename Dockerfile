@@ -24,15 +24,11 @@ RUN SECRET_KEY=build_secret_key python manage.py collectstatic --noinput
 RUN SECRET_KEY=build_secret_key python manage.py migrate --run-syncdb
 RUN SECRET_KEY=build_secret_key python manage.py createcachetable
 
-# Pre-compute the cache doc count so check_and_reload.py doesn't stream the
-# entire file on every container restart just to get a count.
-# NDJSON format: count non-empty lines — much faster than ijson streaming.
-RUN python -c "import gzip, os; cache_file = 'data/shoppable_cache.json.gz'; count = sum(1 for line in gzip.open(cache_file, 'rt', encoding='utf-8') if line.strip()) if os.path.exists(cache_file) else 0; open(cache_file + '.count', 'w').write(str(count)); print('Pre-computed cache doc count: ' + str(count))"
+# Build the SQLite database and search index at build time (bypassed - pre-built database is copied directly)
+# RUN python load_to_sqlite.py --clean --cached-file data/shoppable_cache.json.gz
 
 # Copy and enable the startup entrypoint
 COPY startup.sh /app/startup.sh
 RUN chmod +x /app/startup.sh
 
-# startup.sh launches check_and_reload.py in the background (auto-reloads ES data
-# when the index is empty, e.g. after a Spot VM preemption) then starts gunicorn.
 CMD ["/app/startup.sh"]

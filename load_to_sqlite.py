@@ -1,27 +1,15 @@
 """
-Script: load_to_es.py
+Script: load_to_sqlite.py
 
 Description:
-      This script is responsible for loading processed hospital pricing data into an Elasticsearch index.
-      It reads data (typically from CSV, JSON, or a database), transforms it into the appropriate
-      document structure, and uses the Elasticsearch bulk API for efficient indexing.
+      This script replaces load_to_es.py. It initializes a relational SQLite schema
+      inside db.sqlite3, indexes all hospital pricing records, configures an FTS5 
+      stemmed virtual table, and extracts a unique vocabulary for typo auto-correction.
 
 Usage:
-      python load_to_es.py [--input_file DATA_PATH] [--index_name HOSPITAL_PRICES] [--host ES_HOST]
-
-Arguments:
-      --input_file (str): Path to the source file containing processed hospital data.
-      --index_name (str): Name of the Elasticsearch index to populate. Defaults to 'hospital-prices'.
-      --host (str): Elasticsearch host URL. Defaults to 'localhost'.
-
-Dependencies:
-      - elasticsearch (Python client)
-      - pandas (if used for data manipulation)
-
-Notes:
-      - Ensure the Elasticsearch service is running before executing this script.
-      - Existing data in the target index may be overwritten depending on the script's configuration.
+      python load_to_sqlite.py [--input_file DATA_PATH] [--shoppable-only] [--cached-file PATH]
 """
+import sqlite3
 import csv
 import gzip
 import hashlib
@@ -31,13 +19,9 @@ import re
 import sys
 import argparse
 import django
-from elasticsearch import Elasticsearch, helpers
-from elasticsearch.helpers import parallel_bulk
 from tqdm import tqdm
 
-# Some hospital CSVs embed very long compliance attestation text in their
-# header rows (e.g. South_Campus_Surgery_Center.csv). Raise the limit to
-# the largest safe value on Windows (2^31-1) and sys.maxsize on Unix.
+# Raise CSV field size limits for oversized hospital sheets
 csv.field_size_limit(min(sys.maxsize, 2 ** 31 - 1))
 
 # Setup Django environment
@@ -48,23 +32,156 @@ django.setup()
 from django.conf import settings
 
 # Configuration
-ES_URL = settings.ELASTICSEARCH_URL
-ES_USER = getattr(settings, 'ELASTICSEARCH_USERNAME', None)
-ES_PASS = getattr(settings, 'ELASTICSEARCH_PASSWORD', None)
-INDEX_NAME = getattr(settings, 'ELASTICSEARCH_INDEX', 'hospital_prices')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = str(settings.DATABASES['default']['NAME'])
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 REFERENCE_DIR = os.path.join(BASE_DIR, 'reference')
 
 print(f"Configuration:")
-print(f"  ES_URL: {ES_URL}")
-print(f"  ES_USER: {ES_USER}")
-print(f"  ES_PASS: {'******' if ES_PASS else None}")
-print(f"  INDEX_NAME: {INDEX_NAME}")
+print(f"  DB_PATH: {DB_PATH}")
 print(f"  DATA_DIR: {DATA_DIR}")
 
+def init_db(conn, clean=False):
+    """Creates the SQLite schema with relational and FTS5 tables."""
+    cursor = conn.cursor()
+    
+    if clean:
+        print("Cleaning existing database tables...")
+        cursor.execute("DROP TABLE IF EXISTS fts_procedures;")
+        cursor.execute("DROP TABLE IF EXISTS prices;")
+        cursor.execute("DROP TABLE IF EXISTS procedure_codes;")
+        cursor.execute("DROP TABLE IF EXISTS unique_words;")
+        cursor.execute("DROP TABLE IF EXISTS procedures;")
+        conn.commit()
+
+    # Create tables
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS procedures (
+        id TEXT PRIMARY KEY,
+        is_standard_group INTEGER,
+        group_key TEXT,
+        description TEXT,
+        code TEXT,
+        code_type TEXT,
+        ms_drg TEXT,
+        apr_drg TEXT,
+        rc TEXT,
+        apc TEXT,
+        ndc TEXT,
+        cdm TEXT,
+        stats_min REAL,
+        stats_max REAL,
+        stats_avg REAL,
+        stats_count INTEGER
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS procedure_codes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        procedure_id TEXT,
+        code_value TEXT,
+        code_type TEXT,
+        FOREIGN KEY (procedure_id) REFERENCES procedures(id) ON DELETE CASCADE
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS prices (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        procedure_id TEXT,
+        hospital_id TEXT,
+        hospital_name TEXT,
+        payer_name TEXT,
+        plan_name TEXT,
+        setting TEXT,
+        price REAL,
+        FOREIGN KEY (procedure_id) REFERENCES procedures(id) ON DELETE CASCADE
+    );
+    """)
+
+    # FTS5 Virtual Table for searching with Porter stemming
+    cursor.execute("""
+    CREATE VIRTUAL TABLE IF NOT EXISTS fts_procedures USING fts5(
+        procedure_id UNINDEXED,
+        description,
+        code,
+        code_type,
+        ms_drg,
+        apr_drg,
+        rc,
+        apc,
+        ndc,
+        cdm,
+        tokenize = 'porter'
+    );
+    """)
+
+    # Unique vocabulary words for typo auto-correction
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS unique_words (
+        word TEXT PRIMARY KEY
+    );
+    """)
+
+    # Relational search performance indexes
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_procedure_id ON prices(procedure_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_procedure_codes_procedure_id ON procedure_codes(procedure_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_proc_payer ON prices(procedure_id, payer_name);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_proc_hosp ON prices(procedure_id, hospital_id);")
+
+    conn.commit()
+    print("Database tables initialized successfully.")
+
+
+def normalize_payer_name(name):
+    """Normalize payer name to deduplicate variants."""
+    if not name:
+        return name
+    name = name.replace('_', ' ')
+    name = re.sub(r'\s*&\s*', ' and ', name)
+    name = re.sub(r'\s+', ' ', name).strip()
+    _title_map = {
+        'negotiated dollar': 'Negotiated Dollar',
+        'discounted cash': 'Discounted Cash',
+        'gross charge': 'Gross Charge',
+        'cash': 'Cash',
+        'gross': 'Gross',
+    }
+    return _title_map.get(name.lower(), name)
+
+
+def parse_currency(value):
+    if not value or value.strip() == '':
+        return None
+    try:
+        return float(value.replace('$', '').replace(',', ''))
+    except ValueError:
+        return None
+
+
+def generate_id(text_parts):
+    combined = "".join([str(p).strip().lower() for p in text_parts if p])
+    return hashlib.md5(combined.encode('utf-8')).hexdigest()
+
+
+def extract_vocabulary_words(description):
+    """Extract individual clean alphanumeric words from descriptions."""
+    if not description:
+        return []
+    # Replace punctuation and special characters with spaces, keep letters and digits
+    clean_text = re.sub(r'[^\w\s-]', ' ', description.lower())
+    # Split, clean, filter out purely numeric values or very short strings (length < 3)
+    words = []
+    for w in clean_text.split():
+        w = w.strip()
+        # Keep words that are not purely digits and length >= 3
+        if w and not w.isdigit() and len(w) >= 3:
+            words.append(w)
+    return list(set(words))
+
+
 def load_shoppable_codes(csv_path=None):
-    """Load the CMS shoppable services code list and return a set of code values."""
     if csv_path is None:
         csv_path = os.path.join(REFERENCE_DIR, 'shoppable_codes.csv')
     codes = set()
@@ -79,139 +196,14 @@ def load_shoppable_codes(csv_path=None):
     return codes
 
 
-def normalize_payer_name(name):
-    """Normalize payer name to deduplicate variants like 'J&J' vs 'J and J'."""
-    if not name:
-        return name
-    # Replace underscores with spaces (e.g. negotiated_dollar -> negotiated dollar)
-    name = name.replace('_', ' ')
-    name = re.sub(r'\s*&\s*', ' and ', name)
-    name = re.sub(r'\s+', ' ', name).strip()
-    # Title-case known pinned values for display consistency
-    _title_map = {
-        'negotiated dollar': 'Negotiated Dollar',
-        'discounted cash': 'Discounted Cash',
-        'gross charge': 'Gross Charge',
-        'cash': 'Cash',
-        'gross': 'Gross',
-    }
-    return _title_map.get(name.lower(), name)
-
-def parse_currency(value):
-    if not value or value.strip() == '':
-        return None
-    try:
-        return float(value.replace('$', '').replace(',', ''))
-    except ValueError:
-        return None
-
-def generate_id(text_parts):
-    """Generates a consistent hash ID from a list of strings."""
-    combined = "".join([str(p).strip().lower() for p in text_parts if p])
-    return hashlib.md5(combined.encode('utf-8')).hexdigest()
-
-def create_index(es, clean=False):
-    """Creates the index with appropriate mappings."""
-    if es.indices.exists(index=INDEX_NAME):
-        if clean:
-            print(f"Index '{INDEX_NAME}' exists. Deleting it as requested...")
-            es.indices.delete(index=INDEX_NAME)
-        else:
-            # Verify payer_name mapping; if it was auto-created as 'text' aggregations break.
-            try:
-                m = es.indices.get_mapping(index=INDEX_NAME)
-                payer_type = (m[INDEX_NAME]['mappings']['properties']
-                              .get('prices', {}).get('properties', {})
-                              .get('payer_name', {}).get('type', ''))
-                if payer_type != 'keyword':
-                    print(f"WARNING: Index '{INDEX_NAME}' has wrong payer_name mapping "
-                          f"('{payer_type}' instead of 'keyword'). "
-                          f"Insurer filter will not work. Re-run with --clean to fix.")
-            except Exception:
-                pass
-            print(f"Index '{INDEX_NAME}' already exists. Skipping creation to preserve text.")
-            return
-
-    settings = {
-        "settings": {
-            "number_of_shards": 1,
-            "number_of_replicas": 0,
-            "index.mapping.nested_objects.limit": 10000
-        },
-        "mappings": {
-            "properties": {
-                "id": {"type": "keyword"},
-                "group_key": {"type": "keyword"},
-                "description": {"type": "text", "analyzer": "english"},
-                "code": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                "code_type": {"type": "keyword"},
-                "ms_drg": {"type": "keyword"},
-                "apr_drg": {"type": "keyword"},
-                "rc": {"type": "keyword"},
-                "apc": {"type": "keyword"},
-                "ndc": {"type": "keyword"},
-                "cdm": {"type": "keyword"},
-                "codes": {
-                    "type": "nested",
-                    "properties": {
-                        "value": {"type": "keyword"},
-                        "type": {"type": "keyword"}
-                    }
-                },
-                "is_standard_group": {"type": "boolean"},
-                "stats": {
-                    "properties": {
-                        "min": {"type": "float"},
-                        "max": {"type": "float"},
-                        "avg": {"type": "float"},
-                        "count": {"type": "integer"}
-                    }
-                },
-                "prices": {
-                    "type": "nested",
-                    "properties": {
-                        "hospital_id": {"type": "keyword"},
-                        "payer_name": {"type": "keyword"},
-                        "plan_name": {"type": "keyword"},
-                        "setting": {"type": "keyword"},
-                        "price": {"type": "float"}
-                    }
-                }
-            }
-        }
-    }
-
-    es.indices.create(index=INDEX_NAME, body=settings)
-    print(f"Index '{INDEX_NAME}' created.")
-
-def generate_actions(procedures):
-    """Generates actions for the bulk API."""
-    for procedure in procedures:
-        yield {
-            "_index": INDEX_NAME,
-            "_id": procedure['id'],
-            "_source": procedure
-        }
-
 def clean_hospital_name(raw_name):
-    """
-    Cleans a hospital name by removing ID prefixes (digits/underscores)
-    and formatting it to be human-readable.
-    Example: 351720796_Indiana-University... -> Indiana University...
-    """
     if not raw_name:
         return "Unknown Hospital"
-    
-    # Remove leading tax IDs/numbers and separator (e.g. "123456_" or "123456 ")
     s = re.sub(r'^\d+[\W_]+', '', raw_name)
-    
-    # Replace filename separators with spaces
     s = s.replace('_', ' ').replace('-', ' ').replace('.', ' ')
-    
-    # Clean up multiple spaces
     s = re.sub(r'\s+', ' ', s).strip()
-    
     return s.title()
+
 
 def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable_codes=None):
     print(f"Parsing {os.path.basename(csv_path)}{'  [shoppable-only filter active]' if shoppable_codes else ''}...")
@@ -228,74 +220,58 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
 
     try:
         with open(csv_path, 'r', encoding='utf-8', errors='replace') as f:
-            # 1. Analyze first few lines to find the real header row
             sample_lines = []
             for _ in range(10):
                 line = f.readline()
                 if not line: break
                 sample_lines.append(line)
             
-            f.seek(0) # Reset file pointer
+            f.seek(0)
             reader = csv.reader(f)
 
             header_row_idx = 0
             headers = []
             Hospital_Name_From_Meta = None
 
-            # Keywords to identify the header row
             header_keywords = ['description', 'code', 'standard_charge', 'price', 'plan', 'payer']
             max_matches = 0
 
-            # Temporary reader to analyze structure
             temp_reader = csv.reader(sample_lines)
             for idx, row in enumerate(temp_reader):
                 if not row: continue
-                # Count how many keywords appear in this row (case insensitive)
                 row_str = " ".join(row).lower()
                 matches = sum(1 for k in header_keywords if k in row_str)
 
-                # Heuristic: logical header usually has at least 3 matching keywords
                 if matches > max_matches and matches >= 2:
                     max_matches = matches
                     header_row_idx = idx
                     headers = row
                     
-                    # Look for hospital name in previous rows
                     if idx > 0:
-                        # Check strictly the row before (idx-1) or 2 rows before
-                        # Simple rule: Look at the very first row or the row just before headers
                         try:
-                            # Re-read strictly for meta analysis
                             meta_row_1 = next(csv.reader([sample_lines[0]]))
                             meta_row_2 = next(csv.reader([sample_lines[1]])) if len(sample_lines) > 1 else []
-                            
-                            # Check specifically for "hospital_name" key in first row
                             meta_map = {h.strip().lower(): i for i, h in enumerate(meta_row_1) if len(h) < 200}
                             if "hospital_name" in meta_map and len(meta_row_2) > meta_map["hospital_name"]:
                                 Hospital_Name_From_Meta = meta_row_2[meta_map["hospital_name"]]
                             elif len(meta_row_2) > 0 and idx >= 2:
-                                # Fallback: assume first col of 2nd row is name (CMS style)
                                 Hospital_Name_From_Meta = meta_row_2[0]
                         except Exception:
                             pass
 
             if not headers:
-                # Fallback: Assume first row is header if dynamic detection failed
                 f.seek(0)
                 headers = next(reader)
                 header_row_idx = 0
 
-            # Advance the real reader to the data payload (skip metadata + header)
             f.seek(0)
             reader = csv.reader(f)
             for _ in range(header_row_idx + 1):
                 next(reader, None)
 
-            # Update Hospital ID if found in metadata
             if Hospital_Name_From_Meta:
                 print(f"  [Meta] Detected Hospital Name: {Hospital_Name_From_Meta}")
 
-            # Prepare Header Map
             header_map = {h.strip(): i for i, h in enumerate(headers)}
             
             col_desc = header_map.get('description')
@@ -303,25 +279,19 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
             col_code_type = header_map.get('code|1|type') or header_map.get('code_type')
             col_setting = header_map.get('setting')
 
-            # --- DYNAMIC PRICE COLUMN DETECTION ---
             col_payer_generic = header_map.get('payer_name')
             col_plan_generic = header_map.get('plan_name')
             col_price_generic = header_map.get('standard_charge|negotiated_dollar')
 
-            # Identify "Wide" columns (CMS format: standard_charge | payer | plan | type)
             wide_price_cols = []
             for h, idx in header_map.items():
                 parts = h.split('|')
-                
-                # Check for standard_charge | ... | negotiated_dollar
                 if len(parts) >= 2 and parts[0] == 'standard_charge':
                     last_part = parts[-1] 
                     if last_part == 'negotiated_dollar':
-                        # Generic column with no payer embedded (e.g. standard_charge|negotiated_dollar)
                         if len(parts) == 2:
                             payer = 'Negotiated Dollar'
                             plan = 'Negotiated Dollar'
-                        # Try to extract payer/plan from middle parts
                         elif len(parts) == 4:
                             payer = normalize_payer_name(parts[1])
                             plan = normalize_payer_name(parts[2])
@@ -329,7 +299,6 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                             payer = normalize_payer_name(parts[1])
                             plan = "Standard"
                         else:
-                            # Fallback for complex headers
                             payer = normalize_payer_name(parts[1])
                             plan = " / ".join(normalize_payer_name(p) for p in parts[2:-1])
                         
@@ -344,25 +313,18 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
             if is_wide_format:
                 print(f"  Detected Wide/CMS Format with {len(wide_price_cols)} price columns.")
 
-            # --- ID/Name Source Logic ---
             final_h_name = Hospital_Name_From_Meta if Hospital_Name_From_Meta else "Unknown Hospital"
             final_h_id = generate_id([final_h_name])
             final_h_name = clean_hospital_name(final_h_name)
 
             records_processed = 0
-            MAX_RECORDS = 999999999
 
             for row in tqdm(reader, desc=f"Parsing {final_h_name}", unit="rows"):
-                if records_processed >= MAX_RECORDS:
-                    break
-
-                if not row or len(row) < 3: # Basic sanity check for empty lines
+                if not row or len(row) < 3:
                     continue
                 
-                # Safe description extraction
                 description = row[col_desc] if col_desc is not None and col_desc < len(row) else "Unknown"
                 
-                # Extract all codes from all code|N / code|N|type columns
                 all_codes = []
                 primary_code = ""
                 primary_code_type = ""
@@ -397,23 +359,18 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                     if primary_code and primary_code_type:
                         all_codes.insert(0, {"value": primary_code, "type": primary_code_type.strip().upper()})
 
-                # Promote frequently-queried code types to flat fields
                 flat_codes = {}
                 _type_to_field = {
                     "MS-DRG": "ms_drg", "DRG": "ms_drg",
                     "APR-DRG": "apr_drg", "TRIS-DRG": "apr_drg",
-                    "RC": "rc",
-                    "APC": "apc",
-                    "NDC": "ndc",
-                    "CDM": "cdm",
+                    "RC": "rc", "APC": "apc", "NDC": "ndc", "CDM": "cdm",
                 }
                 for c in all_codes:
                     field = _type_to_field.get(c["type"])
                     if field and field not in flat_codes:
                         flat_codes[field] = c["value"]
 
-                # --- EXTRACT PRICES FOR THIS ROW ---
-                row_prices = [] # (price_val, payer_name, plan_name, setting_val)
+                row_prices = []
                 setting_val = row[col_setting] if col_setting is not None and col_setting < len(row) else "Unknown"
 
                 if is_wide_format:
@@ -423,19 +380,15 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                             if p_val is not None:
                                 row_prices.append((p_val, payer, plan, setting_val))
                 else:
-                    # Generic / Tall format
                     price = parse_currency(row[col_price_generic]) if col_price_generic is not None and col_price_generic < len(row) else None
                     if price is not None:
-                        # Ensure payer/plan are strings
                         payer = normalize_payer_name(row[col_payer_generic]) if col_payer_generic is not None and col_payer_generic < len(row) else "Unknown"
                         plan = normalize_payer_name(row[col_plan_generic]) if col_plan_generic is not None and col_plan_generic < len(row) else "Unknown"
-                        # setting_val already extracted
                         row_prices.append((price, payer, plan, setting_val))
 
                 if not row_prices:
                     continue
 
-                # Apply shoppable-only filter if requested
                 if shoppable_codes is not None:
                     row_code_values = {c['value'] for c in all_codes}
                     if primary_code:
@@ -457,7 +410,6 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
 
                 records_processed += 1
 
-                # Create Group Key
                 if primary_code:
                     prefix = primary_code_type if primary_code_type else "CODE"
                     group_key = f"{prefix}_{primary_code}"
@@ -466,7 +418,6 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                     group_key = description
                     is_standard_group = False
 
-                # --- Splitting Logic ---
                 if group_key not in active_group_tracker:
                     active_group_tracker[group_key] = {
                         'current_doc_id': generate_id([group_key]),
@@ -490,23 +441,16 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                         'price_values': []
                     }
                 else:
-                    # Merge flat code fields if not yet set
                     for field, val in flat_codes.items():
                         if not procedures_map[current_doc_id].get(field):
                             procedures_map[current_doc_id][field] = val
-                    # Merge any new code entries not already present
                     existing_codes = {(c['value'], c['type']) for c in procedures_map[current_doc_id].get('codes', [])}
                     for c in all_codes:
                         if (c['value'], c['type']) not in existing_codes:
                             procedures_map[current_doc_id].setdefault('codes', []).append(c)
                             existing_codes.add((c['value'], c['type']))
 
-                # Check for Overflow
                 if len(procedures_map[current_doc_id]['prices']) + len(row_prices) >= LIMIT_PER_DOC:
-                    if tracker['part_count'] == 0:
-                        # Only log once per group to keep noise down
-                        pass 
-
                     tracker['part_count'] += 1
                     new_doc_id = f"{generate_id([group_key])}_{tracker['part_count']}"
                     tracker['current_doc_id'] = new_doc_id
@@ -534,65 +478,169 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                         'setting': p_setting,
                         'price': p_val
                     }
-
                     procedures_map[current_doc_id]['prices'].append(price_record)
                     procedures_map[current_doc_id]['price_values'].append(p_val)
 
     except Exception as e:
         print(f"Error parsing {csv_path}: {e}")
-        import traceback
-        traceback.print_exc()
     
     return records_processed
 
+
+def save_to_sqlite(conn, final_procedures):
+    """Inserts processed procedures, codes, prices, FTS, and vocabulary words into SQLite."""
+    print("Beginning SQLite bulk inserts...")
+    cursor = conn.cursor()
+    
+    # Disable synchronous writes & configure journaling for speed during index builds
+    cursor.execute("PRAGMA synchronous = OFF;")
+    cursor.execute("PRAGMA journal_mode = MEMORY;")
+
+    procedure_rows = []
+    code_rows = []
+    price_rows = []
+    fts_rows = []
+    unique_words = set()
+
+    for doc in tqdm(final_procedures, desc="Preparing DB rows"):
+        pid = doc['id']
+        stats = doc.get('stats', {})
+        
+        # 1. Main Procedure Row
+        procedure_rows.append((
+            pid,
+            1 if doc.get('is_standard_group') else 0,
+            doc.get('group_key'),
+            doc.get('description'),
+            doc.get('code'),
+            doc.get('code_type'),
+            doc.get('ms_drg'),
+            doc.get('apr_drg'),
+            doc.get('rc'),
+            doc.get('apc'),
+            doc.get('ndc'),
+            doc.get('cdm'),
+            stats.get('min'),
+            stats.get('max'),
+            stats.get('avg'),
+            stats.get('count')
+        ))
+
+        # 2. Auxiliary Code Rows
+        for code_record in doc.get('codes', []):
+            code_rows.append((pid, code_record.get('value'), code_record.get('type')))
+
+        # 3. Hospital Pricing Rows
+        for price_record in doc.get('prices', []):
+            price_rows.append((
+                pid,
+                price_record.get('hospital_id'),
+                price_record.get('hospital_name'),
+                price_record.get('payer_name'),
+                price_record.get('plan_name'),
+                price_record.get('setting'),
+                price_record.get('price')
+            ))
+
+        # 4. FTS Virtual Table Row
+        fts_rows.append((
+            pid,
+            doc.get('description'),
+            doc.get('code'),
+            doc.get('code_type'),
+            doc.get('ms_drg'),
+            doc.get('apr_drg'),
+            doc.get('rc'),
+            doc.get('apc'),
+            doc.get('ndc'),
+            doc.get('cdm')
+        ))
+
+        # 5. Vocabulary Words (for spelling suggestions)
+        words = extract_vocabulary_words(doc.get('description'))
+        # Also extract words from the code itself if it has letters
+        if doc.get('code'):
+            words.extend(extract_vocabulary_words(doc.get('code')))
+        
+        for w in words:
+            unique_words.add(w)
+
+    # Database writes in a single unified transaction
+    try:
+        print(f"Inserting {len(procedure_rows)} procedures...")
+        cursor.executemany("""
+            INSERT OR REPLACE INTO procedures (
+                id, is_standard_group, group_key, description, code, code_type,
+                ms_drg, apr_drg, rc, apc, ndc, cdm, stats_min, stats_max, stats_avg, stats_count
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, procedure_rows)
+
+        print(f"Inserting {len(code_rows)} auxiliary code associations...")
+        cursor.executemany("""
+            INSERT INTO procedure_codes (procedure_id, code_value, code_type)
+            VALUES (?, ?, ?)
+        """, code_rows)
+
+        print(f"Inserting {len(price_rows)} prices...")
+        cursor.executemany("""
+            INSERT INTO prices (procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, price_rows)
+
+        print(f"Populating FTS5 Virtual table...")
+        cursor.executemany("""
+            INSERT INTO fts_procedures (
+                procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, fts_rows)
+
+        print(f"Indexing {len(unique_words)} words in spelling vocabulary...")
+        vocab_rows = [(w,) for w in unique_words]
+        cursor.executemany("INSERT OR IGNORE INTO unique_words (word) VALUES (?)", vocab_rows)
+
+        conn.commit()
+        print("SQLite Database successfully populated and indexed!")
+    except Exception as e:
+        conn.rollback()
+        print(f"ERROR: SQLite bulk inserts failed, transaction rolled back. Detail: {e}")
+        raise e
+
+
 def main():
-    parser = argparse.ArgumentParser(description='Load hospital price data into Elasticsearch')
+    parser = argparse.ArgumentParser(description='Load hospital price data into SQLite')
     parser.add_argument('--input_file', type=str, help='Path to a specific CSV file to process')
-    parser.add_argument('--mock', action='store_true', help='Skip indexing and print parsed records instead')
-    parser.add_argument('--clean', action='store_true', help='Delete existing index before adding data')
+    parser.add_argument('--clean', action='store_true', help='Wipe existing SQLite tables first')
     parser.add_argument('--shoppable-only', action='store_true',
-                        help='Only index the ~70 CMS shoppable services (reference/shoppable_codes.csv). '
-                             'Reduces index size by ~97%% for large hospital files.')
+                        help='Only index CMS shoppable services')
     parser.add_argument('--cached-file', type=str, metavar='PATH',
-                        help='Load from a pre-built shoppable_cache.json.gz (created by extract_shoppable.py). '
-                             'Skips all CSV parsing.')
+                        help='Load from a pre-built shoppable_cache.json.gz (skips CSV parsing)')
     args = parser.parse_args()
 
+    # Establish local SQLite database connection
+    conn = sqlite3.connect(DB_PATH)
+    
     try:
-        es_params = {'hosts': ES_URL}
-        if ES_USER and ES_PASS:
-            es_params['basic_auth'] = (ES_USER, ES_PASS)
-        
-        if ES_URL.startswith('https'):
-             es_params['verify_certs'] = False
-             es_params['ssl_show_warn'] = False
+        # 1. Initialize tables
+        init_db(conn, clean=args.clean)
 
-        es = Elasticsearch(**es_params)
-
-        if not args.mock:
-            if not es.ping():
-                print(f"Could not connect to Elasticsearch at {ES_URL}")
-                return
-            
-            # 1. Clean/Init Index
-            create_index(es, clean=args.clean)
-        else:
-            print("[MOCK MODE] Skipping connection check and index creation.")
-
-        # 2. Parse All CSVs (or load from cache)
         final_procedures = []
 
+        # 2. Index from cache or parse CSVs
         if args.cached_file:
-            # Fast path: load pre-extracted shoppable cache
             cache_path = args.cached_file
             if not os.path.exists(cache_path):
                 print(f"ERROR: Cached file not found: {cache_path}")
                 return
             print(f"Loading from cache: {cache_path} ...")
             with gzip.open(cache_path, 'rt', encoding='utf-8') as f:
-                final_procedures = json.load(f)
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        doc = json.loads(line)
+                        final_procedures.append(doc)
             print(f"Loaded {len(final_procedures)} documents from cache.")
-            # Normalize payer names in cached data (cache may pre-date normalization)
+            
+            # Payer normalizations
             for doc in final_procedures:
                 for price in doc.get('prices', []):
                     if 'payer_name' in price:
@@ -601,7 +649,7 @@ def main():
                         price['plan_name'] = normalize_payer_name(price['plan_name'])
         else:
             procedures_map = {}
-            active_group_tracker = {}  # Global tracker for splits
+            active_group_tracker = {}
             files_to_process = []
 
             shoppable_codes = None
@@ -635,9 +683,8 @@ def main():
                 print(f"  > File '{os.path.basename(csv_path)}' -> {count} records extracted.")
                 total_records += count
 
-            print(f"Finished parsing. Found {len(procedures_map)} unique procedure group documents from {total_records} total price records.")
+            print(f"Finished parsing. Found {len(procedures_map)} unique procedure group documents.")
 
-            # Calculate Stats
             for pid, data in procedures_map.items():
                 values = data.pop('price_values')
                 if values:
@@ -649,68 +696,14 @@ def main():
                     }
                 final_procedures.append(data)
 
-        # 3. Bulk Index
-        if args.mock:
-            print("\n[MOCK MODE] Documents that would be indexed:")
-            print("-" * 50)
-            # Print first 3 documents as sample
-            sample_count = 3
-            for i, doc in enumerate(final_procedures[:sample_count]):
-                print(f"Document {i+1}:")
-                print(json.dumps(doc, indent=2))
-                print("-" * 50)
-            print(f"... and {len(final_procedures) - sample_count} more documents.")
+        # 3. Write data to SQLite
+        if final_procedures:
+            save_to_sqlite(conn, final_procedures)
         else:
-            print("Indexing documents...")
+            print("No records available to save to SQLite.")
 
-            # Speed up indexing: disable refresh and replicas during bulk load
-            es.indices.put_settings(index=INDEX_NAME, body={
-                "index": {
-                    "refresh_interval": "-1",
-                    "number_of_replicas": 0
-                }
-            })
-
-            success = 0
-            failed = []
-            try:
-                actions = generate_actions(tqdm(final_procedures, desc="Indexing", unit="docs"))
-                for ok, result in parallel_bulk(
-                    es,
-                    actions,
-                    thread_count=4,
-                    chunk_size=500,
-                    max_chunk_bytes=20 * 1024 * 1024,
-                    raise_on_error=False,
-                ):
-                    if ok:
-                        success += 1
-                    else:
-                        failed.append(result)
-            finally:
-                # Always restore refresh — ignore errors if connection dropped after bulk load
-                try:
-                    es.indices.put_settings(index=INDEX_NAME, body={
-                        "index": {
-                            "refresh_interval": "1s",
-                            "number_of_replicas": 0
-                        }
-                    })
-                    es.indices.refresh(index=INDEX_NAME)
-                    print("Index refreshed.")
-                except Exception as refresh_err:
-                    print(f"Warning: could not restore index settings after indexing ({refresh_err}). "
-                          "Data was indexed successfully — run: "
-                          f"curl -X POST {ES_URL}/{INDEX_NAME}/_refresh to refresh manually.")
-
-            print(f"Successfully indexed {success} documents.")
-            if failed:
-                print(f"Failed to index {len(failed)} documents.")
-                print(f"Sample failure: {failed[0]}")
-
-    except Exception as e:
-        print(f"Operation failed: {e}")
-        return
+    finally:
+        conn.close()
 
 
 if __name__ == "__main__":
