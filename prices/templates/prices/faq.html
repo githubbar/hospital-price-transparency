@@ -137,9 +137,10 @@
                     </h2>
                     <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body ps-0 text-muted">
-                            Hospitals group inpatient stays into <strong>DRG (Diagnosis Related Group)</strong> codes &mdash; MS-DRG (Medicare) and APR-DRG (All-Patient).
-                            Procedures that share the same DRG are typically performed together during the same hospital admission.
-                            Clicking that button queries the database for other procedures in the same DRG so you can estimate the full cost of a stay, not just a single line item.
+                            For inpatient stays, hospitals group procedures into <strong>DRG (Diagnosis Related Group)</strong> codes &mdash; MS-DRG (Medicare) and APR-DRG (All-Patient).
+                            For outpatient visits, procedures are grouped into <strong>APC (Ambulatory Payment Classification)</strong> codes.
+                            Procedures that share the same DRG or APC are clinically similar and typically performed together during the same visit or hospital admission.
+                            Clicking that button queries the database for other procedures in the same clinical group so you can estimate related costs, rather than just a single line item.
                         </div>
                     </div>
                 </div>
@@ -174,7 +175,7 @@
                             Hospital charge files are sourced from
                             <a href="https://hospitalpricingfiles.org/" target="_blank" rel="noopener">hospitalpricingfiles.org</a>,
                             which aggregates the machine-readable files published by each hospital.
-                            The raw CSVs are processed, filtered, and indexed into Elasticsearch to power this search.
+                            The raw CSVs are processed, filtered, and indexed into a SQLite database with FTS5 (Full-Text Search) to power this search.
                             Prices shown are the hospitals&rsquo; own published standard charges and may differ from what you are ultimately billed.
                         </div>
                     </div>
@@ -189,7 +190,7 @@
                     <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                         <div class="accordion-body ps-0 text-muted">
                             This site is a free, non-commercial public resource. Keeping it running has real costs &mdash; cloud hosting,
-                            Elasticsearch infrastructure, and bandwidth to serve thousands of searches.
+                            serverless database infrastructure, and bandwidth to serve thousands of searches.
                             If you find it useful, please consider donating via PayPal or sponsoring on GitHub:
                             <div class="mt-3 d-flex flex-wrap gap-2">
                                 <a class="btn btn-sm fw-semibold" href="https://www.paypal.com/donate/?hosted_button_id=Y7NER94EV2SWU" target="_blank" rel="noopener"

@@ -416,14 +416,14 @@
                                         <div class="explain-text text-secondary mt-1 p-2 rounded" style="font-size:0.82rem; background:#f8f9fa; display:none;"></div>
                                     </div>
                                     {% endif %}
-                                    {% if variant.ms_drg or variant.apr_drg or variant.rc %}
+                                    {% if variant.ms_drg or variant.apr_drg or variant.apc %}
                                     <div class="mt-1">
                                         <button class="btn btn-link btn-sm p-0 text-muted"
                                                 style="font-size:0.75rem;"
                                                 data-code="{{ variant.code }}"
                                                 data-ms-drg="{{ variant.ms_drg }}"
                                                 data-apr-drg="{{ variant.apr_drg }}"
-                                                data-rc="{{ variant.rc }}"
+                                                data-apc="{{ variant.apc }}"
                                                 onclick="loadRelated(this)">
                                             <i class="bi bi-diagram-3"></i> What else is typically billed with this?
                                         </button>
@@ -813,7 +813,7 @@
             const params = new URLSearchParams({
                 ms_drg:  (btn.dataset.msDrg && btn.dataset.msDrg !== 'None') ? btn.dataset.msDrg : '',
                 apr_drg: (btn.dataset.aprDrg && btn.dataset.aprDrg !== 'None') ? btn.dataset.aprDrg : '',
-                rc:      (btn.dataset.rc && btn.dataset.rc !== 'None') ? btn.dataset.rc : '',
+                apc:     (btn.dataset.apc && btn.dataset.apc !== 'None') ? btn.dataset.apc : '',
                 exclude: btn.dataset.code || '',
             });
             const resp = await fetch(`/related/?${params}`);

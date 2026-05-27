@@ -624,10 +624,19 @@ def main():
                         help='Only index CMS shoppable services')
     parser.add_argument('--cached-file', type=str, metavar='PATH',
                         help='Load from a pre-built shoppable_cache.json.gz (skips CSV parsing)')
+    parser.add_argument('--output-db', type=str, help='Custom filename for the output SQLite database (e.g., ca.sqlite3)')
     args = parser.parse_args()
 
+    db_path = DB_PATH
+    if args.output_db:
+        # Resolve path in the same directory as settings default database
+        db_path = os.path.join(os.path.dirname(DB_PATH), args.output_db)
+
+    print(f"Dynamic DB Resolution:")
+    print(f"  Target DB Path: {db_path}")
+
     # Establish local SQLite database connection
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(db_path)
     
     try:
         # 1. Initialize tables

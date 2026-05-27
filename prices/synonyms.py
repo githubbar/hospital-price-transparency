@@ -15,36 +15,65 @@ def load_synonyms_from_db():
     Fetches synonyms from the database, sorted by length in descending order
     (so longer phrases are matched before shorter sub-phrases).
     Compiles word-boundary patterns dynamically and caches the result.
+    If the synonyms table is missing, empty, or inaccessible in the database,
+    falls back to loading from reference/default_synonyms.json.
     """
     global _cached_synonyms
     if _cached_synonyms is not None:
         return _cached_synonyms
 
     synonyms_list = []
+    loaded_from_db = False
+    
     try:
         with connection.cursor() as cursor:
             # Check if synonyms table exists first to avoid crashes in early stages of migration
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='synonyms';")
-            if not cursor.fetchone():
-                return []
-                
-            cursor.execute("SELECT phrase, expansions FROM synonyms ORDER BY length(phrase) DESC")
-            rows = cursor.fetchall()
-            
-            for phrase, exp_json in rows:
-                if not phrase or not exp_json:
-                    continue
-                try:
-                    expansions = json.loads(exp_json)
-                    if isinstance(expansions, list):
-                        # Compile word boundaries dynamically
-                        pattern = re.compile(rf'\b{re.escape(phrase.strip())}\b', re.IGNORECASE)
-                        synonyms_list.append((pattern, expansions))
-                except Exception as json_err:
-                    print(f"Error parsing synonym expansions for '{phrase}': {json_err}")
+            if cursor.fetchone():
+                cursor.execute("SELECT phrase, expansions FROM synonyms ORDER BY length(phrase) DESC")
+                rows = cursor.fetchall()
+                if rows:
+                    for phrase, exp_json in rows:
+                        if not phrase or not exp_json:
+                            continue
+                        try:
+                            expansions = json.loads(exp_json)
+                            if isinstance(expansions, list):
+                                # Compile word boundaries dynamically
+                                pattern = re.compile(rf'\b{re.escape(phrase.strip())}\b', re.IGNORECASE)
+                                synonyms_list.append((pattern, expansions))
+                        except Exception as json_err:
+                            print(f"Error parsing synonym expansions for '{phrase}': {json_err}")
+                    if synonyms_list:
+                        loaded_from_db = True
+                        print(f"Successfully loaded {len(synonyms_list)} synonyms from database.")
     except Exception as db_err:
         print(f"Database error loading synonyms: {db_err}")
-        return []
+
+    # Fallback to reference/default_synonyms.json if not loaded from DB
+    if not loaded_from_db:
+        print("Synonyms table empty, missing, or error occurred. Falling back to reference/default_synonyms.json...")
+        try:
+            from django.conf import settings
+            import os
+            json_path = os.path.join(settings.BASE_DIR, 'reference', 'default_synonyms.json')
+            if os.path.exists(json_path):
+                with open(json_path, 'r', encoding='utf-8') as f:
+                    default_synonyms = json.load(f)
+                
+                # Sort synonyms by key length descending to match database order behavior
+                sorted_syns = sorted(default_synonyms.items(), key=lambda item: len(item[0]), reverse=True)
+                
+                synonyms_list = []
+                for phrase, expansions in sorted_syns:
+                    if isinstance(expansions, list):
+                        pattern = re.compile(rf'\b{re.escape(phrase.strip())}\b', re.IGNORECASE)
+                        synonyms_list.append((pattern, expansions))
+                print(f"Successfully loaded {len(synonyms_list)} synonyms from fallback JSON.")
+            else:
+                print(f"Fallback synonyms JSON not found at: {json_path}")
+        except Exception as json_err:
+            print(f"Error loading fallback synonyms JSON: {json_err}")
 
     _cached_synonyms = synonyms_list
     return _cached_synonyms

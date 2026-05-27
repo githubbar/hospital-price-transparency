@@ -18,6 +18,51 @@ import requests
 from prices.synonyms import expand_query_synonyms, inject_synonyms_into_fts
 
 
+def resolve_active_dbs(cursor, selected_states):
+    """
+    Given a list of state codes (e.g. ['in', 'ky']), attaches necessary SQLite files
+    and returns a list of database prefixes to use in queries.
+    """
+    db_dir = os.environ.get('SQLITE_DB_DIR', settings.BASE_DIR)
+    active_dbs = []
+    
+    # If no states are selected, default to 'in'
+    if not selected_states:
+        selected_states = ['in']
+        
+    for state in selected_states:
+        state = state.lower().strip()
+        
+        # Check if a state-specific database file exists in the directory
+        db_filename = f"{state}.sqlite3"
+        db_path = os.path.join(db_dir, db_filename)
+        
+        if os.path.exists(db_path):
+            try:
+                cursor.execute("PRAGMA database_list")
+                attached = [row[1] for row in cursor.fetchall()]
+                db_alias = f"{state}_db"
+                
+                if db_alias not in attached:
+                    attach_sql = f"ATTACH DATABASE 'file:{db_path}?mode=ro' AS `{db_alias}`"
+                    cursor.execute(attach_sql)
+                    print(f"[SQLite Attach] Attached {db_filename} as `{db_alias}`")
+                
+                active_dbs.append(state)
+            except Exception as e:
+                print(f"[SQLite Attach] Error attaching {db_filename}: {e}")
+        else:
+            # Fallback for 'in' (Indiana): if in.sqlite3 doesn't exist, map it to 'main'
+            if state == 'in':
+                active_dbs.append('main')
+            else:
+                print(f"[SQLite Attach] Database file not found: {db_path}")
+            
+    if not active_dbs:
+        active_dbs.append('main')
+        
+    return active_dbs
+
 
 def _load_hospitals():
     """Load Indiana hospital list from reference file with computed ES-compatible IDs."""
@@ -231,11 +276,23 @@ def search(request):
     page_obj = None
     total_records = 0
 
-    # Get total records count (best effort)
+    selected_states = request.GET.getlist('state')
+    # If no state selected, default to 'in' (Indiana)
+    if not selected_states:
+        selected_states = ['in']
+    selected_states_set = set(selected_states)
+
+    # Get total records count across active/selected databases (best effort)
     try:
         with connection.cursor() as cursor:
-            cursor.execute("SELECT COUNT(*) FROM procedures")
-            total_records = cursor.fetchone()[0]
+            temp_active_dbs = resolve_active_dbs(cursor, selected_states)
+            for db in temp_active_dbs:
+                db_prefix = f"{db}_db." if db != "main" else ""
+                try:
+                    cursor.execute(f"SELECT COUNT(*) FROM {db_prefix}procedures")
+                    total_records += cursor.fetchone()[0]
+                except Exception:
+                    pass
     except Exception as e:
         print(f"Error fetching total records: {e}")
 
@@ -264,7 +321,7 @@ def search(request):
     if raw_hospital_ids:
         # Flow A: pack hospitals into a token and redirect to clean URL
         token = _save_filter_token(raw_hospital_ids)
-        redirect_params = [('q', query), ('s', token)] + [('payer', p) for p in selected_payers]
+        redirect_params = [('q', query), ('s', token)] + [('payer', p) for p in selected_payers] + [('state', s) for s in selected_states]
         return HttpResponseRedirect(f"{request.path}?{_urlencode(redirect_params)}")
     elif filter_token:
         # Flow B: restore from cache
@@ -357,69 +414,125 @@ def search(request):
         # Re-inject synonyms into the SQLite MATCH query
         sqlite_query = inject_synonyms_into_fts(sqlite_query, placeholder_map)
 
-        # Prepare parameters & placeholders for SQL filters
-        sql_where_fts = ["fts_procedures MATCH %s"]
-        sql_params = [sqlite_query]
-
-        if selected_hospitals:
-            h_placeholders = []
-            for h_id in selected_hospitals:
-                h_placeholders.append("%s")
-                sql_params.append(h_id)
-            sql_where_fts.append(f"EXISTS (SELECT 1 FROM prices WHERE prices.procedure_id = fts_procedures.procedure_id AND prices.hospital_id IN ({','.join(h_placeholders)}))")
-
-        if selected_payers:
-            p_placeholders = []
-            for p_name in selected_payers:
-                p_placeholders.append("%s")
-                sql_params.append(p_name)
-            sql_where_fts.append(f"EXISTS (SELECT 1 FROM prices WHERE prices.procedure_id = fts_procedures.procedure_id AND prices.payer_name IN ({','.join(p_placeholders)}))")
-
-        where_clause_fts = " WHERE " + " AND ".join(sql_where_fts) if sql_where_fts else ""
-
         try:
             with connection.cursor() as cursor:
-                # Count total matching records
-                count_sql = f"SELECT COUNT(DISTINCT procedure_id) FROM fts_procedures {where_clause_fts}"
-                cursor.execute(count_sql, sql_params)
+                # 1. Resolve active databases by attaching them
+                active_dbs = resolve_active_dbs(cursor, selected_states)
+                
+                # 2. Count total matching records across all active databases
+                count_parts = []
+                count_params = []
+                for db in active_dbs:
+                    db_prefix = f"{db}_db." if db != "main" else ""
+                    
+                    db_where_conditions = ["fts_procedures MATCH %s"]
+                    db_params = [sqlite_query]
+                    
+                    if selected_hospitals:
+                        h_placeholders = ",".join(["%s"] * len(selected_hospitals))
+                        db_where_conditions.append(
+                            f"EXISTS (SELECT 1 FROM {db_prefix}prices WHERE {db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {db_prefix}prices.hospital_id IN ({h_placeholders}))"
+                        )
+                        db_params.extend(selected_hospitals)
+                        
+                    if selected_payers:
+                        p_placeholders = ",".join(["%s"] * len(selected_payers))
+                        db_where_conditions.append(
+                            f"EXISTS (SELECT 1 FROM {db_prefix}prices WHERE {db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {db_prefix}prices.payer_name IN ({p_placeholders}))"
+                        )
+                        db_params.extend(selected_payers)
+                        
+                    db_where_clause = " WHERE " + " AND ".join(db_where_conditions)
+                    
+                    count_parts.append(f"SELECT DISTINCT procedure_id FROM {db_prefix}fts_procedures {db_where_clause}")
+                    count_params.extend(db_params)
+                
+                combined_count_sql = f"SELECT COUNT(*) FROM ({' UNION '.join(count_parts)})"
+                cursor.execute(combined_count_sql, count_params)
                 total_hits = cursor.fetchone()[0]
                 results_count = total_hits
 
-                # Query matching procedures (paginated) ranked by FTS5 BM25 relevance score
-                results_sql = f"""
-                    SELECT procedures.id, procedures.description, procedures.code, procedures.code_type,
-                           procedures.ms_drg, procedures.apr_drg, procedures.rc, procedures.apc, procedures.ndc, procedures.cdm,
-                           procedures.stats_min, procedures.stats_max, procedures.stats_avg, procedures.stats_count,
-                           procedures.is_standard_group,
-                           bm25(fts_procedures) as rank
-                    FROM fts_procedures
-                    JOIN procedures ON procedures.id = fts_procedures.procedure_id
-                    {where_clause_fts}
+                # 3. Query matching procedures (paginated) ranked by FTS5 BM25 relevance score
+                results_parts = []
+                results_params = []
+                for db in active_dbs:
+                    db_prefix = f"{db}_db." if db != "main" else ""
+                    
+                    db_where_conditions = ["fts_procedures MATCH %s"]
+                    db_params = [sqlite_query]
+                    
+                    if selected_hospitals:
+                        h_placeholders = ",".join(["%s"] * len(selected_hospitals))
+                        db_where_conditions.append(
+                            f"EXISTS (SELECT 1 FROM {db_prefix}prices WHERE {db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {db_prefix}prices.hospital_id IN ({h_placeholders}))"
+                        )
+                        db_params.extend(selected_hospitals)
+                        
+                    if selected_payers:
+                        p_placeholders = ",".join(["%s"] * len(selected_payers))
+                        db_where_conditions.append(
+                            f"EXISTS (SELECT 1 FROM {db_prefix}prices WHERE {db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {db_prefix}prices.payer_name IN ({p_placeholders}))"
+                        )
+                        db_params.extend(selected_payers)
+                        
+                    db_where_clause = " WHERE " + " AND ".join(db_where_conditions)
+                    
+                    results_parts.append(f"""
+                        SELECT {db_prefix}procedures.id, {db_prefix}procedures.description, {db_prefix}procedures.code, {db_prefix}procedures.code_type,
+                               {db_prefix}procedures.ms_drg, {db_prefix}procedures.apr_drg, {db_prefix}procedures.rc, {db_prefix}procedures.apc, {db_prefix}procedures.ndc, {db_prefix}procedures.cdm,
+                               {db_prefix}procedures.stats_min, {db_prefix}procedures.stats_max, {db_prefix}procedures.stats_avg, {db_prefix}procedures.stats_count,
+                               {db_prefix}procedures.is_standard_group,
+                               bm25(fts_procedures) as rank,
+                               '{db}' as source_db
+                        FROM {db_prefix}fts_procedures
+                        JOIN {db_prefix}procedures ON {db_prefix}procedures.id = {db_prefix}fts_procedures.procedure_id
+                        {db_where_clause}
+                    """)
+                    results_params.extend(db_params)
+                
+                combined_results_sql = f"""
+                    SELECT * FROM (
+                        {' UNION ALL '.join(results_parts)}
+                    )
                     ORDER BY rank ASC
                     LIMIT {items_per_page} OFFSET {(page_number - 1) * items_per_page}
                 """
-                cursor.execute(results_sql, sql_params)
+                cursor.execute(combined_results_sql, results_params)
                 proc_rows = cursor.fetchall()
                 
                 hits = []
                 if proc_rows:
                     proc_ids = [row[0] for row in proc_rows]
-                    
-                    # Batch fetch all prices for these procedures
                     price_placeholders = ",".join(["%s"] * len(proc_ids))
-                    cursor.execute(f"""
-                        SELECT procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price 
-                        FROM prices 
-                        WHERE procedure_id IN ({price_placeholders})
-                    """, proc_ids)
+                    
+                    # Batch fetch all prices across all active databases
+                    price_queries = []
+                    price_params = []
+                    for db in active_dbs:
+                        db_prefix = f"{db}_db." if db != "main" else ""
+                        price_queries.append(f"""
+                            SELECT procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price 
+                            FROM {db_prefix}prices 
+                            WHERE procedure_id IN ({price_placeholders})
+                        """)
+                        price_params.extend(proc_ids)
+                    
+                    cursor.execute(" UNION ALL ".join(price_queries), price_params)
                     prices_fetched = cursor.fetchall()
                     
-                    # Batch fetch all auxiliary codes
-                    cursor.execute(f"""
-                        SELECT procedure_id, code_value, code_type 
-                        FROM procedure_codes 
-                        WHERE procedure_id IN ({price_placeholders})
-                    """, proc_ids)
+                    # Batch fetch all auxiliary codes across all active databases
+                    code_queries = []
+                    code_params = []
+                    for db in active_dbs:
+                        db_prefix = f"{db}_db." if db != "main" else ""
+                        code_queries.append(f"""
+                            SELECT procedure_id, code_value, code_type 
+                            FROM {db_prefix}procedure_codes 
+                            WHERE procedure_id IN ({price_placeholders})
+                        """)
+                        code_params.extend(proc_ids)
+                        
+                    cursor.execute(" UNION ALL ".join(code_queries), code_params)
                     codes_fetched = cursor.fetchall()
 
                     # Map prices & codes to their respective procedure IDs
@@ -443,9 +556,10 @@ def search(request):
                             'type': c_type
                         })
 
-                    # Construct Elasticsearch-compatible hit structures
+                    # Construct hit structures
                     for row in proc_rows:
                         pid = row[0]
+                        source_db = row[16]
                         hits.append({
                             '_source': {
                                 'id': pid,
@@ -465,6 +579,7 @@ def search(request):
                                     'count': row[13]
                                 },
                                 'is_standard_group': bool(row[14]),
+                                'source_db': source_db,
                                 'prices': prices_by_proc.get(pid, []),
                                 'codes': codes_by_proc.get(pid, [])
                             }
@@ -552,23 +667,25 @@ def search(request):
                 # Check if there are actually other procedures sharing the same group key
                 ms_drg_val = (source.get('ms_drg') or '').strip()
                 apr_drg_val = (source.get('apr_drg') or '').strip()
-                rc_val = (source.get('rc') or '').strip()
+                apc_val = (source.get('apc') or '').strip()
+                source_db = source.get('source_db', 'main')
+                db_prefix = f"{source_db}_db." if source_db != "main" else ""
 
                 with connection.cursor() as sub_cursor:
                     if ms_drg_val:
-                        sub_cursor.execute("SELECT 1 FROM procedures WHERE ms_drg = %s AND code != %s LIMIT 1", [ms_drg_val, code])
+                        sub_cursor.execute(f"SELECT 1 FROM {db_prefix}procedures WHERE ms_drg = %s AND code != %s LIMIT 1", [ms_drg_val, code])
                         if not sub_cursor.fetchone():
                             ms_drg_val = ""
 
                     if apr_drg_val:
-                        sub_cursor.execute("SELECT 1 FROM procedures WHERE apr_drg = %s AND code != %s LIMIT 1", [apr_drg_val, code])
+                        sub_cursor.execute(f"SELECT 1 FROM {db_prefix}procedures WHERE apr_drg = %s AND code != %s LIMIT 1", [apr_drg_val, code])
                         if not sub_cursor.fetchone():
                             apr_drg_val = ""
 
-                    if rc_val:
-                        sub_cursor.execute("SELECT 1 FROM procedures WHERE rc = %s AND code != %s LIMIT 1", [rc_val, code])
+                    if apc_val:
+                        sub_cursor.execute(f"SELECT 1 FROM {db_prefix}procedures WHERE apc = %s AND code != %s LIMIT 1", [apc_val, code])
                         if not sub_cursor.fetchone():
-                            rc_val = ""
+                            apc_val = ""
 
                 variant_data = {
                     'code': (code or '').strip(),
@@ -579,7 +696,7 @@ def search(request):
                     'rev_code': (source.get('rc') or source.get('rev_code') or '').strip(),
                     'ms_drg':  ms_drg_val,
                     'apr_drg': apr_drg_val,
-                    'rc':      rc_val,
+                    'apc':     apc_val,
                 }
                 
                 # Group by code (uppercased); fall back to normalized description if no code
@@ -744,7 +861,7 @@ def search(request):
 
 
         except Exception as e:
-            print(f"Error searching Elastic: {e}")
+            print(f"Error searching SQLite: {e}")
             grouped_results = []
             results_count = 0
             
@@ -759,6 +876,7 @@ def search(request):
         'total_records': total_records,
         'payers_list': payers_list,
         'selected_payers': selected_payers_set,
+        'selected_states': selected_states_set,
         'hospitals_list': hospitals_list,
         'hospital_cities': hospital_cities,
         'selected_hospitals': selected_hospitals_set,
@@ -779,33 +897,39 @@ def search(request):
 
 @require_GET
 def related_procedures(request):
-    """Return procedures that share the same DRG (or RC) as the given code."""
+    """Return procedures that share the same DRG (or APC) as the given code."""
     ms_drg   = request.GET.get('ms_drg', '').strip()
     apr_drg  = request.GET.get('apr_drg', '').strip()
-    rc       = request.GET.get('rc', '').strip()
+    apc      = request.GET.get('apc', '').strip()
     exclude  = request.GET.get('exclude', '').strip()  # the CPT/code to exclude
+    state    = request.GET.get('state', 'in').strip().lower()
 
     # Pick the best grouping key available
     if ms_drg:
         group_field, group_value = 'ms_drg', ms_drg
     elif apr_drg:
         group_field, group_value = 'apr_drg', apr_drg
-    elif rc:
-        group_field, group_value = 'rc', rc
+    elif apc:
+        group_field, group_value = 'apc', apc
     else:
-        return JsonResponse({'error': 'ms_drg, apr_drg, or rc is required'}, status=400)
+        return JsonResponse({'error': 'ms_drg, apr_drg, or apc is required'}, status=400)
 
-    cache_key = f'related_{group_field}_{group_value}_{exclude}'
+    cache_key = f'related_{group_field}_{group_value}_{exclude}_{state}'
     cached = cache.get(cache_key)
     if cached:
         return JsonResponse({'results': cached})
 
     try:
         with connection.cursor() as cursor:
+            # Resolve the correct state database
+            active_dbs = resolve_active_dbs(cursor, [state])
+            source_db = active_dbs[0]
+            db_prefix = f"{source_db}_db." if source_db != "main" else ""
+            
             # We want to select up to 8 procedures sharing the same group_field, excluding code 'exclude'
             sql = f"""
-                SELECT code, code_type, description, stats_avg, ms_drg, apr_drg, rc 
-                FROM procedures 
+                SELECT code, code_type, description, stats_avg, ms_drg, apr_drg, apc 
+                FROM {db_prefix}procedures 
                 WHERE {group_field} = %s 
             """
             params = [group_value]
@@ -825,7 +949,7 @@ def related_procedures(request):
                     'avg_price':   row[3],
                     'ms_drg':      row[4] or '',
                     'apr_drg':     row[5] or '',
-                    'rc':          row[6] or '',
+                    'apc':         row[6] or '',
                 })
         cache.set(cache_key, results, 3600)
         return JsonResponse({'results': results, 'group_field': group_field, 'group_value': group_value})

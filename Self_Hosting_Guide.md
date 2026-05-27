@@ -1,67 +1,78 @@
-# Self-Hosting Elasticsearch on Google Cloud (Firebase Project)
+# Self-Hosting the SQLite Serverless App
 
-"Firebase" itself is a suite of serverless tools (Database, Auth, Hosting) and **cannot run persistent servers** like Elasticsearch directly.
+Because this application has been migrated from Elasticsearch to a **self-contained SQLite FTS5 (Full-Text Search) architecture**, self-hosting is now **incredibly simple**. You no longer need to provision, secure, and pay for a separate 4 GB RAM database VM.
 
-However, every Firebase project is backed by a **Google Cloud Platform (GCP)** project. You can create a Virtual Machine (VM) in that same project to host Elasticsearch yourself.
+The entire application—including all code, static files, and the database itself—is packaged inside a single Docker container. You can host this container on almost any Linux server, Virtual Private Server (VPS), or local computer for a fraction of the cost of traditional setups.
 
-### Architecture
-- **Frontend/App**: Hosted on Firebase Hosting / Cloud Run.
-- **Database**: Firebase Firestore (for user data) + Elasticsearch (for search).
-- **Elasticsearch Host**: A Google Compute Engine (GCE) Virtual Machine running Docker.
+---
 
-### How to set it up (The "Self-Hosted" Path)
+## Deployment Architecture
 
-1.  **Go to Google Cloud Console**
-    - Visit [console.cloud.google.com](https://console.cloud.google.com).
-    - Select your Firebase project from the top dropdown.
+*   **Application & Database**: Both live in the same container.
+*   **Persistent vs. Immutable Database**: 
+    *   **In Production (Read-Only)**: The container starts up with `db.sqlite3` baked in and queries it in read-only mode (`?mode=ro`). This is perfect for high concurrency and zero-maintenance hosting.
+    *   **Updating Data**: When pricing data changes, you re-run the build locally and push a new Docker container. This is called **immutable deployment**.
 
-2.  **Create a VM Instance**
-    - Navigate to **Compute Engine** > **VM instances**.
-    - Click **Create Instance**.
-    - **Machine Type**: Choose at least `e2-medium` (2 vCPU, 4GB RAM). Elasticsearch is memory hungry; smaller instances will crash.
-    - **OS**: Ubuntu or Debian.
-    - **Firewall**: Check "Allow HTTP/HTTPS traffic".
+---
 
-3.  **Install Elasticsearch on the VM**
-    - SSH into the VM (click the "SSH" button in the console).
-    - Run these commands to install Docker and Elasticsearch:
-      ```bash
-      # Install Docker
-      sudo apt-get update
-      sudo apt-get install -y docker.io
+## How to Self-Host (On a Cheap VPS or local server)
 
-    # 3.1. Stop and remove the old container
-    sudo docker stop es01
-    sudo docker rm es01
+Any standard hosting provider that supports Docker (such as DigitalOcean, Linode, Hetzner, AWS LightSail, or a private server) can run this container for as little as **$4–$5/month**.
 
-    # 3.2. Run with security and a password (replace 'your_strong_password')
-    # wait a couple minuts for the instance to start
-    sudo docker run -d --name es01 -p 9200:9200 \
-    -e "discovery.type=single-node" \
-    -e "xpack.security.enabled=true" \
-    -e "ELASTIC_PASSWORD=password" \
-    -e "ES_JAVA_OPTS=-Xms1g -Xmx1g" \
-    docker.elastic.co/elasticsearch/elasticsearch:9.2.4
+### Step 1: Initialize the Database (Locally)
+1. Generate the SQLite database locally using the shoppable filter:
+   ```bash
+   python extract_shoppable.py
+   python load_to_sqlite.py --clean --cached-file data/shoppable_cache.json.gz
+   ```
+2. Ensure `db.sqlite3` is present in your project root.
 
-4.  **Network Configuration (Crucial & Security)**
-    - Do **NOT** expose port 9200 to the public internet (`0.0.0.0/0`). This will invite immediate ransomware attacks.
-    - If you are deploying to **Cloud Run**, keep port 9200 closed to the outside world. Cloud Run uses a Serverless VPC connector to reach Elasticsearch securely via its internal GCE IP (`10.128.0.x:9200`).
-    - To connect from your **Local PC** for admin scripts, do **not** open a public firewall port. Instead, use an SSH tunnel over `gcloud` (see `DEPLOYMENT.md` for SSH tunneling instructions).
-    - If you absolutely must create a firewall rule for external access, restrict **Source IP ranges** strictly to your specific home/office public IP address, never `0.0.0.0/0`.
+### Step 2: Build the Docker Image
+1. Build the Docker container locally:
+   ```bash
+   docker build -t hospital-price-search:latest .
+   ```
 
-5.  **Connect**
-    - Get the **External IP** of your VM.
-    - Update your `config/settings.py`:
-      ```python
-      ELASTICSEARCH_URL = 'http://<YOUR_VM_EXTERNAL_IP>:9200'
-      ```
+### Step 3: Run the Container
+You can run the container locally or on your remote VPS:
 
-### Warning on Costs
-- A VM with 4GB RAM (required for stable ES) costs roughly **$25-30/month** on Google Cloud.
-- **Elastic Cloud** often has managed plans starting around similar prices but handles backups/security for you.
+```bash
+docker run -d \
+  -p 8080:8080 \
+  --name price-search \
+  -e DEBUG=False \
+  -e TURNSTILE_SITE_KEY=your_key \
+  -e TURNSTILE_SECRET_KEY=your_secret \
+  hospital-price-search:latest
+```
 
-### Recommendation
-For a "Hospital Price Transparency" project:
-1.  **Fastest Dev**: Use **Elastic Cloud** (Managed). You get a URL, it just works.
-2.  **Cheapest/Hobby**: Self-host on a cheap VPS (e.g., DigitalOcean, Hetzner) for ~$5-10/mo, not Google Cloud.
-3.  **Strictly Google**: The VM method above.
+*   **`-p 8080:8080`**: Maps port 8080 on your host machine to port 8080 in the container.
+*   **`-e DEBUG=False`**: Disables Django debug mode for security in production.
+*   **`--name price-search`**: Names the running container.
+
+Access your website at `http://<your-vps-ip>:8080`.
+
+---
+
+## Updating Data / Rebuilding
+To update hospital CSVs or synonym mappings:
+1. Re-run `load_to_sqlite.py` locally to rebuild the `db.sqlite3` file.
+2. Re-build the Docker image: `docker build -t hospital-price-search:latest .`
+3. Restart the container on your host:
+   ```bash
+   docker stop price-search
+   docker rm price-search
+   docker run -d -p 8080:8080 --name price-search ... hospital-price-search:latest
+   ```
+
+---
+
+## Comparison: Cloud Run vs. Traditional VPS
+
+| Metric | Google Cloud Run (Serverless) | Self-Hosted VPS (e.g. DigitalOcean) |
+| :--- | :--- | :--- |
+| **Ongoing Cost** | **$0.00** (Within Cloud Run / Build free tier) | **$4.00 – $5.00 / month** |
+| **Idle Sleep** | Yes, container scales to zero when traffic stops. | No, container runs 24/7. |
+| **Cold Starts** | **~3–8 seconds** on the first request after idle. | **Instant (0ms)** since server is always awake. |
+| **Deployment Speed** | Slow (uploads the database to GCP on every deploy). | Instant (if building directly on the VPS). |
+| **Scaling** | Automatically scales up to hundreds of instances. | Limited to the CPU/RAM of your single VPS. |

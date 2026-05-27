@@ -23,5 +23,5 @@ coverage.xml
 .mypy_cache
 .pytest_cache
 .vscode
-# *.sqlite3
+*.sqlite3
 firebase_migration/
