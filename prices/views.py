@@ -15,6 +15,8 @@ import re
 import time
 import uuid
 import requests
+from prices.synonyms import expand_query_synonyms, inject_synonyms_into_fts
+
 
 
 def _load_hospitals():
@@ -285,9 +287,16 @@ def search(request):
     if query and not error_message:
         start_time = time.time()
         
+        # --- Synonym Query Expansion ---
+        processed_query, placeholder_map = expand_query_synonyms(query)
+        
         # --- Spelling Auto-Correction (Typo Tolerance) ---
-        corrected_query = query
-        words_to_correct = re.findall(r'\b[a-zA-Z]{3,}\b', query) # Only correct words of length >= 3 containing letters
+        corrected_query = processed_query
+        # Avoid checking placeholders (they start/end with __)
+        words_to_correct = [
+            w for w in re.findall(r'\b[a-zA-Z]{3,}\b', processed_query)
+            if not (w.startswith('__') and w.endswith('__'))
+        ]
         if words_to_correct:
             try:
                 with connection.cursor() as cursor:
@@ -327,7 +336,9 @@ def search(request):
                 
             t_clean = re.sub(r'[^\w\*-]', '', t)
             if t_clean and t_lower not in stopwords:
-                if not t_clean.endswith('*'):
+                if '__SYN_' in t_clean:
+                    search_terms.append(t_clean)
+                elif not t_clean.endswith('*'):
                     search_terms.append(f"{t_clean}*")
                 else:
                     search_terms.append(t_clean)
@@ -342,6 +353,9 @@ def search(request):
                     sqlite_query += " AND "
                 sqlite_query += term
         sqlite_query = sqlite_query.strip()
+
+        # Re-inject synonyms into the SQLite MATCH query
+        sqlite_query = inject_synonyms_into_fts(sqlite_query, placeholder_map)
 
         # Prepare parameters & placeholders for SQL filters
         sql_where_fts = ["fts_procedures MATCH %s"]

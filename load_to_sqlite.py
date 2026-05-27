@@ -51,6 +51,7 @@ def init_db(conn, clean=False):
         cursor.execute("DROP TABLE IF EXISTS prices;")
         cursor.execute("DROP TABLE IF EXISTS procedure_codes;")
         cursor.execute("DROP TABLE IF EXISTS unique_words;")
+        cursor.execute("DROP TABLE IF EXISTS synonyms;")
         cursor.execute("DROP TABLE IF EXISTS procedures;")
         conn.commit()
 
@@ -121,6 +122,15 @@ def init_db(conn, clean=False):
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS unique_words (
         word TEXT PRIMARY KEY
+    );
+    """)
+
+    # Synonyms table for mapping consumer keywords
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS synonyms (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        phrase TEXT UNIQUE NOT NULL,
+        expansions TEXT NOT NULL
     );
     """)
 
