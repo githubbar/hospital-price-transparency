@@ -310,19 +310,21 @@ def search(request):
     hospitals_list = _load_hospitals()
     hospital_cities = sorted(set(h['city'] for h in hospitals_list if h['city']))
 
-    # ── Hospital filter via shareable token ───────────────────────────────────
-    # Flow A – ?hospital=<md5>&... submitted (fresh form submit): create token, redirect.
-    # Flow B – ?s=<token> present: restore hospital IDs from cache.
-    # Payers always stay in the URL (?payer=X&payer=Y); only hospitals go into the token.
+    # ── Hospital filter via shareable token / cookies ─────────────────────────
+    # Flow A – ?hospital=<md5>&... submitted (fresh form submit, e.g. JS disabled): create token, redirect, set cookie.
+    # Flow B – ?s=<token> present: restore hospital IDs from cache, sync cookie.
+    # Flow C – fall back to cookie: read from 'selected_hospitals' cookie.
     filter_token = request.GET.get('s', '')
     token_expired = False
     raw_hospital_ids = request.GET.getlist('hospital')
 
     if raw_hospital_ids:
-        # Flow A: pack hospitals into a token and redirect to clean URL
+        # Flow A: pack hospitals into a token and redirect to clean URL, also writing the cookie
         token = _save_filter_token(raw_hospital_ids)
         redirect_params = [('q', query), ('s', token)] + [('payer', p) for p in selected_payers] + [('state', s) for s in selected_states]
-        return HttpResponseRedirect(f"{request.path}?{_urlencode(redirect_params)}")
+        response = HttpResponseRedirect(f"{request.path}?{_urlencode(redirect_params)}")
+        response.set_cookie('selected_hospitals', ','.join(raw_hospital_ids), max_age=30*86400, path='/', samesite='Lax')
+        return response
     elif filter_token:
         # Flow B: restore from cache
         cached_ids = _load_filter_token(filter_token)
@@ -332,7 +334,17 @@ def search(request):
             token_expired = True
             selected_hospitals = []
     else:
+        # Flow C: restore from cookie
         selected_hospitals = []
+        cookie_val = request.COOKIES.get('selected_hospitals', '')
+        if cookie_val:
+            try:
+                from urllib.parse import unquote
+                decoded = unquote(cookie_val)
+                if decoded:
+                    selected_hospitals = [h.strip() for h in decoded.split(',') if h.strip()]
+            except Exception:
+                pass
 
     selected_hospitals_set = set(selected_hospitals)  # MD5 IDs used for filtering
 
@@ -354,6 +366,16 @@ def search(request):
             w for w in re.findall(r'\b[a-zA-Z]{3,}\b', processed_query)
             if not (w.startswith('__') and w.endswith('__'))
         ]
+        
+        # Exclude common clinical acronyms and standard medical terms from autocorrect
+        EXEMPT_ACRONYMS = {
+            'acl', 'mri', 'ct', 'cbc', 'ekg', 'ecg', 'eeg', 'emg', 'iv', 'icu', 
+            'er', 'cpt', 'drg', 'apc', 'cdm', 'rc', 'mrc', 'pcp', 'pft', 'std', 
+            'uti', 'dna', 'rna', 'papr', 'hmo', 'ppo', 'cns', 'pns', 'egd', 'esd', 
+            'gerd', 'ibs', 'ibd', 'copd', 'als', 'ms', 'tb', 'sti', 'hpv', 'hiv', 
+            'aids', 'hcpcs', 'aprt', 'drg', 'msdrg', 'apcdrg', 'icd', 'icd9', 'icd10'
+        }
+
         if words_to_correct:
             try:
                 with connection.cursor() as cursor:
@@ -364,9 +386,11 @@ def search(request):
                     query_changed = False
                     for word in words_to_correct:
                         clean_word = word.lower()
+                        if clean_word in EXEMPT_ACRONYMS:
+                            continue
                         if clean_word not in vocab_set:
                             # Not found, search closest matches
-                            matches = difflib.get_close_matches(clean_word, vocab, n=1, cutoff=0.75)
+                            matches = difflib.get_close_matches(clean_word, vocab, n=1, cutoff=0.85)
                             if matches:
                                 corrected_word = matches[0]
                                 corrected_query = re.sub(r'\b' + re.escape(word) + r'\b', corrected_word, corrected_query, flags=re.IGNORECASE)
@@ -892,7 +916,10 @@ def search(request):
         'is_local': is_local,
     }
     
-    return render(request, 'prices/search.html', context)
+    response = render(request, 'prices/search.html', context)
+    if filter_token and not token_expired and selected_hospitals:
+        response.set_cookie('selected_hospitals', ','.join(selected_hospitals), max_age=30*86400, path='/', samesite='Lax')
+    return response
 
 
 @require_GET

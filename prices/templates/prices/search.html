@@ -145,9 +145,140 @@
             .filter-sidebar { display: none; }
         }
         .offcanvas-filter .filter-checklist { max-height: 180px; }
+
+        /* ── Search Loading Overlay ── */
+        .search-loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(30, 41, 59, 0.6); /* Modern slate/dark glass tint */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .search-loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Premium Loading Card */
+        .search-loading-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .search-loading-overlay.active .search-loading-card {
+            transform: scale(1);
+        }
+
+        /* Sleek Top Progress Bar inside the card */
+        .search-loading-bar-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+        }
+
+        .search-loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
+            transition: width 0.4s cubic-bezier(0.1, 0.8, 0.1, 1);
+        }
+
+        /* Custom glowing rotating spinner */
+        .spinner-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+        }
+
+        .custom-spinner {
+            width: 100%;
+            height: 100%;
+            border: 4px solid rgba(59, 130, 246, 0.1);
+            border-top: 4px solid #3b82f6;
+            border-right: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: spin-overlay 1s linear infinite;
+        }
+
+        .spinner-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0) 70%);
+            filter: blur(5px);
+            animation: pulse-overlay 2s ease-in-out infinite;
+        }
+
+        /* Text styles */
+        .loading-title {
+            color: #1e293b;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .loading-subtitle {
+            font-size: 0.95rem;
+            min-height: 1.5rem;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Keyframes */
+        @keyframes spin-overlay {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-overlay {
+            0%, 100% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
     </style>
 </head>
 <body>
+
+<!-- ── Premium Search Loading Overlay ── -->
+<div id="search-loading-overlay" class="search-loading-overlay">
+    <div class="search-loading-card">
+        <div class="search-loading-bar-container">
+            <div id="search-loading-bar" class="search-loading-bar"></div>
+        </div>
+        <div class="search-loading-content text-center">
+            <div class="spinner-container mb-4">
+                <div class="custom-spinner"></div>
+                <div class="spinner-glow"></div>
+            </div>
+            <h4 class="fw-bold mb-2 loading-title">Searching Indiana Hospital Prices</h4>
+            <p id="search-loading-status" class="text-muted mb-0 loading-subtitle">Analyzing query...</p>
+        </div>
+    </div>
+</div>
 
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #374151;">
     <div class="container">
@@ -685,6 +816,13 @@
                 `${nearby.size} hospital${nearby.size !== 1 ? 's' : ''} within ${radius} mi${label ? ' of ' + label : ''}`;
         }
 
+        function updateHospitalCookie() {
+            const checkedIds = Array.from(document.querySelectorAll('input[name="hospital"]:checked')).map(cb => cb.value);
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000));
+            document.cookie = "selected_hospitals=" + encodeURIComponent(checkedIds.join(',')) + "; expires=" + expires.toUTCString() + "; path=/; SameSite=Lax";
+        }
+
         function updateCounts() {
             const checked = [...document.querySelectorAll('input[name="hospital"]:checked')].length;
             if (badge) { badge.textContent = checked; badge.style.display = checked ? '' : 'none'; }
@@ -693,6 +831,7 @@
                 const tot = checked + [...document.querySelectorAll('input[name="payer"]:checked')].length;
                 mb.textContent = tot; mb.style.display = tot ? '' : 'none';
             }
+            updateHospitalCookie();
         }
 
         // Geocode via Nominatim and apply filter
@@ -937,6 +1076,121 @@
             // Move them back so desktop view still works
             while (offcanvasBody.firstChild) {
                 sidebar.appendChild(offcanvasBody.firstChild);
+            }
+        });
+    })();
+
+    // ── Search Progress Indicator Control ──
+    (function () {
+        const searchForm = document.getElementById('search-form');
+        const loadingOverlay = document.getElementById('search-loading-overlay');
+        const loadingBar = document.getElementById('search-loading-bar');
+        const loadingStatus = document.getElementById('search-loading-status');
+
+        if (!searchForm || !loadingOverlay) return;
+
+        const statuses = [
+            "Analyzing query terms...",
+            "Expanding search queries with synonyms...",
+            "Checking spelling and clinical synonyms...",
+            "Connecting to Indiana price registry...",
+            "Querying SQLite database (4.8 GB)...",
+            "Negotiating payer agreements...",
+            "Calculating average rates & distributions...",
+            "Sorting regional hospital contracts...",
+            "Finalizing data visualization parameters...",
+            "Almost ready. Rendering price matrix..."
+        ];
+
+        let statusIndex = 0;
+        let statusInterval = null;
+        let progressInterval = null;
+
+        function showLoading() {
+            // Blur active elements to close keyboard on mobile
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+
+            // Lock screen scrolling
+            document.body.style.overflow = 'hidden';
+
+            // Make progress overlay visible with high-end transition
+            loadingOverlay.classList.add('active');
+
+            // Disable submit buttons to prevent double clicks
+            const searchBtn = searchForm.querySelector('.search-btn');
+            if (searchBtn) {
+                searchBtn.disabled = true;
+                searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Searching...';
+            }
+
+             // Set search input to readOnly to prevent modifications during search,
+             // while still allowing the browser to submit the 'q' parameter.
+             const searchInput = searchForm.querySelector('.search-input');
+             if (searchInput) {
+                 searchInput.readOnly = true;
+             }
+
+            // 1. Sleek top progress bar simulation
+            let progress = 0;
+            if (loadingBar) {
+                loadingBar.style.width = '0%';
+                
+                progressInterval = setInterval(() => {
+                    if (progress < 40) {
+                        progress += Math.random() * 12 + 6;
+                    } else if (progress < 70) {
+                        progress += Math.random() * 4 + 2;
+                    } else if (progress < 88) {
+                        progress += Math.random() * 1.5 + 0.3;
+                    } else if (progress < 95) {
+                        progress += 0.1;
+                    }
+                    if (progress > 96) progress = 96; // cap before page load finishes
+                    loadingBar.style.width = `${progress}%`;
+                }, 120);
+            }
+
+            // 2. High-fidelity status message rotating cycle
+            if (loadingStatus) {
+                loadingStatus.textContent = statuses[0];
+                statusIndex = 1;
+                
+                // Allow CSS transition on opacity
+                loadingStatus.style.transition = 'opacity 0.2s ease';
+                
+                statusInterval = setInterval(() => {
+                    // Smooth cross-fade transition
+                    loadingStatus.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingStatus.textContent = statuses[statusIndex % statuses.length];
+                        statusIndex++;
+                        loadingStatus.style.opacity = '1';
+                    }, 200);
+                }, 1600);
+            }
+        }
+
+        // Bind form submission
+        searchForm.addEventListener('submit', function () {
+            // Strip the 'name' attribute from hospital checkboxes so they are not sent in the GET request
+            document.querySelectorAll('input[name="hospital"]').forEach(cb => {
+                cb.removeAttribute('name');
+            });
+            showLoading();
+        });
+
+        // Bind pagination link clicks
+        document.querySelectorAll('.page-link').forEach(link => {
+            const href = link.getAttribute('href');
+            const isClickable = href && href !== '#' && href !== 'javascript:void(0)';
+            const isDisabled = link.closest('.disabled') || link.classList.contains('disabled');
+            
+            if (isClickable && !isDisabled) {
+                link.addEventListener('click', function () {
+                    showLoading();
+                });
             }
         });
     })();

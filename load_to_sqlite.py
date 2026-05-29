@@ -604,6 +604,43 @@ def save_to_sqlite(conn, final_procedures):
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, fts_rows)
 
+        # 5. Enrichment of spelling vocabulary (clinical terms & default synonyms)
+        standard_clinical_words = {
+            'radiography', 'radiological', 'radiologic', 'ultrasound', 'echography', 
+            'sonogram', 'electrocardiogram', 'electroencephalogram', 'tomography', 
+            'magnetic', 'resonance', 'imaging', 'colonoscopy', 'mammography', 
+            'mammogram', 'ligation', 'prosthesis', 'ligament', 'arthroplasty', 
+            'cesarean', 'obstetrical', 'vaginal', 'immunotherapy', 'allergen', 
+            'antigen', 'injection', 'venipuncture', 'metabolic', 'preventive', 
+            'emergency', 'orthopedic', 'cruciate', 'anterior', 'acl', 'mri', 'ct', 
+            'cbc', 'ekg', 'ecg', 'eeg', 'cardiac', 'neurological', 'pediatric', 
+            'obstetrics', 'gynecology', 'therapy', 'rehabilitation', 'clinical', 
+            'laboratory', 'pathology', 'radiology', 'oncology', 'anesthesia', 
+            'surgical', 'outpatient', 'inpatient', 'emergency', 'shoppable', 
+            'transparency', 'allergy', 'vials', 'vial', 'shots', 'shot', 'testing', 
+            'tests', 'test', 'scratch', 'apnea', 'sleep', 'tubal', 'penile', 
+            'implant', 'tendon', 'repair', 'knee', 'replacement', 'vessel', 
+            'angiography', 'pulmonary', 'coronary', 'renal', 'hepatic', 'cerebral'
+        }
+        for w in standard_clinical_words:
+            unique_words.add(w)
+
+        try:
+            synonyms_path = os.path.join(REFERENCE_DIR, 'default_synonyms.json')
+            if os.path.exists(synonyms_path):
+                with open(synonyms_path, 'r', encoding='utf-8') as f:
+                    synonyms_data = json.load(f)
+                for phrase, expansions in synonyms_data.items():
+                    for word in extract_vocabulary_words(phrase):
+                        unique_words.add(word)
+                    for exp in expansions:
+                        clean_exp = exp.replace('"', '').replace('(', '').replace(')', '').replace('*', '')
+                        for word in extract_vocabulary_words(clean_exp):
+                            unique_words.add(word)
+                print(f"Enriched spelling vocabulary with default_synonyms.json terms.")
+        except Exception as e:
+            print(f"Warning: Could not enrich spelling vocabulary from default synonyms: {e}")
+
         print(f"Indexing {len(unique_words)} words in spelling vocabulary...")
         vocab_rows = [(w,) for w in unique_words]
         cursor.executemany("INSERT OR IGNORE INTO unique_words (word) VALUES (?)", vocab_rows)

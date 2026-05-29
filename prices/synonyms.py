@@ -12,68 +12,61 @@ def clear_synonyms_cache():
 
 def load_synonyms_from_db():
     """
-    Fetches synonyms from the database, sorted by length in descending order
-    (so longer phrases are matched before shorter sub-phrases).
-    Compiles word-boundary patterns dynamically and caches the result.
-    If the synonyms table is missing, empty, or inaccessible in the database,
-    falls back to loading from reference/default_synonyms.json.
+    Loads synonyms from the packaged default_synonyms.json first,
+    merges them with database-defined synonyms if available,
+    and returnscompiled patterns sorted by phrase length descending.
+    This bypasses the need to rebuild/upload the 4.8 GB SQLite file to update synonyms.
     """
     global _cached_synonyms
     if _cached_synonyms is not None:
         return _cached_synonyms
 
-    synonyms_list = []
-    loaded_from_db = False
-    
+    synonyms_dict = {}
+
+    # 1. Load from default_synonyms.json (packaged with the container)
+    try:
+        from django.conf import settings
+        import os
+        json_path = os.path.join(settings.BASE_DIR, 'reference', 'default_synonyms.json')
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as f:
+                default_synonyms = json.load(f)
+            for phrase, expansions in default_synonyms.items():
+                if isinstance(expansions, list):
+                    synonyms_dict[phrase.strip().lower()] = expansions
+            print(f"Loaded {len(synonyms_dict)} synonyms from reference JSON.")
+        else:
+            print(f"Fallback synonyms JSON not found at: {json_path}")
+    except Exception as json_err:
+        print(f"Error loading fallback synonyms JSON: {json_err}")
+
+    # 2. Merge with database synonyms if available
     try:
         with connection.cursor() as cursor:
-            # Check if synonyms table exists first to avoid crashes in early stages of migration
+            # Check if synonyms table exists first
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='synonyms';")
             if cursor.fetchone():
-                cursor.execute("SELECT phrase, expansions FROM synonyms ORDER BY length(phrase) DESC")
+                cursor.execute("SELECT phrase, expansions FROM synonyms")
                 rows = cursor.fetchall()
-                if rows:
-                    for phrase, exp_json in rows:
-                        if not phrase or not exp_json:
-                            continue
-                        try:
-                            expansions = json.loads(exp_json)
-                            if isinstance(expansions, list):
-                                # Compile word boundaries dynamically
-                                pattern = re.compile(rf'\b{re.escape(phrase.strip())}\b', re.IGNORECASE)
-                                synonyms_list.append((pattern, expansions))
-                        except Exception as json_err:
-                            print(f"Error parsing synonym expansions for '{phrase}': {json_err}")
-                    if synonyms_list:
-                        loaded_from_db = True
-                        print(f"Successfully loaded {len(synonyms_list)} synonyms from database.")
+                for phrase, exp_json in rows:
+                    if not phrase or not exp_json:
+                        continue
+                    try:
+                        expansions = json.loads(exp_json)
+                        if isinstance(expansions, list):
+                            synonyms_dict[phrase.strip().lower()] = expansions
+                    except Exception as json_err:
+                        print(f"Error parsing database synonym expansions for '{phrase}': {json_err}")
+                print(f"Successfully merged synonyms from database.")
     except Exception as db_err:
         print(f"Database error loading synonyms: {db_err}")
 
-    # Fallback to reference/default_synonyms.json if not loaded from DB
-    if not loaded_from_db:
-        print("Synonyms table empty, missing, or error occurred. Falling back to reference/default_synonyms.json...")
-        try:
-            from django.conf import settings
-            import os
-            json_path = os.path.join(settings.BASE_DIR, 'reference', 'default_synonyms.json')
-            if os.path.exists(json_path):
-                with open(json_path, 'r', encoding='utf-8') as f:
-                    default_synonyms = json.load(f)
-                
-                # Sort synonyms by key length descending to match database order behavior
-                sorted_syns = sorted(default_synonyms.items(), key=lambda item: len(item[0]), reverse=True)
-                
-                synonyms_list = []
-                for phrase, expansions in sorted_syns:
-                    if isinstance(expansions, list):
-                        pattern = re.compile(rf'\b{re.escape(phrase.strip())}\b', re.IGNORECASE)
-                        synonyms_list.append((pattern, expansions))
-                print(f"Successfully loaded {len(synonyms_list)} synonyms from fallback JSON.")
-            else:
-                print(f"Fallback synonyms JSON not found at: {json_path}")
-        except Exception as json_err:
-            print(f"Error loading fallback synonyms JSON: {json_err}")
+    # 3. Sort by phrase length descending and compile regex patterns
+    sorted_syns = sorted(synonyms_dict.items(), key=lambda item: len(item[0]), reverse=True)
+    synonyms_list = []
+    for phrase, expansions in sorted_syns:
+        pattern = re.compile(rf'\b{re.escape(phrase)}\b', re.IGNORECASE)
+        synonyms_list.append((pattern, expansions))
 
     _cached_synonyms = synonyms_list
     return _cached_synonyms

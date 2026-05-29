@@ -25,6 +25,15 @@ def run_fts_query_with_spellcheck(user_query):
         w for w in re.findall(r'\b[a-zA-Z]{3,}\b', processed_query)
         if not (w.startswith('__') and w.endswith('__'))
     ]
+    
+    EXEMPT_ACRONYMS = {
+        'acl', 'mri', 'ct', 'cbc', 'ekg', 'ecg', 'eeg', 'emg', 'iv', 'icu', 
+        'er', 'cpt', 'drg', 'apc', 'cdm', 'rc', 'mrc', 'pcp', 'pft', 'std', 
+        'uti', 'dna', 'rna', 'papr', 'hmo', 'ppo', 'cns', 'pns', 'egd', 'esd', 
+        'gerd', 'ibs', 'ibd', 'copd', 'als', 'ms', 'tb', 'sti', 'hpv', 'hiv', 
+        'aids', 'hcpcs', 'aprt', 'drg', 'msdrg', 'apcdrg', 'icd', 'icd9', 'icd10'
+    }
+
     if words_to_correct:
         try:
             with connection.cursor() as cursor:
@@ -35,9 +44,11 @@ def run_fts_query_with_spellcheck(user_query):
                 query_changed = False
                 for word in words_to_correct:
                     clean_word = word.lower()
+                    if clean_word in EXEMPT_ACRONYMS:
+                        continue
                     if clean_word not in vocab_set:
                         # Not found, search closest matches
-                        matches = difflib.get_close_matches(clean_word, vocab, n=1, cutoff=0.75)
+                        matches = difflib.get_close_matches(clean_word, vocab, n=1, cutoff=0.85)
                         if matches:
                             corrected_word = matches[0]
                             corrected_query = re.sub(r'\b' + re.escape(word) + r'\b', corrected_word, corrected_query, flags=re.IGNORECASE)
@@ -115,6 +126,11 @@ def main():
     run_fts_query_with_spellcheck("ankle tendon repair")
     run_fts_query_with_spellcheck("knee replacement")
     run_fts_query_with_spellcheck("c secion") # with spelling typo
+
+    # Test clinical exemptions and custom vocabulary additions
+    run_fts_query_with_spellcheck("acl") # Should not correct to 'facil'
+    run_fts_query_with_spellcheck("chest radiography") # Should not correct to 'chest angiography'
+    run_fts_query_with_spellcheck("kne replacement") # Typing typo: should correct to 'knee replacement'
 
 if __name__ == '__main__':
     main()
