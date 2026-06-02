@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-db_path = 'in_shoppable.sqlite3'
+db_path = 'in_aggregate.sqlite3'
 print(f"Original size: {os.path.getsize(db_path)} bytes")
 
 conn = sqlite3.connect(db_path)

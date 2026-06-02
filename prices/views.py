@@ -37,12 +37,12 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
         state = state.lower().strip()
         
         # Decide suffix and paths
-        suffix = "_full" if force_full else "_shoppable"
+        suffix = "_full" if force_full else "_aggregate"
         db_filename = f"{state}{suffix}.sqlite3"
         source_path = os.path.join(db_dir, db_filename)
         
         if not force_full:
-            # We copy shoppable db to local container ephemeral /tmp RAM disk
+            # We copy aggregate db to local container ephemeral /tmp RAM disk
             db_path = os.path.join('/tmp', db_filename)
             gz_filename = db_filename + ".gz"
             source_gz_path = os.path.join(db_dir, gz_filename)
@@ -92,7 +92,7 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
                 cursor.execute("PRAGMA database_list")
                 attached = [row[1] for row in cursor.fetchall()]
                 
-                # Detach any existing mapping to prevent conflicts when switching shoppable/full
+                # Detach any existing mapping to prevent conflicts when switching aggregate/full
                 if db_alias in attached:
                     cursor.execute(f"DETACH DATABASE `{db_alias}`")
                 
@@ -100,23 +100,11 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
                 cursor.execute(attach_sql)
                 print(f"[SQLite Attach] Attached {db_filename} as `{db_alias}`")
                 
-                # ALSO attach full GCS database as {state}_full_db when in shoppable mode, so we can fetch prices dynamically
-                if not force_full:
-                    full_db_filename = f"{state}_full.sqlite3"
-                    full_source_path = os.path.join(db_dir, full_db_filename)
-                    if os.path.exists(full_source_path):
-                        full_db_alias = f"{state}_full_db"
-                        if full_db_alias in attached:
-                            cursor.execute(f"DETACH DATABASE `{full_db_alias}`")
-                        full_attach_sql = f"ATTACH DATABASE 'file:{full_source_path}?mode=ro' AS `{full_db_alias}`"
-                        cursor.execute(full_attach_sql)
-                        print(f"[SQLite Attach] Attached {full_db_filename} as `{full_db_alias}` for dynamic prices")
-                
                 active_dbs.append(state)
             except Exception as e:
                 print(f"[SQLite Attach] Error attaching {db_filename}: {e}")
         else:
-            # Fallback for 'in' (Indiana): if in_shoppable.sqlite3/in_full.sqlite3 doesn't exist, map it to 'main'
+            # Fallback for 'in' (Indiana): if in_aggregate.sqlite3/in_full.sqlite3 doesn't exist, map it to 'main'
             if state == 'in':
                 active_dbs.append('main')
             else:
@@ -521,9 +509,10 @@ def search(request):
 
         try:
             with connection.cursor() as cursor:
-                # 1. Resolve active databases by attaching them (Try shoppable first)
-                active_dbs = resolve_active_dbs(cursor, selected_states, force_full=False)
-                is_currently_full = False
+                # 1. Resolve active databases by attaching them (Try shoppable first, fallback to full if filters are active)
+                has_filters = bool(selected_hospitals or selected_payers)
+                active_dbs = resolve_active_dbs(cursor, selected_states, force_full=has_filters)
+                is_currently_full = has_filters
                 
                 # 2. Count total matching records across all active databases
                 def _build_count_query(dbs, is_full=False):
@@ -556,7 +545,7 @@ def search(request):
                     sql = f"SELECT COUNT(*) FROM ({' UNION '.join(parts)})"
                     return sql, params
 
-                combined_count_sql, count_params = _build_count_query(active_dbs, is_full=False)
+                combined_count_sql, count_params = _build_count_query(active_dbs, is_full=is_currently_full)
                 cursor.execute(combined_count_sql, count_params)
                 total_hits = cursor.fetchone()[0]
 
@@ -625,21 +614,6 @@ def search(request):
                     proc_ids = [row[0] for row in proc_rows]
                     price_placeholders = ",".join(["%s"] * len(proc_ids))
                     
-                    # Batch fetch all prices across all active databases
-                    price_queries = []
-                    price_params = []
-                    for db in active_dbs:
-                        price_db_prefix = f"{db}_db." if (db == "main" or is_currently_full) else f"{db}_full_db."
-                        price_queries.append(f"""
-                            SELECT procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price 
-                            FROM {price_db_prefix}prices 
-                            WHERE procedure_id IN ({price_placeholders})
-                        """)
-                        price_params.extend(proc_ids)
-                    
-                    cursor.execute(" UNION ALL ".join(price_queries), price_params)
-                    prices_fetched = cursor.fetchall()
-                    
                     # Batch fetch all auxiliary codes across all active databases
                     code_queries = []
                     code_params = []
@@ -654,19 +628,6 @@ def search(request):
                         
                     cursor.execute(" UNION ALL ".join(code_queries), code_params)
                     codes_fetched = cursor.fetchall()
-
-                    # Map prices & codes to their respective procedure IDs
-                    prices_by_proc = {}
-                    for p_row in prices_fetched:
-                        pid, h_id, h_name, payer_name, plan_name, setting, price = p_row
-                        prices_by_proc.setdefault(pid, []).append({
-                            'hospital_id': h_id,
-                            'hospital_name': h_name,
-                            'payer_name': payer_name,
-                            'plan_name': plan_name,
-                            'setting': setting,
-                            'price': price
-                        })
 
                     codes_by_proc = {}
                     for c_row in codes_fetched:
@@ -700,7 +661,7 @@ def search(request):
                                 },
                                 'is_standard_group': bool(row[14]),
                                 'source_db': source_db,
-                                'prices': prices_by_proc.get(pid, []),
+                                'prices': [],
                                 'codes': codes_by_proc.get(pid, [])
                             }
                         })
@@ -724,65 +685,7 @@ def search(request):
                 desc = source.get('description', '') or "Unknown Description"
                 rev_code = source.get('rev_code', '')
                 
-                prices_data = source.get('prices', [])
                 stats = source.get('stats', {})
-                
-                # Prepare items with hue
-                price_values = [float(p.get('price', 0)) for p in prices_data]
-                
-                # Determine min/max for coloring this specific group
-                local_min = stats.get('min', 0)
-                local_max = stats.get('max', 0)
-                
-                items = []
-                for p in prices_data:
-                    p_name = p.get('payer_name', 'Unknown')
-                    
-                    # Filter displayed items if payers selected
-                    if selected_payers_set and p_name not in selected_payers_set:
-                        continue
-
-                    # Filter displayed items if hospitals selected
-                    if selected_hospitals_set and p.get('hospital_id') not in selected_hospitals_set:
-                        continue
-                        
-                    val = float(p.get('price', 0))
-                    
-                    # Calculate hue: 120 (Green) for low, 0 (Red) for high
-                    hue = 120
-                    if local_max > local_min:
-                        ratio = (val - local_min) / (local_max - local_min)
-                        hue = int(120 - (ratio * 120))
-                    
-                    items.append({
-                        'payer_name': p_name,
-                        'plan_name': p.get('plan_name', 'Unknown'),
-                        'hospital_id': p.get('hospital_id', 'Unknown'),
-                        'hospital_name': p.get('hospital_name', 'Unnamed Hospital'),  # Fallback for missing hospital_name
-                        'standard_charge_negotiated_dollar': val if val > 0 else 0.0,  # Fallback for missing or invalid price
-                        'price_hue': hue,
-                        'setting': p.get('setting', 'Unknown')
-                    })
-                
-                # Determine Stats (Recalculate if filtered)
-                if (selected_payers_set or selected_hospitals_set) and items:
-                   filtered_vals = [i['standard_charge_negotiated_dollar'] for i in items]
-                   stats = {
-                       'min': min(filtered_vals),
-                       'max': max(filtered_vals),
-                       'avg': sum(filtered_vals) / len(filtered_vals),
-                       'count': len(filtered_vals)
-                   }
-                   # Regenerate SVG for filtered subset
-                   dist_svg = generate_distribution_svg(filtered_vals)
-                else:
-                    # Generate Dist SVG
-                    dist_svg = generate_distribution_svg(price_values)
-                
-                stats['distribution_svg'] = dist_svg
-                
-                # Common setting from first item
-                common_setting = items[0]['setting'] if items else 'Unknown'
                 
                 # Check if there are actually other procedures sharing the same group key
                 ms_drg_val = (source.get('ms_drg') or '').strip()
@@ -810,13 +713,14 @@ def search(request):
                 variant_data = {
                     'code': (code or '').strip(),
                     'code_type': (code_type or '').strip(),
-                    'common_setting': common_setting, 
-                    'items': items,
+                    'common_setting': 'Unknown', 
+                    'items': [],
                     'stats': stats,
                     'rev_code': (source.get('rc') or source.get('rev_code') or '').strip(),
                     'ms_drg':  ms_drg_val,
                     'apr_drg': apr_drg_val,
                     'apc':     apc_val,
+                    'procedure_ids': [source.get('id')],
                 }
                 
                 # Group by code (uppercased); fall back to normalized description if no code
@@ -854,31 +758,33 @@ def search(request):
                         merged_map[key] = variant
                         order.append(key)
                     else:
-                        merged_map[key]['items'].extend(variant['items'])
+                        merged_map[key]['procedure_ids'].extend(variant['procedure_ids'])
 
                 if len(order) < len(group['variants']):
-                    # At least one merge happened — recalculate per-variant stats
+                    # At least one merge happened — recalculate per-variant stats from precomputed stats
                     for key in order:
                         v = merged_map[key]
-                        all_vals = [i['standard_charge_negotiated_dollar'] for i in v['items']
-                                    if i.get('standard_charge_negotiated_dollar')]
-                        if all_vals:
+                        matching_variants = [orig for orig in group['variants'] if (orig['code'].strip().upper(), orig['code_type']) == key]
+                        if len(matching_variants) > 1:
+                            mins = [mv['stats']['min'] for mv in matching_variants if mv['stats'].get('min') is not None]
+                            maxs = [mv['stats']['max'] for mv in matching_variants if mv['stats'].get('max') is not None]
+                            counts = [mv['stats']['count'] for mv in matching_variants if mv['stats'].get('count') is not None]
+                            weighted_avgs = [mv['stats']['avg'] * mv['stats']['count'] for mv in matching_variants if mv['stats'].get('avg') is not None and mv['stats'].get('count') is not None]
+                            
+                            total_count = sum(counts)
                             v['stats'] = {
-                                'min': min(all_vals),
-                                'max': max(all_vals),
-                                'avg': sum(all_vals) / len(all_vals),
-                                'count': len(all_vals),
-                                'distribution_svg': generate_distribution_svg(all_vals),
+                                'min': min(mins) if mins else None,
+                                'max': max(maxs) if maxs else None,
+                                'avg': round(sum(weighted_avgs) / total_count, 2) if total_count > 0 and weighted_avgs else None,
+                                'count': total_count,
+                                'distribution_svg': None
                             }
-                    group['variants'] = [merged_map[k] for k in order]
-
             # --- Post-Processing for Groups ---
             for group in grouped_results:
                 
                 # 1. Calculate Group-Level Aggregate Stats (Min/Max across all variants)
                 g_min = float('inf')
                 g_max = float('-inf')
-                g_prices = []
                 
                 for variant in group['variants']:
                     v_stats = variant.get('stats', {})
@@ -886,80 +792,6 @@ def search(request):
                         if v_stats.get('min') is not None: g_min = min(g_min, v_stats['min'])
                         if v_stats.get('max') is not None: g_max = max(g_max, v_stats['max'])
                     
-                    # Also collect all prices for a potential group-level chart (optional, maybe overkill)
-                    # We will just use the stats for the header for now.
-                    
-                    # 2. Group Items by Payer/Plan within Variant
-                    def _human_payer_name(raw):
-                        """Make raw payer names human-readable (e.g. negotiated_dollar → Negotiated Dollar)."""
-                        s = (raw or "Unknown").strip().replace('_', ' ')
-                        return s.title()
-
-                    def _normalize_plan_name(raw):
-                        """Collapse punctuation/hyphen variants (e.g. Non-Par → Non Par)."""
-                        s = (raw or "Unknown").strip()
-                        s = _re.sub(r'[-/]', ' ', s)          # hyphens/slashes → space
-                        s = _re.sub(r'\s+', ' ', s).strip()   # collapse whitespace
-                        return s.title()
-
-                    raw_items = variant['items']
-                    payer_map = {}
-                    
-                    for item in raw_items:
-                        # Normalize keys
-                        p_name = _human_payer_name(item.get('payer_name') or "Unknown")
-                        pl_name = _normalize_plan_name(item.get('plan_name') or "Unknown")
-                        key = (p_name, pl_name)
-                        
-                        if key not in payer_map:
-                            payer_map[key] = []
-                        payer_map[key].append(item)
-                    
-                    # Consolidate Payer Groups
-                    consolidated_items = []
-                    for (p_name, pl_name), rows in payer_map.items():
-                        prices = [r['standard_charge_negotiated_dollar'] for r in rows if r.get('standard_charge_negotiated_dollar') is not None]
-                        
-                        if not prices:
-                            continue
-                            
-                        c_min = min(prices)
-                        c_max = max(prices)
-                        c_avg = sum(prices) / len(prices)
-                        
-                        # Gather hospital info (unique list)
-                        hosps = sorted(list(set([r['hospital_name'] or r['hospital_id'] for r in rows])))
-                        hosp_display = ", ".join(hosps) if len(hosps) <= 2 else f"{len(hosps)} Hospitals"
-
-                        # Build per-hospital breakdown for tooltip
-                        hosp_prices = {}
-                        for r in rows:
-                            h = r['hospital_name'] or r['hospital_id']
-                            if h not in hosp_prices:
-                                hosp_prices[h] = r['standard_charge_negotiated_dollar']
-                        hosp_list = [{'name': h, 'price': p} for h, p in sorted(hosp_prices.items())]
-
-                        consolidated_items.append({
-                            'payer_name': p_name,
-                            'plan_name': pl_name,
-                            'hospital_display': hosp_display,
-                            'hospitals': hosp_list,
-                            'price_min': c_min,
-                            'price_max': c_max,
-                            'price_avg': c_avg,
-                            'count': len(prices),
-                            # Use hue logic based on VARIANT stats, not global
-                            'price_hue': rows[0]['price_hue'] # Just take the first one's hue as approximation
-                        })
-                    
-                    # 3. Sort by Payer Name (pin Negotiated Dollar/Cash/Gross first)
-                    _pinned = ['negotiated dollar', 'cash price', 'cash', 'gross charge', 'gross']
-                    consolidated_items.sort(key=lambda x: (
-                        next((i for i, p in enumerate(_pinned) if x['payer_name'].lower().startswith(p)), len(_pinned)),
-                        x['payer_name'].lower()
-                    ))
-                    variant['items'] = consolidated_items
-
                 # Attach Group Stats
                 if g_min != float('inf'):
                     group['group_stats'] = {
@@ -967,9 +799,8 @@ def search(request):
                         'max': g_max,
                         'is_range': (g_min != g_max)
                     }
-                    # If only one variant, pull its SVG up
+                    # If only one variant, pull its average up
                     if len(group['variants']) == 1:
-                        group['group_stats']['distribution_svg'] = group['variants'][0]['stats'].get('distribution_svg')
                         group['group_stats']['avg'] = group['variants'][0]['stats'].get('avg')
 
             elapsed_time = time.time() - start_time
@@ -1129,3 +960,187 @@ def explain_code(request):
         traceback.print_exc()
         error_detail = str(e) if settings.DEBUG else 'Could not generate explanation'
         return JsonResponse({'error': error_detail}, status=500)
+
+
+@require_GET
+def prices_details(request):
+    """
+    AJAX endpoint to fetch pricing details for specific procedure IDs.
+    Attaches the full database (GCS FUSE) and queries the prices table.
+    Renders prices/price_table.html and returns it.
+    """
+    from django.http import HttpResponse
+    
+    proc_ids_str = request.GET.get('ids', '').strip()
+    state = request.GET.get('state', 'in').strip().lower()
+    selected_payers_str = request.GET.get('payers', '').strip()
+    selected_hospitals_str = request.GET.get('hospitals', '').strip()
+    
+    if not proc_ids_str:
+        return HttpResponse("<div class='alert alert-warning'>No procedures selected.</div>")
+        
+    proc_ids = [pid.strip() for pid in proc_ids_str.split(',') if pid.strip()]
+    selected_payers = set([p.strip() for p in selected_payers_str.split(',') if p.strip()])
+    selected_hospitals = set([h.strip() for h in selected_hospitals_str.split(',') if h.strip()])
+    
+    try:
+        with connection.cursor() as cursor:
+            # Resolve the full database for the state
+            active_dbs = resolve_active_dbs(cursor, [state], force_full=True)
+            source_db = active_dbs[0]
+            db_prefix = f"{source_db}_db." if source_db != "main" else ""
+            
+            # Fetch prices
+            price_placeholders = ",".join(["%s"] * len(proc_ids))
+            sql = f"""
+                SELECT procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price 
+                FROM {db_prefix}prices 
+                WHERE procedure_id IN ({price_placeholders})
+            """
+            cursor.execute(sql, proc_ids)
+            prices_fetched = cursor.fetchall()
+            
+            # Fetch stats for each procedure ID to determine price_hue correctly
+            stats_sql = f"""
+                SELECT id, stats_min, stats_max, stats_avg, stats_count
+                FROM {db_prefix}procedures
+                WHERE id IN ({price_placeholders})
+            """
+            cursor.execute(stats_sql, proc_ids)
+            stats_fetched = cursor.fetchall()
+            stats_by_proc = {}
+            for row in stats_fetched:
+                pid, s_min, s_max, s_avg, s_count = row
+                stats_by_proc[pid] = {
+                    'min': s_min,
+                    'max': s_max,
+                    'avg': s_avg,
+                    'count': s_count
+                }
+            
+            raw_items = []
+            for p_row in prices_fetched:
+                pid, h_id, h_name, payer_name, plan_name, setting, price = p_row
+                raw_items.append({
+                    'procedure_id': pid,
+                    'hospital_id': h_id,
+                    'hospital_name': h_name,
+                    'payer_name': payer_name,
+                    'plan_name': plan_name,
+                    'setting': setting,
+                    'price': price
+                })
+                
+            # Prepare items with hue
+            items = []
+            for item in raw_items:
+                p_name = item.get('payer_name', 'Unknown')
+                h_id = item.get('hospital_id')
+                pid = item.get('procedure_id')
+                
+                # Filter displayed items if payers selected
+                if selected_payers and p_name not in selected_payers:
+                    continue
+
+                # Filter displayed items if hospitals selected
+                if selected_hospitals and h_id not in selected_hospitals:
+                    continue
+                    
+                val = float(item.get('price', 0))
+                
+                # Calculate hue: 120 (Green) for low, 0 (Red) for high
+                proc_stats = stats_by_proc.get(pid, {})
+                local_min = proc_stats.get('min', 0) or 0
+                local_max = proc_stats.get('max', 0) or 0
+                
+                hue = 120
+                if local_max > local_min:
+                    ratio = (val - local_min) / (local_max - local_min)
+                    hue = int(120 - (ratio * 120))
+                
+                items.append({
+                    'payer_name': p_name,
+                    'plan_name': item.get('plan_name', 'Unknown'),
+                    'hospital_id': h_id,
+                    'hospital_name': item.get('hospital_name', 'Unnamed Hospital'),
+                    'standard_charge_negotiated_dollar': val if val > 0 else 0.0,
+                    'price_hue': hue,
+                    'setting': item.get('setting', 'Unknown')
+                })
+                
+            # Now consolidate Payer Groups
+            from collections import Counter
+            import re as _re
+            
+            def _human_payer_name(raw):
+                s = (raw or "Unknown").strip().replace('_', ' ')
+                return s.title()
+
+            def _normalize_plan_name(raw):
+                s = (raw or "Unknown").strip()
+                s = _re.sub(r'[-/]', ' ', s)
+                s = _re.sub(r'\s+', ' ', s).strip()
+                return s.title()
+
+            payer_map = {}
+            for item in items:
+                p_name = _human_payer_name(item.get('payer_name') or "Unknown")
+                pl_name = _normalize_plan_name(item.get('plan_name') or "Unknown")
+                key = (p_name, pl_name)
+                
+                if key not in payer_map:
+                    payer_map[key] = []
+                payer_map[key].append(item)
+            
+            consolidated_items = []
+            all_price_values = []
+            for (p_name, pl_name), rows in payer_map.items():
+                prices = [r['standard_charge_negotiated_dollar'] for r in rows if r.get('standard_charge_negotiated_dollar') is not None]
+                if not prices:
+                    continue
+                all_price_values.extend(prices)
+                c_min = min(prices)
+                c_max = max(prices)
+                c_avg = sum(prices) / len(prices)
+                
+                hosps = sorted(list(set([r['hospital_name'] or r['hospital_id'] for r in rows])))
+                hosp_display = ", ".join(hosps) if len(hosps) <= 2 else f"{len(hosps)} Hospitals"
+
+                hosp_prices = {}
+                for r in rows:
+                    h = r['hospital_name'] or r['hospital_id']
+                    if h not in hosp_prices:
+                        hosp_prices[h] = r['standard_charge_negotiated_dollar']
+                hosp_list = [{'name': h, 'price': p} for h, p in sorted(hosp_prices.items())]
+
+                consolidated_items.append({
+                    'payer_name': p_name,
+                    'plan_name': pl_name,
+                    'hospital_display': hosp_display,
+                    'hospitals': hosp_list,
+                    'price_min': c_min,
+                    'price_max': c_max,
+                    'price_avg': c_avg,
+                    'count': len(prices),
+                    'price_hue': rows[0]['price_hue']
+                })
+            
+            _pinned = ['negotiated dollar', 'cash price', 'cash', 'gross charge', 'gross']
+            consolidated_items.sort(key=lambda x: (
+                next((i for i, p in enumerate(_pinned) if x['payer_name'].lower().startswith(p)), len(_pinned)),
+                x['payer_name'].lower()
+            ))
+            
+            # Generate distribution SVG for the whole variant
+            distribution_svg = generate_distribution_svg(all_price_values)
+            
+            context = {
+                'items': consolidated_items,
+                'distribution_svg': distribution_svg,
+            }
+            return render(request, 'prices/price_table.html', context)
+            
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return HttpResponse(f"<div class='alert alert-danger'>Error loading prices: {e}</div>")

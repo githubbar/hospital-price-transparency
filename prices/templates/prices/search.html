@@ -584,48 +584,19 @@
                                         <span class="text-muted">Max:</span> <span class="fw-bold text-danger">${{ variant.stats.max|floatformat:0 }}</span>
                                     </div>
                                     <div class="col-4">
-                                        <span class="text-muted">Punc:</span> <span class="fw-bold">{{ variant.items|length }}</span>
+                                        <span class="text-muted">Punc:</span> <span class="fw-bold">{{ variant.stats.count }}</span>
                                     </div>
                                 </div>
 
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0 bg-white table-sm sortable">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th style="width: 40%; cursor: pointer;" onclick="sortTable(this, 0)">Payer & Plan <i class="bi bi-arrow-down-up text-muted small"></i></th>
-                                                <th style="cursor: pointer;" onclick="sortTable(this, 1)">Hospital <i class="bi bi-arrow-down-up text-muted small"></i></th>
-                                                <th class="text-end" style="cursor: pointer;" onclick="sortTable(this, 2)">Price <i class="bi bi-arrow-down-up text-muted small"></i></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for item in variant.items %}
-                                            <tr>
-                                                <td class="ps-3">
-                                                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ item.payer_name|default:"-" }}</div>
-                                                    <div class="small text-muted" style="font-size: 0.8rem;">{{ item.plan_name|default:"-" }}</div>
-                                                </td>
-                                                <td>
-                                                    <div class="small text-muted">
-                                                        {% if item.hospitals|length > 1 %}
-                                                            <span class="hosp-tip" style="cursor:help; text-decoration: underline dotted;" data-bs-placement="right" data-hospitals='[{% for h in item.hospitals %}{"name":"{{ h.name|escapejs }}","price":"{{ h.price|floatformat:2 }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
-                                                                {{ item.hospital_display|title }}
-                                                            </span>
-                                                        {% else %}
-                                                            {{ item.hospital_display|title }}
-                                                        {% endif %}
-                                                    </div>
-                                                </td>
-                                                <td class="text-end fw-bold pe-3" {% if item.price_hue %}style="color: hsl({{ item.price_hue }}, 80%, 35%);"{% endif %} data-price="{{ item.price_min }}">
-                                                    {% if item.count > 1 and item.price_min != item.price_max %}
-                                                        ${{ item.price_min|floatformat:0 }} - ${{ item.price_max|floatformat:0 }}
-                                                    {% else %}
-                                                        ${{ item.price_min|floatformat:2 }}
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                <div class="price-table-placeholder"
+                                     data-procedure-ids="{{ variant.procedure_ids|join:',' }}"
+                                     data-state="{{ selected_states|join:',' }}"
+                                     data-payers="{% for p in selected_payers %}{{ p }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                     data-hospitals="{% for h in selected_hospitals %}{{ h }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                    <div class="text-center py-4">
+                                        <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                                        <span class="text-muted small ms-2">Loading pricing details...</span>
+                                    </div>
                                 </div>
                             </div>
                             {% endfor %}
@@ -711,20 +682,65 @@
       return new bootstrap.Tooltip(tooltipTriggerEl, { html: true })
     })
 
-    // Initialize hospital breakdown tooltips
-    document.querySelectorAll('.hosp-tip').forEach(function(el) {
-      var hospitals = JSON.parse(el.getAttribute('data-hospitals') || '[]');
-      var html = hospitals.map(function(h) {
-        return '<span style="color:#90caf9;font-weight:600">' + h.name + '</span>' +
-               '&nbsp;<span style=\"color:#00e676;font-weight:700\">$' + h.price + '</span>';
-      }).join('<br>');
-      new bootstrap.Tooltip(el, {
-        html: true,
-        sanitize: false,
-        customClass: 'hospital-tooltip',
-        title: html
+    // Helper function to initialize hospital breakdown tooltips
+    function initHospitalTooltips(parentEl = document) {
+      parentEl.querySelectorAll('.hosp-tip').forEach(function(el) {
+        var hospitals = JSON.parse(el.getAttribute('data-hospitals') || '[]');
+        var html = hospitals.map(function(h) {
+          return '<span style="color:#90caf9;font-weight:600">' + h.name + '</span>' +
+                 '&nbsp;<span style=\"color:#00e676;font-weight:700\">$' + h.price + '</span>';
+        }).join('<br>');
+        new bootstrap.Tooltip(el, {
+          html: true,
+          sanitize: false,
+          customClass: 'hospital-tooltip',
+          title: html
+        });
       });
-    });
+    }
+
+    // Initial tooltips call
+    initHospitalTooltips();
+
+    // ── Asynchronous Price Loading ──
+    const resultsAccordion = document.getElementById('resultsAccordion');
+    if (resultsAccordion) {
+        resultsAccordion.addEventListener('show.bs.collapse', function (event) {
+            const collapsePanel = event.target;
+            const placeholders = collapsePanel.querySelectorAll('.price-table-placeholder');
+            
+            placeholders.forEach(placeholder => {
+                if (placeholder.getAttribute('data-loaded') === 'true') {
+                    return;
+                }
+                
+                const ids = placeholder.getAttribute('data-procedure-ids');
+                const state = placeholder.getAttribute('data-state');
+                const payers = placeholder.getAttribute('data-payers');
+                const hospitals = placeholder.getAttribute('data-hospitals');
+                
+                const params = new URLSearchParams({
+                    ids: ids || '',
+                    state: state || 'in',
+                    payers: payers || '',
+                    hospitals: hospitals || ''
+                });
+                
+                fetch(`/prices/?${params.toString()}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        placeholder.innerHTML = html;
+                        placeholder.setAttribute('data-loaded', 'true');
+                        // Initialize tooltips on the newly loaded content
+                        initHospitalTooltips(placeholder);
+                    })
+                    .catch(error => {
+                        console.error('Error loading prices:', error);
+                        placeholder.innerHTML = '<div class="alert alert-danger p-3 m-3">Error loading pricing details. Please try again.</div>';
+                    });
+            });
+        });
+    }
 
     // ── Insurer Filter ───────────────────────────────────────────────────────
     (function () {

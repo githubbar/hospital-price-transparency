@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-db_path = 'in_shoppable.sqlite3'
+db_path = 'in_aggregate.sqlite3'
 if not os.path.exists(db_path):
     print(f"File not found: {db_path}")
 else:
