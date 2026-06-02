@@ -1,0 +1,18 @@
+steps:
+  # 1. Generate the shoppable SQLite database inside Cloud Build using requirements.txt
+  - name: 'python:3.10-slim'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install -r requirements.txt
+        python load_to_sqlite.py --clean --shoppable-only --cached-file data/shoppable_cache.json.gz --output-db in_shoppable.sqlite3
+
+  # 2. Upload it directly from Cloud Build to GCS at 1+ Gbps speed with composite disabled
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud config set storage/parallel_composite_upload_enabled False
+        gcloud storage cp in_shoppable.sqlite3 gs://hospital-price-db-6a9b0/in_shoppable.sqlite3

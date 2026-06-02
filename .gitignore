@@ -25,6 +25,8 @@ wheels/
 *.zip
 *.json
 *.xlsx
+*.sqlite3
+*.gz
 
 # Django
 *.log

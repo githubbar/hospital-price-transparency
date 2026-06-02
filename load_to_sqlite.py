@@ -139,6 +139,9 @@ def init_db(conn, clean=False):
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_procedure_codes_procedure_id ON procedure_codes(procedure_id);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_proc_payer ON prices(procedure_id, payer_name);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_proc_hosp ON prices(procedure_id, hospital_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_procedures_ms_drg ON procedures(ms_drg);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_procedures_apr_drg ON procedures(apr_drg);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_procedures_apc ON procedures(apc);")
 
     conn.commit()
     print("Database tables initialized successfully.")

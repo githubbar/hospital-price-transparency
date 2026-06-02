@@ -18,11 +18,14 @@ import requests
 from prices.synonyms import expand_query_synonyms, inject_synonyms_into_fts
 
 
-def resolve_active_dbs(cursor, selected_states):
+def resolve_active_dbs(cursor, selected_states, force_full=False):
     """
     Given a list of state codes (e.g. ['in', 'ky']), attaches necessary SQLite files
     and returns a list of database prefixes to use in queries.
+    Supports force_full=True to query the full database, otherwise caches and queries
+    the fast shoppable database in /tmp.
     """
+    import shutil
     db_dir = os.environ.get('SQLITE_DB_DIR', settings.BASE_DIR)
     active_dbs = []
     
@@ -33,26 +36,87 @@ def resolve_active_dbs(cursor, selected_states):
     for state in selected_states:
         state = state.lower().strip()
         
-        # Check if a state-specific database file exists in the directory
-        db_filename = f"{state}.sqlite3"
-        db_path = os.path.join(db_dir, db_filename)
+        # Decide suffix and paths
+        suffix = "_full" if force_full else "_shoppable"
+        db_filename = f"{state}{suffix}.sqlite3"
+        source_path = os.path.join(db_dir, db_filename)
+        
+        if not force_full:
+            # We copy shoppable db to local container ephemeral /tmp RAM disk
+            db_path = os.path.join('/tmp', db_filename)
+            gz_filename = db_filename + ".gz"
+            source_gz_path = os.path.join(db_dir, gz_filename)
+            
+            if not os.path.exists(db_path):
+                # Try compressed source first for 13x speed & no composite GCS FUSE corruption
+                if os.path.exists(source_gz_path):
+                    try:
+                        os.makedirs('/tmp', exist_ok=True)
+                        tmp_gz_path = os.path.join('/tmp', gz_filename)
+                        print(f"[RAM Cache] Copying compressed {gz_filename} to local RAM disk (/tmp)...")
+                        shutil.copy2(source_gz_path, tmp_gz_path)
+                        
+                        print(f"[RAM Cache] Decompressing {gz_filename} to {db_filename}...")
+                        import gzip
+                        with gzip.open(tmp_gz_path, 'rb') as f_in:
+                            with open(db_path, 'wb') as f_out:
+                                shutil.copyfileobj(f_in, f_out)
+                                
+                        # Delete temp archive to free RAM
+                        os.remove(tmp_gz_path)
+                        print(f"[RAM Cache] Decompression complete!")
+                    except Exception as e:
+                        print(f"[RAM Cache] Failed to copy/decompress {gz_filename}: {e}")
+                        # Clean up failed decompression attempt if any
+                        if os.path.exists(db_path):
+                            try: os.remove(db_path)
+                            except: pass
+                            
+                # Fallback to direct copy of uncompressed file if present
+                if not os.path.exists(db_path) and os.path.exists(source_path):
+                    try:
+                        os.makedirs('/tmp', exist_ok=True)
+                        print(f"[RAM Cache] Copying uncompressed {db_filename} to local RAM disk (/tmp)...")
+                        shutil.copy2(source_path, db_path)
+                    except Exception as e:
+                        print(f"[RAM Cache] Failed to copy {db_filename} to /tmp: {e}")
+                        db_path = source_path
+                elif not os.path.exists(db_path):
+                    db_path = source_path
+        else:
+            db_path = source_path
         
         if os.path.exists(db_path):
             try:
+                db_alias = f"{state}_db"
                 cursor.execute("PRAGMA database_list")
                 attached = [row[1] for row in cursor.fetchall()]
-                db_alias = f"{state}_db"
                 
-                if db_alias not in attached:
-                    attach_sql = f"ATTACH DATABASE 'file:{db_path}?mode=ro' AS `{db_alias}`"
-                    cursor.execute(attach_sql)
-                    print(f"[SQLite Attach] Attached {db_filename} as `{db_alias}`")
+                # Detach any existing mapping to prevent conflicts when switching shoppable/full
+                if db_alias in attached:
+                    cursor.execute(f"DETACH DATABASE `{db_alias}`")
+                
+                attach_sql = f"ATTACH DATABASE 'file:{db_path}?mode=ro' AS `{db_alias}`"
+                cursor.execute(attach_sql)
+                print(f"[SQLite Attach] Attached {db_filename} as `{db_alias}`")
+                
+                # ALSO attach full GCS database as {state}_full_db when in shoppable mode, so we can fetch prices dynamically
+                if not force_full:
+                    full_db_filename = f"{state}_full.sqlite3"
+                    full_source_path = os.path.join(db_dir, full_db_filename)
+                    if os.path.exists(full_source_path):
+                        full_db_alias = f"{state}_full_db"
+                        if full_db_alias in attached:
+                            cursor.execute(f"DETACH DATABASE `{full_db_alias}`")
+                        full_attach_sql = f"ATTACH DATABASE 'file:{full_source_path}?mode=ro' AS `{full_db_alias}`"
+                        cursor.execute(full_attach_sql)
+                        print(f"[SQLite Attach] Attached {full_db_filename} as `{full_db_alias}` for dynamic prices")
                 
                 active_dbs.append(state)
             except Exception as e:
                 print(f"[SQLite Attach] Error attaching {db_filename}: {e}")
         else:
-            # Fallback for 'in' (Indiana): if in.sqlite3 doesn't exist, map it to 'main'
+            # Fallback for 'in' (Indiana): if in_shoppable.sqlite3/in_full.sqlite3 doesn't exist, map it to 'main'
             if state == 'in':
                 active_dbs.append('main')
             else:
@@ -283,18 +347,35 @@ def search(request):
     selected_states_set = set(selected_states)
 
     # Get total records count across active/selected databases (best effort)
-    try:
-        with connection.cursor() as cursor:
-            temp_active_dbs = resolve_active_dbs(cursor, selected_states)
-            for db in temp_active_dbs:
-                db_prefix = f"{db}_db." if db != "main" else ""
-                try:
-                    cursor.execute(f"SELECT COUNT(*) FROM {db_prefix}procedures")
-                    total_records += cursor.fetchone()[0]
-                except Exception:
-                    pass
-    except Exception as e:
-        print(f"Error fetching total records: {e}")
+    cache_key = f"total_records:{','.join(sorted(selected_states))}"
+    total_records = cache.get(cache_key)
+    
+    if total_records is None:
+        total_records = 0
+        db_dir = os.environ.get('SQLITE_DB_DIR', '')
+        
+        # Statically define counts for production state databases in GCS to avoid 14.4M row scans
+        STATIC_STATE_COUNTS = {
+            'in': 9502, # Indiana database total unique grouped procedures
+        }
+        
+        if db_dir == "/mnt/gcs" and all(s in STATIC_STATE_COUNTS for s in selected_states):
+            total_records = sum(STATIC_STATE_COUNTS[s] for s in selected_states)
+            cache.set(cache_key, total_records, 86400 * 30)  # Cache for 30 days
+        else:
+            try:
+                with connection.cursor() as cursor:
+                    temp_active_dbs = resolve_active_dbs(cursor, selected_states)
+                    for db in temp_active_dbs:
+                        db_prefix = f"{db}_db." if db != "main" else ""
+                        try:
+                            cursor.execute(f"SELECT COUNT(*) FROM {db_prefix}procedures")
+                            total_records += cursor.fetchone()[0]
+                        except Exception:
+                            pass
+                cache.set(cache_key, total_records, 86400 * 30)  # Cache for 30 days
+            except Exception as e:
+                print(f"Error fetching total records: {e}")
 
     # Fetch unique Payers for the dropdown (pre-computed statically to avoid 14.4M row scans in serverless)
     try:
@@ -361,12 +442,6 @@ def search(request):
         
         # --- Spelling Auto-Correction (Typo Tolerance) ---
         corrected_query = processed_query
-        # Avoid checking placeholders (they start/end with __)
-        words_to_correct = [
-            w for w in re.findall(r'\b[a-zA-Z]{3,}\b', processed_query)
-            if not (w.startswith('__') and w.endswith('__'))
-        ]
-        
         # Exclude common clinical acronyms and standard medical terms from autocorrect
         EXEMPT_ACRONYMS = {
             'acl', 'mri', 'ct', 'cbc', 'ekg', 'ecg', 'eeg', 'emg', 'iv', 'icu', 
@@ -375,6 +450,12 @@ def search(request):
             'gerd', 'ibs', 'ibd', 'copd', 'als', 'ms', 'tb', 'sti', 'hpv', 'hiv', 
             'aids', 'hcpcs', 'aprt', 'drg', 'msdrg', 'apcdrg', 'icd', 'icd9', 'icd10'
         }
+        
+        # Avoid checking placeholders (they start/end with __) and exempt acronyms
+        words_to_correct = [
+            w for w in re.findall(r'\b[a-zA-Z]{3,}\b', processed_query)
+            if not (w.startswith('__') and w.endswith('__')) and w.lower() not in EXEMPT_ACRONYMS
+        ]
 
         if words_to_correct:
             try:
@@ -440,40 +521,54 @@ def search(request):
 
         try:
             with connection.cursor() as cursor:
-                # 1. Resolve active databases by attaching them
-                active_dbs = resolve_active_dbs(cursor, selected_states)
+                # 1. Resolve active databases by attaching them (Try shoppable first)
+                active_dbs = resolve_active_dbs(cursor, selected_states, force_full=False)
+                is_currently_full = False
                 
                 # 2. Count total matching records across all active databases
-                count_parts = []
-                count_params = []
-                for db in active_dbs:
-                    db_prefix = f"{db}_db." if db != "main" else ""
-                    
-                    db_where_conditions = ["fts_procedures MATCH %s"]
-                    db_params = [sqlite_query]
-                    
-                    if selected_hospitals:
-                        h_placeholders = ",".join(["%s"] * len(selected_hospitals))
-                        db_where_conditions.append(
-                            f"EXISTS (SELECT 1 FROM {db_prefix}prices WHERE {db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {db_prefix}prices.hospital_id IN ({h_placeholders}))"
-                        )
-                        db_params.extend(selected_hospitals)
+                def _build_count_query(dbs, is_full=False):
+                    parts = []
+                    params = []
+                    for db in dbs:
+                        db_prefix = f"{db}_db." if db != "main" else ""
+                        price_db_prefix = f"{db}_db." if (db == "main" or is_full) else f"{db}_full_db."
+                        db_where_conditions = ["fts_procedures MATCH %s"]
+                        db_params = [sqlite_query]
                         
-                    if selected_payers:
-                        p_placeholders = ",".join(["%s"] * len(selected_payers))
-                        db_where_conditions.append(
-                            f"EXISTS (SELECT 1 FROM {db_prefix}prices WHERE {db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {db_prefix}prices.payer_name IN ({p_placeholders}))"
-                        )
-                        db_params.extend(selected_payers)
-                        
-                    db_where_clause = " WHERE " + " AND ".join(db_where_conditions)
+                        if selected_hospitals:
+                            h_placeholders = ",".join(["%s"] * len(selected_hospitals))
+                            db_where_conditions.append(
+                                f"EXISTS (SELECT 1 FROM {price_db_prefix}prices WHERE {price_db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {price_db_prefix}prices.hospital_id IN ({h_placeholders}))"
+                            )
+                            db_params.extend(selected_hospitals)
+                            
+                        if selected_payers:
+                            p_placeholders = ",".join(["%s"] * len(selected_payers))
+                            db_where_conditions.append(
+                                f"EXISTS (SELECT 1 FROM {price_db_prefix}prices WHERE {price_db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {price_db_prefix}prices.payer_name IN ({p_placeholders}))"
+                            )
+                            db_params.extend(selected_payers)
+                            
+                        db_where_clause = " WHERE " + " AND ".join(db_where_conditions)
+                        parts.append(f"SELECT DISTINCT procedure_id FROM {db_prefix}fts_procedures {db_where_clause}")
+                        params.extend(db_params)
                     
-                    count_parts.append(f"SELECT DISTINCT procedure_id FROM {db_prefix}fts_procedures {db_where_clause}")
-                    count_params.extend(db_params)
-                
-                combined_count_sql = f"SELECT COUNT(*) FROM ({' UNION '.join(count_parts)})"
+                    sql = f"SELECT COUNT(*) FROM ({' UNION '.join(parts)})"
+                    return sql, params
+
+                combined_count_sql, count_params = _build_count_query(active_dbs, is_full=False)
                 cursor.execute(combined_count_sql, count_params)
                 total_hits = cursor.fetchone()[0]
+
+                # Fallback: If no hits in shoppable database, switch to the full database
+                if total_hits == 0:
+                    print(f"[Hybrid Fallback] 0 hits found in shoppable database for '{query}'. Re-querying full database...")
+                    active_dbs = resolve_active_dbs(cursor, selected_states, force_full=True)
+                    is_currently_full = True
+                    combined_count_sql, count_params = _build_count_query(active_dbs, is_full=True)
+                    cursor.execute(combined_count_sql, count_params)
+                    total_hits = cursor.fetchone()[0]
+
                 results_count = total_hits
 
                 # 3. Query matching procedures (paginated) ranked by FTS5 BM25 relevance score
@@ -481,6 +576,7 @@ def search(request):
                 results_params = []
                 for db in active_dbs:
                     db_prefix = f"{db}_db." if db != "main" else ""
+                    price_db_prefix = f"{db}_db." if (db == "main" or is_currently_full) else f"{db}_full_db."
                     
                     db_where_conditions = ["fts_procedures MATCH %s"]
                     db_params = [sqlite_query]
@@ -488,14 +584,14 @@ def search(request):
                     if selected_hospitals:
                         h_placeholders = ",".join(["%s"] * len(selected_hospitals))
                         db_where_conditions.append(
-                            f"EXISTS (SELECT 1 FROM {db_prefix}prices WHERE {db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {db_prefix}prices.hospital_id IN ({h_placeholders}))"
+                            f"EXISTS (SELECT 1 FROM {price_db_prefix}prices WHERE {price_db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {price_db_prefix}prices.hospital_id IN ({h_placeholders}))"
                         )
                         db_params.extend(selected_hospitals)
                         
                     if selected_payers:
                         p_placeholders = ",".join(["%s"] * len(selected_payers))
                         db_where_conditions.append(
-                            f"EXISTS (SELECT 1 FROM {db_prefix}prices WHERE {db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {db_prefix}prices.payer_name IN ({p_placeholders}))"
+                            f"EXISTS (SELECT 1 FROM {price_db_prefix}prices WHERE {price_db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {price_db_prefix}prices.payer_name IN ({p_placeholders}))"
                         )
                         db_params.extend(selected_payers)
                         
@@ -533,10 +629,10 @@ def search(request):
                     price_queries = []
                     price_params = []
                     for db in active_dbs:
-                        db_prefix = f"{db}_db." if db != "main" else ""
+                        price_db_prefix = f"{db}_db." if (db == "main" or is_currently_full) else f"{db}_full_db."
                         price_queries.append(f"""
                             SELECT procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price 
-                            FROM {db_prefix}prices 
+                            FROM {price_db_prefix}prices 
                             WHERE procedure_id IN ({price_placeholders})
                         """)
                         price_params.extend(proc_ids)
