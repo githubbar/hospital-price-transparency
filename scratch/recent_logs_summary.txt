@@ -1,0 +1,677 @@
+Summary of last 16 hours (2026-06-02T23:30:00Z to 2026-06-03T15:35:00Z):
+- App logs parsed: 564
+- HTTP request logs: 72
+- Errors: 0
+- Warnings: 0
+- Spellchecks: 0
+- Database Attaches: 0
+- Startup/Shutdown events: 84
+- Other App logs: 480
+
+--- ERRORS ---
+No error logs found.
+
+--- WARNINGS ---
+No warning logs found.
+
+--- SPELLCHECKS ---
+No spellcheck logs found.
+
+--- DATABASE ATTACHES ---
+No SQLite Attach logs found.
+
+--- STARTUP / SHUTDOWN ---
+[2026-06-02T23:30:12.193322Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-02T23:30:16.991708Z] [2026-06-02 23:30:16 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-02T23:30:17.032098Z] [2026-06-02 23:30:17 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-02T23:45:33.477290Z] [2026-06-02 23:45:33 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T01:10:36.401058Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T01:10:39.745734Z] [2026-06-03 01:10:39 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T01:10:39.756664Z] [2026-06-03 01:10:39 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T01:36:43.388203Z] [2026-06-03 01:36:43 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T01:41:48.891746Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T01:41:50.807770Z] [2026-06-03 01:41:50 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T01:41:50.812038Z] [2026-06-03 01:41:50 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T01:56:53.491265Z] [2026-06-03 01:56:53 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T01:59:01.969745Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T01:59:04.749636Z] [2026-06-03 01:59:04 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T01:59:04.771752Z] [2026-06-03 01:59:04 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T01:59:16.654804Z] [2026-06-03 01:59:16 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T02:58:09.684443Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T02:58:12.142539Z] [2026-06-03 02:58:12 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T02:58:12.146166Z] [2026-06-03 02:58:12 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T03:13:23.500106Z] [2026-06-03 03:13:23 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T03:24:40.861941Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T03:24:43.165334Z] [2026-06-03 03:24:43 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T03:24:43.172916Z] [2026-06-03 03:24:43 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T03:39:53.607596Z] [2026-06-03 03:39:53 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T03:48:29.427184Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T03:48:31.262049Z] [2026-06-03 03:48:31 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T03:48:31.266120Z] [2026-06-03 03:48:31 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T04:03:33.511303Z] [2026-06-03 04:03:33 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T04:21:27.461587Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T04:21:29.810918Z] [2026-06-03 04:21:29 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T04:21:29.815727Z] [2026-06-03 04:21:29 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T04:41:13.411668Z] [2026-06-03 04:41:13 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T05:39:10.222713Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T05:39:12.948791Z] [2026-06-03 05:39:12 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T05:39:12.955331Z] [2026-06-03 05:39:12 +0000] [11] [INFO] Booting worker with pid: 11
+[2026-06-03T05:54:23.522940Z] [2026-06-03 05:54:23 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T06:14:39.662457Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T06:14:41.921445Z] [2026-06-03 06:14:41 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T06:14:41.927487Z] [2026-06-03 06:14:41 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T06:29:53.521978Z] [2026-06-03 06:29:53 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T06:44:00.670189Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T06:44:02.477932Z] [2026-06-03 06:44:02 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T06:44:02.484402Z] [2026-06-03 06:44:02 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T07:11:33.525252Z] [2026-06-03 07:11:33 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T08:16:24.513329Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T08:16:26.226130Z] [2026-06-03 08:16:26 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T08:16:26.230683Z] [2026-06-03 08:16:26 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T08:31:33.532418Z] [2026-06-03 08:31:33 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T08:58:35.220274Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T08:58:37.092950Z] [2026-06-03 08:58:37 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T08:58:37.097613Z] [2026-06-03 08:58:37 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T09:13:43.636813Z] [2026-06-03 09:13:43 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T09:24:55.512732Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T09:24:57.304297Z] [2026-06-03 09:24:57 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T09:24:57.307857Z] [2026-06-03 09:24:57 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T09:46:03.541738Z] [2026-06-03 09:46:03 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T10:48:10.354113Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T10:48:12.981649Z] [2026-06-03 10:48:12 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T10:48:12.989014Z] [2026-06-03 10:48:12 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T11:03:23.548633Z] [2026-06-03 11:03:23 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T11:20:39.888435Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T11:20:41.739373Z] [2026-06-03 11:20:41 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T11:20:41.750037Z] [2026-06-03 11:20:41 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T11:35:43.451322Z] [2026-06-03 11:35:43 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T11:41:06.343409Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T11:41:07.904198Z] [2026-06-03 11:41:07 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T11:41:07.907887Z] [2026-06-03 11:41:07 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T11:56:13.560768Z] [2026-06-03 11:56:13 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T12:19:05.875290Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T12:19:08.210575Z] [2026-06-03 12:19:08 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T12:19:08.215296Z] [2026-06-03 12:19:08 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T12:34:13.566106Z] [2026-06-03 12:34:13 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T13:03:02.179127Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T13:03:05.750151Z] [2026-06-03 13:03:05 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T13:03:05.774510Z] [2026-06-03 13:03:05 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T13:36:13.572151Z] [2026-06-03 13:36:13 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T14:38:55.828745Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T14:38:59.094868Z] [2026-06-03 14:38:59 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T14:38:59.118683Z] [2026-06-03 14:38:59 +0000] [10] [INFO] Booting worker with pid: 10
+[2026-06-03T14:39:08.280223Z] [2026-06-03 14:39:08 +0000] [1] [INFO] Shutting down: Master
+[2026-06-03T15:02:56.014407Z] Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+[2026-06-03T15:02:58.033981Z] [2026-06-03 15:02:58 +0000] [1] [INFO] Starting gunicorn 26.0.0
+[2026-06-03T15:02:58.037635Z] [2026-06-03 15:02:58 +0000] [9] [INFO] Booting worker with pid: 9
+[2026-06-03T15:29:13.589422Z] [2026-06-03 15:29:13 +0000] [1] [INFO] Shutting down: Master
+
+--- HTTP REQUEST LOGS SUMMARY ---
+Unique URLs requested (11 total unique):
+  21x: https://hospitalpricesearch.org/
+  13x: http://hospitalpricesearch.org/
+  12x: http://hospitalpricesearch.org/wp-admin/install.php?step=1
+  8x: https://hospitalpricesearch.org/wp-admin/install.php?step=1
+  7x: https://hospitalpricesearch.org/static/prices/logo.svg
+  4x: https://hospitalpricesearch.org/robots.txt
+  2x: https://hospitalpricesearch.org/static/prices/favicon.svg
+  2x: https://hospitalpricesearch.org/faq/
+  1x: http://hospitalpricesearch.org/robots.txt
+  1x: https://hospitalpricesearch.org/.env
+  1x: https://hospitalpricesearch.org/xmlrpc.php
+
+All HTTP Requests chronologically:
+[2026-06-02T23:30:10.623621Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-02T23:30:12.190419Z] GET https://hospitalpricesearch.org/ -> 200 (12.749911003s)
+[2026-06-03T00:40:26.253687Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T01:10:32.231929Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T01:10:36.386334Z] GET https://hospitalpricesearch.org/ -> 200 (8.750998372s)
+[2026-06-03T01:21:38.956594Z] GET http://hospitalpricesearch.org/robots.txt -> 302 (0s)
+[2026-06-03T01:21:39.044273Z] GET https://hospitalpricesearch.org/robots.txt -> 200 (0.011608538s)
+[2026-06-03T01:21:39.097630Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T01:21:40.117558Z] GET https://hospitalpricesearch.org/ -> 200 (0.074322108s)
+[2026-06-03T01:41:46.786499Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T01:41:48.889220Z] GET https://hospitalpricesearch.org/ -> 200 (3.159583795s)
+[2026-06-03T01:59:01.827597Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T01:59:01.967201Z] GET https://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 404 (7.302394678s)
+[2026-06-03T02:58:08.499742Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T02:58:09.682013Z] GET https://hospitalpricesearch.org/ -> 200 (6.866738678s)
+[2026-06-03T03:19:23.656700Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T03:24:40.842065Z] GET https://hospitalpricesearch.org/robots.txt -> 200 (4.210786773s)
+[2026-06-03T03:24:46.382166Z] GET https://hospitalpricesearch.org/ -> 200 (0.107156040s)
+[2026-06-03T03:48:29.418184Z] GET https://hospitalpricesearch.org/.env -> 404 (2.837891300s)
+[2026-06-03T04:21:27.177368Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T04:21:27.459140Z] GET https://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 404 (6.027867530s)
+[2026-06-03T04:24:43.438886Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T04:24:43.647855Z] GET https://hospitalpricesearch.org/ -> 200 (0.357804527s)
+[2026-06-03T04:26:05.567631Z] GET https://hospitalpricesearch.org/ -> 200 (0.089940364s)
+[2026-06-03T05:39:09.965761Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T05:39:10.220371Z] GET https://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 404 (6.867080369s)
+[2026-06-03T06:14:36.137893Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T06:14:39.659987Z] GET https://hospitalpricesearch.org/ -> 200 (4.300296836s)
+[2026-06-03T06:44:00.650720Z] GET https://hospitalpricesearch.org/robots.txt -> 200 (3.652783960s)
+[2026-06-03T06:56:24.068938Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T06:56:24.208983Z] GET https://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 404 (0.017792879s)
+[2026-06-03T08:16:24.308711Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T08:16:24.511139Z] GET https://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 404 (4.901576443s)
+[2026-06-03T08:58:35.201510Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T08:58:35.209741Z] GET https://hospitalpricesearch.org/ -> 200 (3.608730436s)
+[2026-06-03T09:24:54.588214Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T09:24:55.510232Z] GET https://hospitalpricesearch.org/ -> 200 (5.312426762s)
+[2026-06-03T09:30:58.149493Z] GET https://hospitalpricesearch.org/robots.txt -> 200 (0.030886555s)
+[2026-06-03T09:34:11.572530Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T10:48:10.148756Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T10:48:10.350610Z] GET https://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 404 (6.750895669s)
+[2026-06-03T11:20:39.864519Z] POST https://hospitalpricesearch.org/xmlrpc.php -> 404 (3.147486309s)
+[2026-06-03T11:41:06.332937Z] GET https://hospitalpricesearch.org/ -> 200 (2.615234100s)
+[2026-06-03T12:04:42.231883Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T12:19:02.257020Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T12:19:05.872721Z] GET https://hospitalpricesearch.org/ -> 200 (6.583419087s)
+[2026-06-03T13:03:02.158230Z] GET https://hospitalpricesearch.org/ -> 200 (13.792898813s)
+[2026-06-03T13:09:33.864887Z] GET https://hospitalpricesearch.org/ -> 200 (0.061673881s)
+[2026-06-03T13:09:34.083421Z] GET https://hospitalpricesearch.org/static/prices/logo.svg -> 304 (0.002759540s)
+[2026-06-03T13:21:11.201065Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T13:21:11.545482Z] GET https://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 404 (0.020334558s)
+[2026-06-03T14:09:41.394897Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T14:36:00.427386Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T14:38:55.643672Z] GET http://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 302 (0s)
+[2026-06-03T14:38:55.826272Z] GET https://hospitalpricesearch.org/wp-admin/install.php?step=1 -> 404 (9.431640627s)
+[2026-06-03T15:02:55.983549Z] GET https://hospitalpricesearch.org/ -> 200 (3.520782764s)
+[2026-06-03T15:02:59.907697Z] GET https://hospitalpricesearch.org/static/prices/logo.svg -> 304 (0.003490940s)
+[2026-06-03T15:02:59.975368Z] GET https://hospitalpricesearch.org/static/prices/favicon.svg -> 304 (0.003326811s)
+[2026-06-03T15:03:10.496289Z] GET https://hospitalpricesearch.org/faq/ -> 200 (0.010409462s)
+[2026-06-03T15:03:10.594617Z] GET https://hospitalpricesearch.org/static/prices/logo.svg -> 304 (0.002599851s)
+[2026-06-03T15:04:05.833256Z] GET https://hospitalpricesearch.org/ -> 200 (0.196337702s)
+[2026-06-03T15:04:06.150860Z] GET https://hospitalpricesearch.org/static/prices/logo.svg -> 200 (0.014512106s)
+[2026-06-03T15:04:06.498468Z] GET https://hospitalpricesearch.org/static/prices/favicon.svg -> 200 (0.013725206s)
+[2026-06-03T15:08:59.120235Z] GET https://hospitalpricesearch.org/ -> 200 (0.087460327s)
+[2026-06-03T15:08:59.324032Z] GET https://hospitalpricesearch.org/static/prices/logo.svg -> 304 (0.002863831s)
+[2026-06-03T15:10:07.791982Z] GET https://hospitalpricesearch.org/ -> 200 (0.075283406s)
+[2026-06-03T15:10:07.936985Z] GET https://hospitalpricesearch.org/static/prices/logo.svg -> 304 (0.002643950s)
+[2026-06-03T15:10:09.339210Z] GET https://hospitalpricesearch.org/faq/ -> 200 (0.002642370s)
+[2026-06-03T15:10:09.395175Z] GET https://hospitalpricesearch.org/static/prices/logo.svg -> 304 (0.002308380s)
+[2026-06-03T15:13:51.453176Z] GET https://hospitalpricesearch.org/ -> 200 (0.083515089s)
+[2026-06-03T15:14:08.102276Z] GET http://hospitalpricesearch.org/ -> 302 (0s)
+[2026-06-03T15:14:11.593500Z] GET https://hospitalpricesearch.org/ -> 200 (0.061734749s)
+
+--- OTHER APP LOGS ---
+[2026-06-02T23:30:12.401862Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-02T23:30:13.152841Z] time="02/06/2026 11:30:12.663745" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.153496Z] time="02/06/2026 11:30:12.664081" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.153683Z] time="02/06/2026 11:30:12.664652" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.153968Z] time="02/06/2026 11:30:12.666086" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.154146Z] time="02/06/2026 11:30:12.666121" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.154295Z] time="02/06/2026 11:30:12.666132" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.154463Z] time="02/06/2026 11:30:12.666176" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.154655Z] time="02/06/2026 11:30:12.666193" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.154878Z] time="02/06/2026 11:30:12.739923" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 73 msec" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.154881Z] time="02/06/2026 11:30:12.740013" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.155043Z] time="02/06/2026 11:30:12.741108" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.155046Z] time="02/06/2026 11:30:12.748393" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:13.788458Z] time="02/06/2026 11:30:12.749173" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:30:16.991792Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-02T23:30:16.992163Z] [2026-06-02 23:30:16 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-02T23:30:16.992169Z] [2026-06-02 23:30:16 +0000] [1] [INFO] Using worker: gthread
+[2026-06-02T23:30:18.003826Z] [2026-06-02 23:30:18 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-02T23:40:12.742635Z] time="02/06/2026 11:40:12.742018" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:40:12.863189Z] time="02/06/2026 11:40:12.862648" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 120.471476ms." mount-id=hospital-price-db-6a9b0-30b21d58
+[2026-06-02T23:45:33.174432Z] [2026-06-02 23:45:33 +0000] [1] [INFO] Handling signal: term
+[2026-06-02T23:45:33.177341Z] [2026-06-02 23:45:33 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T01:10:36.660Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T01:10:37.266614Z] time="03/06/2026 01:10:36.834836" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.267976Z] time="03/06/2026 01:10:36.834962" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.268484Z] time="03/06/2026 01:10:36.837389" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.268684Z] time="03/06/2026 01:10:36.837862" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.269030Z] time="03/06/2026 01:10:36.837881" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.269461Z] time="03/06/2026 01:10:36.837889" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.269740Z] time="03/06/2026 01:10:36.837906" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.269746Z] time="03/06/2026 01:10:36.837927" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.270437Z] time="03/06/2026 01:10:36.950829" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 112 msec" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.270444Z] time="03/06/2026 01:10:36.951140" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.270447Z] time="03/06/2026 01:10:36.952529" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.270815Z] time="03/06/2026 01:10:36.958406" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:37.271141Z] time="03/06/2026 01:10:36.962057" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:10:39.746767Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T01:10:39.747144Z] [2026-06-03 01:10:39 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T01:10:39.747150Z] [2026-06-03 01:10:39 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T01:10:40.202856Z] [2026-06-03 01:10:40 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T01:20:36.954781Z] time="03/06/2026 01:20:36.953536" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:20:37.087841Z] time="03/06/2026 01:20:37.087107" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 133.389955ms." mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:30:36.955103Z] time="03/06/2026 01:30:36.954152" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:30:37.026663Z] time="03/06/2026 01:30:37.026006" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 71.738671ms." mount-id=hospital-price-db-6a9b0-5206c9fb
+[2026-06-03T01:36:43.185666Z] [2026-06-03 01:36:43 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T01:36:43.188235Z] [2026-06-03 01:36:43 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T01:41:48.938106Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T01:41:49.529220Z] time="03/06/2026 01:41:49.078516" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.529916Z] time="03/06/2026 01:41:49.078611" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.530242Z] time="03/06/2026 01:41:49.079086" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.530505Z] time="03/06/2026 01:41:49.082344" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.530810Z] time="03/06/2026 01:41:49.082442" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.530815Z] time="03/06/2026 01:41:49.082452" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.531154Z] time="03/06/2026 01:41:49.082475" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.531827Z] time="03/06/2026 01:41:49.082508" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.532198Z] time="03/06/2026 01:41:49.195226" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 112 msec" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.532202Z] time="03/06/2026 01:41:49.195350" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:49.532519Z] time="03/06/2026 01:41:49.204563" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:50.008183Z] time="03/06/2026 01:41:49.220030" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:50.012065Z] time="03/06/2026 01:41:49.220681" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:41:50.807783Z] [2026-06-03 01:41:50 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T01:41:50.807786Z] [2026-06-03 01:41:50 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T01:41:50.808203Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T01:41:50.972467Z] [2026-06-03 01:41:50 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T01:51:49.206982Z] time="03/06/2026 01:51:49.205906" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:51:49.278086Z] time="03/06/2026 01:51:49.277475" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 71.391421ms." mount-id=hospital-price-db-6a9b0-0ab3fb9d
+[2026-06-03T01:56:53.188848Z] [2026-06-03 01:56:53 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T01:56:53.190532Z] [2026-06-03 01:56:53 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T01:59:02.129190Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T01:59:02.744296Z] time="03/06/2026 01:59:02.316095" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.744851Z] time="03/06/2026 01:59:02.316280" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.744854Z] time="03/06/2026 01:59:02.317147" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.744857Z] time="03/06/2026 01:59:02.318692" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.744860Z] time="03/06/2026 01:59:02.318719" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.744864Z] time="03/06/2026 01:59:02.318729" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.744868Z] time="03/06/2026 01:59:02.318750" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.744871Z] time="03/06/2026 01:59:02.318776" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.745411Z] time="03/06/2026 01:59:02.433794" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 115 msec" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.746196Z] time="03/06/2026 01:59:02.433878" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.746537Z] time="03/06/2026 01:59:02.434330" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.746898Z] time="03/06/2026 01:59:02.439484" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:02.746911Z] time="03/06/2026 01:59:02.440030" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-77369341
+[2026-06-03T01:59:04.749650Z] [2026-06-03 01:59:04 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T01:59:04.749653Z] [2026-06-03 01:59:04 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T01:59:04.749856Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T01:59:05.222775Z] [2026-06-03 01:59:05 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T01:59:09.362745Z] Not Found: /wp-admin/install.php
+[2026-06-03T01:59:16.351987Z] [2026-06-03 01:59:16 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T01:59:16.354136Z] [2026-06-03 01:59:16 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T02:58:09.934164Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T02:58:10.409347Z] time="03/06/2026 02:58:10.059483" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.410903Z] time="03/06/2026 02:58:10.059618" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.411202Z] time="03/06/2026 02:58:10.060059" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.411206Z] time="03/06/2026 02:58:10.060824" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.411411Z] time="03/06/2026 02:58:10.060855" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.411607Z] time="03/06/2026 02:58:10.060862" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.411887Z] time="03/06/2026 02:58:10.060881" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.412146Z] time="03/06/2026 02:58:10.060900" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.885648Z] time="03/06/2026 02:58:10.138296" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 77 msec" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.886147Z] time="03/06/2026 02:58:10.138359" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.886400Z] time="03/06/2026 02:58:10.138735" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.886708Z] time="03/06/2026 02:58:10.143834" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:10.886997Z] time="03/06/2026 02:58:10.148647" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T02:58:12.142565Z] [2026-06-03 02:58:12 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T02:58:12.142568Z] [2026-06-03 02:58:12 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T02:58:12.142982Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T02:58:12.483077Z] [2026-06-03 02:58:12 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T03:08:10.140147Z] time="03/06/2026 03:08:10.139594" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T03:08:10.218456Z] time="03/06/2026 03:08:10.218309" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 78.601766ms." mount-id=hospital-price-db-6a9b0-cf3a6d02
+[2026-06-03T03:13:23.197382Z] [2026-06-03 03:13:23 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T03:13:23.199295Z] [2026-06-03 03:13:23 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T03:24:40.915053Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T03:24:41.592634Z] time="03/06/2026 03:24:41.098421" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.593858Z] time="03/06/2026 03:24:41.100255" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.594506Z] time="03/06/2026 03:24:41.102525" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.594961Z] time="03/06/2026 03:24:41.103263" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.595163Z] time="03/06/2026 03:24:41.103285" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.595431Z] time="03/06/2026 03:24:41.103291" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.595706Z] time="03/06/2026 03:24:41.103311" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.595991Z] time="03/06/2026 03:24:41.103335" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.596212Z] time="03/06/2026 03:24:41.211600" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 108 msec" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.596416Z] time="03/06/2026 03:24:41.211822" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.596629Z] time="03/06/2026 03:24:41.212500" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:41.596842Z] time="03/06/2026 03:24:41.230749" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:42.056747Z] time="03/06/2026 03:24:41.231364" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:24:43.165352Z] [2026-06-03 03:24:43 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T03:24:43.165356Z] [2026-06-03 03:24:43 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T03:24:43.171399Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T03:24:43.368276Z] [2026-06-03 03:24:43 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T03:34:41.215169Z] time="03/06/2026 03:34:41.213981" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:34:41.293328Z] time="03/06/2026 03:34:41.292520" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 78.362526ms." mount-id=hospital-price-db-6a9b0-d1b99a7f
+[2026-06-03T03:39:53.203945Z] [2026-06-03 03:39:53 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T03:39:53.206673Z] [2026-06-03 03:39:53 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T03:48:29.468978Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T03:48:30.012769Z] time="03/06/2026 03:48:29.574122" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.013904Z] time="03/06/2026 03:48:29.574234" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.014382Z] time="03/06/2026 03:48:29.575254" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.014386Z] time="03/06/2026 03:48:29.575919" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.014390Z] time="03/06/2026 03:48:29.575943" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.014755Z] time="03/06/2026 03:48:29.575948" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.015439Z] time="03/06/2026 03:48:29.575966" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.015444Z] time="03/06/2026 03:48:29.575982" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.015800Z] time="03/06/2026 03:48:29.690073" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 114 msec" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.016107Z] time="03/06/2026 03:48:29.690153" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.016643Z] time="03/06/2026 03:48:29.692054" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.528923Z] time="03/06/2026 03:48:29.713898" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:30.529452Z] time="03/06/2026 03:48:29.714672" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:48:31.262371Z] [2026-06-03 03:48:31 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T03:48:31.262818Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T03:48:31.263668Z] [2026-06-03 03:48:31 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T03:48:31.430365Z] [2026-06-03 03:48:31 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T03:48:32.278648Z] Not Found: /.env
+[2026-06-03T03:58:29.693688Z] time="03/06/2026 03:58:29.693036" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T03:58:29.789139Z] time="03/06/2026 03:58:29.788624" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 95.421978ms." mount-id=hospital-price-db-6a9b0-c5ea57a8
+[2026-06-03T04:03:33.208232Z] [2026-06-03 04:03:33 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T04:03:33.210876Z] [2026-06-03 04:03:33 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T04:21:27.527216Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T04:21:28.003343Z] time="03/06/2026 04:21:27.594223" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.004972Z] time="03/06/2026 04:21:27.594295" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.005498Z] time="03/06/2026 04:21:27.594585" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.005724Z] time="03/06/2026 04:21:27.595354" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.005888Z] time="03/06/2026 04:21:27.595375" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.006203Z] time="03/06/2026 04:21:27.595380" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.006207Z] time="03/06/2026 04:21:27.595397" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.006385Z] time="03/06/2026 04:21:27.595415" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.417772Z] time="03/06/2026 04:21:27.715054" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 119 msec" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.418161Z] time="03/06/2026 04:21:27.715125" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.418521Z] time="03/06/2026 04:21:27.715719" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.418525Z] time="03/06/2026 04:21:27.720017" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:28.418760Z] time="03/06/2026 04:21:27.720696" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:21:29.810936Z] [2026-06-03 04:21:29 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T04:21:29.810939Z] [2026-06-03 04:21:29 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T04:21:29.811241Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T04:21:30.062719Z] [2026-06-03 04:21:30 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T04:21:33.501050Z] Not Found: /wp-admin/install.php
+[2026-06-03T04:31:27.717612Z] time="03/06/2026 04:31:27.717022" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:31:27.805560Z] time="03/06/2026 04:31:27.804166" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 87.021232ms." mount-id=hospital-price-db-6a9b0-a39f9b5d
+[2026-06-03T04:41:13.209966Z] [2026-06-03 04:41:13 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T04:41:13.211515Z] [2026-06-03 04:41:13 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T05:39:10.285550Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T05:39:10.868326Z] time="03/06/2026 05:39:10.435483" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.870728Z] time="03/06/2026 05:39:10.435561" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.871218Z] time="03/06/2026 05:39:10.435851" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.871222Z] time="03/06/2026 05:39:10.436340" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.871536Z] time="03/06/2026 05:39:10.436359" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.871905Z] time="03/06/2026 05:39:10.436364" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.877971Z] time="03/06/2026 05:39:10.436380" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.892571Z] time="03/06/2026 05:39:10.436396" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.892578Z] time="03/06/2026 05:39:10.590932" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 154 msec" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.892580Z] time="03/06/2026 05:39:10.591006" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.892582Z] time="03/06/2026 05:39:10.591519" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.892585Z] time="03/06/2026 05:39:10.595220" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:10.892587Z] time="03/06/2026 05:39:10.597403" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:39:12.949090Z] [2026-06-03 05:39:12 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T05:39:12.949093Z] [2026-06-03 05:39:12 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T05:39:12.949470Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T05:39:13.227240Z] [2026-06-03 05:39:13 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T05:39:17.126185Z] Not Found: /wp-admin/install.php
+[2026-06-03T05:49:10.592512Z] time="03/06/2026 05:49:10.591876" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:49:10.671978Z] time="03/06/2026 05:49:10.671515" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 79.494547ms." mount-id=hospital-price-db-6a9b0-fc7545e8
+[2026-06-03T05:54:23.216931Z] [2026-06-03 05:54:23 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T05:54:23.219972Z] [2026-06-03 05:54:23 +0000] [11] [INFO] Worker exiting (pid: 11)
+[2026-06-03T06:14:39.880436Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T06:14:40.525056Z] time="03/06/2026 06:14:40.061783" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.525883Z] time="03/06/2026 06:14:40.061895" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.525886Z] time="03/06/2026 06:14:40.062527" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.526131Z] time="03/06/2026 06:14:40.064284" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.526554Z] time="03/06/2026 06:14:40.064307" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.528451Z] time="03/06/2026 06:14:40.064315" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.528828Z] time="03/06/2026 06:14:40.064334" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.528832Z] time="03/06/2026 06:14:40.064355" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.528835Z] time="03/06/2026 06:14:40.287946" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 223 msec" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.528838Z] time="03/06/2026 06:14:40.288080" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.927926Z] time="03/06/2026 06:14:40.288773" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.928856Z] time="03/06/2026 06:14:40.312746" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:40.929411Z] time="03/06/2026 06:14:40.326975" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:14:41.921507Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T06:14:41.921944Z] [2026-06-03 06:14:41 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T06:14:41.921948Z] [2026-06-03 06:14:41 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T06:14:42.171575Z] [2026-06-03 06:14:42 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T06:24:40.294198Z] time="03/06/2026 06:24:40.293513" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:24:40.489947Z] time="03/06/2026 06:24:40.489687" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 195.9931ms." mount-id=hospital-price-db-6a9b0-d1a76e90
+[2026-06-03T06:29:53.219048Z] [2026-06-03 06:29:53 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T06:29:53.221478Z] [2026-06-03 06:29:53 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T06:44:00.724371Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T06:44:01.319691Z] time="03/06/2026 06:44:00.858327" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.322129Z] time="03/06/2026 06:44:00.858411" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.322386Z] time="03/06/2026 06:44:00.858681" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.322596Z] time="03/06/2026 06:44:00.859277" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.322855Z] time="03/06/2026 06:44:00.859296" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.323191Z] time="03/06/2026 06:44:00.859301" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.323451Z] time="03/06/2026 06:44:00.859316" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.323806Z] time="03/06/2026 06:44:00.859332" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.324239Z] time="03/06/2026 06:44:00.983279" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 123 msec" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.324629Z] time="03/06/2026 06:44:00.983348" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.324817Z] time="03/06/2026 06:44:00.983868" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.325070Z] time="03/06/2026 06:44:00.991548" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:01.700573Z] time="03/06/2026 06:44:00.995004" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:44:02.477947Z] [2026-06-03 06:44:02 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T06:44:02.477950Z] [2026-06-03 06:44:02 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T06:44:02.478139Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T06:44:02.665353Z] [2026-06-03 06:44:02 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T06:54:00.985921Z] time="03/06/2026 06:54:00.984867" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:54:01.066351Z] time="03/06/2026 06:54:01.065810" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 80.795468ms." mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T06:56:24.227356Z] Not Found: /wp-admin/install.php
+[2026-06-03T07:04:00.985731Z] time="03/06/2026 07:04:00.984916" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T07:04:01.054507Z] time="03/06/2026 07:04:01.053711" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 68.700479ms." mount-id=hospital-price-db-6a9b0-219aa8b8
+[2026-06-03T07:11:33.222547Z] [2026-06-03 07:11:33 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T07:11:33.225050Z] [2026-06-03 07:11:33 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T08:16:24.570903Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T08:16:24.978697Z] time="03/06/2026 08:16:24.635783" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:24.979397Z] time="03/06/2026 08:16:24.635846" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:24.979579Z] time="03/06/2026 08:16:24.636079" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:24.979726Z] time="03/06/2026 08:16:24.636436" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:24.979914Z] time="03/06/2026 08:16:24.636457" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:24.980371Z] time="03/06/2026 08:16:24.636462" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:24.980561Z] time="03/06/2026 08:16:24.636485" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:25.353343Z] time="03/06/2026 08:16:24.636500" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:25.353615Z] time="03/06/2026 08:16:24.707422" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 70 msec" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:25.353618Z] time="03/06/2026 08:16:24.707513" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:25.353836Z] time="03/06/2026 08:16:24.708366" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:25.354146Z] time="03/06/2026 08:16:24.712335" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:25.354383Z] time="03/06/2026 08:16:24.714215" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:16:26.226402Z] [2026-06-03 08:16:26 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T08:16:26.226745Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T08:16:26.227429Z] [2026-06-03 08:16:26 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T08:16:26.458585Z] [2026-06-03 08:16:26 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T08:16:29.428839Z] Not Found: /wp-admin/install.php
+[2026-06-03T08:26:24.709820Z] time="03/06/2026 08:26:24.709052" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:26:24.781687Z] time="03/06/2026 08:26:24.781249" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 72.033812ms." mount-id=hospital-price-db-6a9b0-568db991
+[2026-06-03T08:31:33.229771Z] [2026-06-03 08:31:33 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T08:31:33.231302Z] [2026-06-03 08:31:33 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T08:58:35.269263Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T08:58:35.816675Z] time="03/06/2026 08:58:35.405690" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:35.817548Z] time="03/06/2026 08:58:35.405791" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:35.817955Z] time="03/06/2026 08:58:35.406239" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:35.818323Z] time="03/06/2026 08:58:35.407033" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:35.818725Z] time="03/06/2026 08:58:35.407055" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:35.819014Z] time="03/06/2026 08:58:35.407060" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:35.819485Z] time="03/06/2026 08:58:35.407078" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:35.819856Z] time="03/06/2026 08:58:35.407095" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:35.820206Z] time="03/06/2026 08:58:35.494144" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 87 msec" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:36.258720Z] time="03/06/2026 08:58:35.494229" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:36.259394Z] time="03/06/2026 08:58:35.494960" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:36.259714Z] time="03/06/2026 08:58:35.509250" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:36.260005Z] time="03/06/2026 08:58:35.512329" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T08:58:37.093434Z] [2026-06-03 08:58:37 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T08:58:37.093476Z] [2026-06-03 08:58:37 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T08:58:37.093798Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T08:58:37.289583Z] [2026-06-03 08:58:37 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T09:08:35.497110Z] time="03/06/2026 09:08:35.496165" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T09:08:35.603435Z] time="03/06/2026 09:08:35.602773" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 106.443057ms." mount-id=hospital-price-db-6a9b0-b38212c6
+[2026-06-03T09:13:43.233443Z] [2026-06-03 09:13:43 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T09:13:43.235863Z] [2026-06-03 09:13:43 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T09:24:55.546825Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T09:24:56.025979Z] time="03/06/2026 09:24:55.655501" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.026553Z] time="03/06/2026 09:24:55.655623" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.026556Z] time="03/06/2026 09:24:55.656073" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.026791Z] time="03/06/2026 09:24:55.656685" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.027055Z] time="03/06/2026 09:24:55.656702" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.027240Z] time="03/06/2026 09:24:55.656707" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.027451Z] time="03/06/2026 09:24:55.656723" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.027711Z] time="03/06/2026 09:24:55.656738" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.385037Z] time="03/06/2026 09:24:55.752329" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 95 msec" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.385369Z] time="03/06/2026 09:24:55.752397" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.385793Z] time="03/06/2026 09:24:55.752801" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.385799Z] time="03/06/2026 09:24:55.762758" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:56.386031Z] time="03/06/2026 09:24:55.763588" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:24:57.304634Z] [2026-06-03 09:24:57 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T09:24:57.304665Z] [2026-06-03 09:24:57 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T09:24:57.305051Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T09:24:57.455820Z] [2026-06-03 09:24:57 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T09:34:55.754288Z] time="03/06/2026 09:34:55.753747" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:34:55.854741Z] time="03/06/2026 09:34:55.854508" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 100.605701ms." mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:44:55.754183Z] time="03/06/2026 09:44:55.753717" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:44:55.848398Z] time="03/06/2026 09:44:55.848054" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 94.263207ms." mount-id=hospital-price-db-6a9b0-9116140d
+[2026-06-03T09:46:03.236066Z] [2026-06-03 09:46:03 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T09:46:03.241823Z] [2026-06-03 09:46:03 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T10:48:10.408375Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T10:48:11.095114Z] time="03/06/2026 10:48:10.548456" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.096789Z] time="03/06/2026 10:48:10.548521" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.096794Z] time="03/06/2026 10:48:10.549028" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.096797Z] time="03/06/2026 10:48:10.549442" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.097069Z] time="03/06/2026 10:48:10.549460" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.097806Z] time="03/06/2026 10:48:10.549465" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.097811Z] time="03/06/2026 10:48:10.549493" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.097814Z] time="03/06/2026 10:48:10.578308" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.098132Z] time="03/06/2026 10:48:10.664216" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 114 msec" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.558846Z] time="03/06/2026 10:48:10.664297" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.559308Z] time="03/06/2026 10:48:10.665779" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.560069Z] time="03/06/2026 10:48:10.685128" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:11.560074Z] time="03/06/2026 10:48:10.685785" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:48:12.982039Z] [2026-06-03 10:48:12 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T10:48:12.982045Z] [2026-06-03 10:48:12 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T10:48:12.982308Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T10:48:13.316807Z] [2026-06-03 10:48:13 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T10:48:17.132936Z] Not Found: /wp-admin/install.php
+[2026-06-03T10:58:10.668522Z] time="03/06/2026 10:58:10.668166" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T10:58:10.767875Z] time="03/06/2026 10:58:10.767572" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 99.280841ms." mount-id=hospital-price-db-6a9b0-6390f74b
+[2026-06-03T11:03:23.245448Z] [2026-06-03 11:03:23 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T11:03:23.248386Z] [2026-06-03 11:03:23 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T11:20:39.942084Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T11:20:40.493852Z] time="03/06/2026 11:20:40.088555" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.494516Z] time="03/06/2026 11:20:40.088626" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.494526Z] time="03/06/2026 11:20:40.089567" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.494946Z] time="03/06/2026 11:20:40.091150" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.494952Z] time="03/06/2026 11:20:40.091248" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.495209Z] time="03/06/2026 11:20:40.091258" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.495215Z] time="03/06/2026 11:20:40.091280" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.495428Z] time="03/06/2026 11:20:40.091302" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.495667Z] time="03/06/2026 11:20:40.195331" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 104 msec" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.895211Z] time="03/06/2026 11:20:40.195398" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.895575Z] time="03/06/2026 11:20:40.196277" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.895579Z] time="03/06/2026 11:20:40.202561" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:40.896107Z] time="03/06/2026 11:20:40.203510" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:20:41.741138Z] [2026-06-03 11:20:41 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T11:20:41.741183Z] [2026-06-03 11:20:41 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T11:20:41.741539Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T11:20:41.943477Z] [2026-06-03 11:20:41 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T11:20:43.048754Z] Not Found: /xmlrpc.php
+[2026-06-03T11:30:40.198425Z] time="03/06/2026 11:30:40.197563" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:30:40.278578Z] time="03/06/2026 11:30:40.278100" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 80.378028ms." mount-id=hospital-price-db-6a9b0-eca30bde
+[2026-06-03T11:35:43.249118Z] [2026-06-03 11:35:43 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T11:35:43.251684Z] [2026-06-03 11:35:43 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T11:41:06.400500Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T11:41:06.854372Z] time="03/06/2026 11:41:06.498398" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:06.855003Z] time="03/06/2026 11:41:06.498950" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:06.855439Z] time="03/06/2026 11:41:06.499696" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:06.855677Z] time="03/06/2026 11:41:06.499715" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:06.855Z] time="03/06/2026 11:41:06.498470" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:06.856211Z] time="03/06/2026 11:41:06.499720" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:06.856216Z] time="03/06/2026 11:41:06.499736" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:06.856509Z] time="03/06/2026 11:41:06.499751" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:07.224658Z] time="03/06/2026 11:41:06.610648" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 110 msec" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:07.224929Z] time="03/06/2026 11:41:06.610736" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:07.224935Z] time="03/06/2026 11:41:06.611208" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:07.225222Z] time="03/06/2026 11:41:06.615314" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:07.225550Z] time="03/06/2026 11:41:06.615665" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:41:07.904220Z] [2026-06-03 11:41:07 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T11:41:07.904224Z] [2026-06-03 11:41:07 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T11:41:07.904477Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T11:41:08.082408Z] [2026-06-03 11:41:08 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T11:51:06.620758Z] time="03/06/2026 11:51:06.611905" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:51:06.692903Z] time="03/06/2026 11:51:06.692172" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 72.148721ms." mount-id=hospital-price-db-6a9b0-73f73200
+[2026-06-03T11:56:13.258125Z] [2026-06-03 11:56:13 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T11:56:13.260474Z] [2026-06-03 11:56:13 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T12:19:05.936653Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T12:19:06.524633Z] time="03/06/2026 12:19:06.068327" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.525800Z] time="03/06/2026 12:19:06.068388" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.526058Z] time="03/06/2026 12:19:06.068684" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.526965Z] time="03/06/2026 12:19:06.069356" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.527592Z] time="03/06/2026 12:19:06.069379" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.527597Z] time="03/06/2026 12:19:06.069385" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.528744Z] time="03/06/2026 12:19:06.069405" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.531121Z] time="03/06/2026 12:19:06.069424" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.532554Z] time="03/06/2026 12:19:06.174147" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 104 msec" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.987657Z] time="03/06/2026 12:19:06.174220" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.988035Z] time="03/06/2026 12:19:06.174714" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.988039Z] time="03/06/2026 12:19:06.179801" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:06.988042Z] time="03/06/2026 12:19:06.180417" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:19:08.211069Z] [2026-06-03 12:19:08 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T12:19:08.211393Z] [2026-06-03 12:19:08 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T12:19:08.211486Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T12:19:08.469949Z] [2026-06-03 12:19:08 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T12:29:06.177557Z] time="03/06/2026 12:29:06.176044" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:29:06.264303Z] time="03/06/2026 12:29:06.263455" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 87.260852ms." mount-id=hospital-price-db-6a9b0-4e1db95a
+[2026-06-03T12:34:13.262477Z] [2026-06-03 12:34:13 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T12:34:13.264903Z] [2026-06-03 12:34:13 +0000] [9] [INFO] Worker exiting (pid: 9)
+[2026-06-03T13:03:02.465722Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T13:03:03.144250Z] time="03/06/2026 01:03:02.699723" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.146523Z] time="03/06/2026 01:03:02.699833" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.147652Z] time="03/06/2026 01:03:02.700521" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.148587Z] time="03/06/2026 01:03:02.701544" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.151287Z] time="03/06/2026 01:03:02.701583" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.152240Z] time="03/06/2026 01:03:02.701594" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.152891Z] time="03/06/2026 01:03:02.701613" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.154399Z] time="03/06/2026 01:03:02.701632" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.155686Z] time="03/06/2026 01:03:02.807220" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 105 msec" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.155692Z] time="03/06/2026 01:03:02.807304" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.155694Z] time="03/06/2026 01:03:02.807697" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.580848Z] time="03/06/2026 01:03:02.812255" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:03.581368Z] time="03/06/2026 01:03:02.812614" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:03:05.774203Z] [2026-06-03 13:03:05 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T13:03:05.774215Z] [2026-06-03 13:03:05 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T13:03:05.774913Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T13:03:06.056063Z] [2026-06-03 13:03:06 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T13:13:02.811333Z] time="03/06/2026 01:13:02.808990" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:13:02.882687Z] time="03/06/2026 01:13:02.881810" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 72.614272ms." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:21:11.566766Z] Not Found: /wp-admin/install.php
+[2026-06-03T13:23:02.809112Z] time="03/06/2026 01:23:02.808047" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:23:02.914587Z] time="03/06/2026 01:23:02.913520" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 105.340325ms." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:33:02.808818Z] time="03/06/2026 01:33:02.807968" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:33:02.897752Z] time="03/06/2026 01:33:02.897257" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 89.205983ms." mount-id=hospital-price-db-6a9b0-4edb4663
+[2026-06-03T13:36:13.269676Z] [2026-06-03 13:36:13 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T13:36:13.271437Z] [2026-06-03 13:36:13 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T14:38:55.969996Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T14:38:56.434913Z] time="03/06/2026 02:38:56.081457" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.435560Z] time="03/06/2026 02:38:56.081546" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.435797Z] time="03/06/2026 02:38:56.081870" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.436112Z] time="03/06/2026 02:38:56.083089" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.436117Z] time="03/06/2026 02:38:56.083110" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.436328Z] time="03/06/2026 02:38:56.083123" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.436566Z] time="03/06/2026 02:38:56.083145" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.436572Z] time="03/06/2026 02:38:56.083163" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.436763Z] time="03/06/2026 02:38:56.173665" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 90 msec" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.436986Z] time="03/06/2026 02:38:56.173742" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.437250Z] time="03/06/2026 02:38:56.174238" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.439198Z] time="03/06/2026 02:38:56.179800" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:56.439451Z] time="03/06/2026 02:38:56.180570" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-95dff42b
+[2026-06-03T14:38:59.095636Z] [2026-06-03 14:38:59 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T14:38:59.095641Z] [2026-06-03 14:38:59 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T14:38:59.096581Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T14:38:59.569629Z] [2026-06-03 14:38:59 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T14:39:05.275852Z] Not Found: /wp-admin/install.php
+[2026-06-03T14:39:07.977517Z] [2026-06-03 14:39:07 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T14:39:07.979397Z] [2026-06-03 14:39:07 +0000] [10] [INFO] Worker exiting (pid: 10)
+[2026-06-03T15:02:56.081583Z] GCSFuse is mounted with bucket hospital-price-db-6a9b0. Enable GCSFuse logging with mount options for more logs
+[2026-06-03T15:02:56.877842Z] time="03/06/2026 03:02:56.299054" severity=INFO message="Creating Storage handle..." mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:56.879263Z] time="03/06/2026 03:02:56.299147" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:56.879541Z] time="03/06/2026 03:02:56.299547" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:56.879902Z] time="03/06/2026 03:02:56.301561" severity=INFO message="Creating a new server...\n" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:56.880199Z] time="03/06/2026 03:02:56.301580" severity=INFO message="MRD cache (LRU-based) enabled with maxSize=1000 (pools closed-file MRDs)" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:56.880522Z] time="03/06/2026 03:02:56.301585" severity=INFO message="Set up root directory for bucket hospital-price-db-6a9b0" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:56.880837Z] time="03/06/2026 03:02:56.301602" severity=INFO message="GetStorageLayout <- (hospital-price-db-6a9b0)" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:56.881067Z] time="03/06/2026 03:02:56.301620" severity=INFO message="Calling GetStorageLayout request for \"projects/_/buckets/hospital-price-db-6a9b0/storageLayout\" with deadline=30s" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:57.325127Z] time="03/06/2026 03:02:56.416451" severity=INFO message="GetStorageLayout -> (hospital-price-db-6a9b0) 114 msec" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:57.325509Z] time="03/06/2026 03:02:56.416539" severity=INFO message="Calling cred.UniverseDomain request for \"credentials\" with deadline=30s" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:57.325512Z] time="03/06/2026 03:02:56.418843" severity=INFO message="Success in fetching cred.UniverseDomain" mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:57.325514Z] time="03/06/2026 03:02:56.429318" severity=INFO message="Mounting file system \"hospital-price-db-6a9b0\"..." mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:57.329977Z] time="03/06/2026 03:02:56.431354" severity=INFO message="File system has been successfully mounted." mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:02:58.034067Z] [2026-06-03 15:02:58 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-06-03T15:02:58.034072Z] [2026-06-03 15:02:58 +0000] [1] [INFO] Using worker: gthread
+[2026-06-03T15:02:58.034355Z] Default STARTUP TCP probe succeeded after 1 attempt for container "hospital-price-search-1" on port 8080.
+[2026-06-03T15:02:58.233022Z] [2026-06-03 15:02:58 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+[2026-06-03T15:12:56.419866Z] time="03/06/2026 03:12:56.419571" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:12:56.543696Z] time="03/06/2026 03:12:56.543317" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 123.614239ms." mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:22:56.420787Z] time="03/06/2026 03:22:56.420462" severity=INFO message="Starting a garbage collection run." mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:22:56.601517Z] time="03/06/2026 03:22:56.601129" severity=INFO message="Garbage collection succeeded after deleted 0 objects in 180.56229ms." mount-id=hospital-price-db-6a9b0-7bed5c73
+[2026-06-03T15:29:13.286918Z] [2026-06-03 15:29:13 +0000] [1] [INFO] Handling signal: term
+[2026-06-03T15:29:13.288493Z] [2026-06-03 15:29:13 +0000] [9] [INFO] Worker exiting (pid: 9)

@@ -82,7 +82,7 @@ Contrary to typical virtual machine boot times, Cloud Run cold starts are highly
 
 ### Maximizing Cold Start Performance
 We have pre-configured two optimizations to keep container startup fast:
-1. **Startup CPU Boost**: In Cloud Run, instances are given boosted CPU allocation during container startup to initialize Django and WhiteNoise static asset caching quickly.
+1. **Startup CPU Boost**: When a container instance spins up, Cloud Run temporarily boosts the CPU allocation during the startup phase. With our configuration of `--cpu 2`, Startup CPU Boost will allocate **4 CPUs** during boot to initialize Django and WhiteNoise static asset caching quickly, reverting to 2 CPUs once the container is ready. This reduces cold start time significantly without increasing base idle or running costs.
 2. **Read-Only SQLite Connect (`settings.py`)**: When running in Cloud Run (`K_SERVICE` env var detected), the app connects in read-only mode:
    ```python
    'NAME': f"file:{BASE_DIR / 'db.sqlite3'}?mode=ro"

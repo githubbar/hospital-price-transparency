@@ -21,8 +21,8 @@ gcloud run deploy hospital-price-search `
   --region us-central1 `
   --allow-unauthenticated `
   --min-instances 0 `
-  --memory 2Gi `
-  --cpu 1 `
+  --memory 4Gi `
+  --cpu 2 `
   --cpu-boost `
   --clear-vpc-connector `
   --add-volume "name=gcs-db-volume,type=cloud-storage,bucket=hospital-price-db-6a9b0,readonly=true" `

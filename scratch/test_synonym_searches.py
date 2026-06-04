@@ -126,6 +126,8 @@ def main():
     run_fts_query_with_spellcheck("ankle tendon repair")
     run_fts_query_with_spellcheck("knee replacement")
     run_fts_query_with_spellcheck("c secion") # with spelling typo
+    run_fts_query_with_spellcheck("c section") # new synonym
+    run_fts_query_with_spellcheck("cesarean") # new synonym
 
     # Test clinical exemptions and custom vocabulary additions
     run_fts_query_with_spellcheck("acl") # Should not correct to 'facil'

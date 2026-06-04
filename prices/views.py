@@ -47,7 +47,15 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
             gz_filename = db_filename + ".gz"
             source_gz_path = os.path.join(db_dir, gz_filename)
             
-            if not os.path.exists(db_path):
+            # Check if cache needs update (either doesn't exist, or source file is newer)
+            source_file = source_gz_path if os.path.exists(source_gz_path) else source_path
+            need_copy = not os.path.exists(db_path)
+            if not need_copy and os.path.exists(source_file):
+                if os.path.getmtime(source_file) > os.path.getmtime(db_path):
+                    need_copy = True
+                    print(f"[RAM Cache] Source file {source_file} is newer than cached version. Updating...")
+            
+            if need_copy:
                 # Try compressed source first for 13x speed & no composite GCS FUSE corruption
                 if os.path.exists(source_gz_path):
                     try:
@@ -73,16 +81,20 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
                             except: pass
                             
                 # Fallback to direct copy of uncompressed file if present
-                if not os.path.exists(db_path) and os.path.exists(source_path):
+                if (not os.path.exists(db_path) or need_copy) and os.path.exists(source_path):
                     try:
                         os.makedirs('/tmp', exist_ok=True)
                         print(f"[RAM Cache] Copying uncompressed {db_filename} to local RAM disk (/tmp)...")
                         shutil.copy2(source_path, db_path)
                     except Exception as e:
                         print(f"[RAM Cache] Failed to copy {db_filename} to /tmp: {e}")
-                        db_path = source_path
-                elif not os.path.exists(db_path):
-                    db_path = source_path
+                        if not os.path.exists(db_path):
+                            db_path = source_path
+            else:
+                db_path = db_path
+            
+            if not os.path.exists(db_path):
+                db_path = source_path
         else:
             db_path = source_path
         
@@ -721,6 +733,7 @@ def search(request):
                     'apr_drg': apr_drg_val,
                     'apc':     apc_val,
                     'procedure_ids': [source.get('id')],
+                    'descriptions': [desc],
                 }
                 
                 # Group by code (uppercased); fall back to normalized description if no code
@@ -759,6 +772,10 @@ def search(request):
                         order.append(key)
                     else:
                         merged_map[key]['procedure_ids'].extend(variant['procedure_ids'])
+                        # Consolidate unique descriptions
+                        for d in variant.get('descriptions', []):
+                            if d not in merged_map[key]['descriptions']:
+                                merged_map[key]['descriptions'].append(d)
 
                 if len(order) < len(group['variants']):
                     # At least one merge happened — recalculate per-variant stats from precomputed stats
@@ -779,6 +796,8 @@ def search(request):
                                 'count': total_count,
                                 'distribution_svg': None
                             }
+                # Assign merged/deduplicated variants list back to group
+                group['variants'] = [merged_map[k] for k in order]
             # --- Post-Processing for Groups ---
             for group in grouped_results:
                 

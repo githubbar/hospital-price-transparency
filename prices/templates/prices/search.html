@@ -534,6 +534,17 @@
                                         {% if variant.rev_code %}
                                             <span class="badge bg-light text-muted border ms-1" title="Rev Code">{{ variant.rev_code }}</span>
                                         {% endif %}
+
+                                        {% if variant.descriptions %}
+                                            <div class="mt-2 text-secondary" style="font-size: 0.82rem;">
+                                                {% for d in variant.descriptions %}
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <i class="bi bi-chevron-right me-1 text-muted" style="font-size: 0.75rem;"></i>
+                                                        <span>{{ d }}</span>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                     {% if variant.code %}
                                     <div class="mt-1">
