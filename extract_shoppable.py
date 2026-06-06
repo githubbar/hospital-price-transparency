@@ -29,6 +29,8 @@ import os
 import re
 import sys
 import argparse
+import zipfile
+import io
 
 # Some hospital CSVs embed very long compliance attestation text in their
 # header rows (e.g. South_Campus_Surgery_Center.csv). Raise the limit to
@@ -80,9 +82,9 @@ def clean_hospital_name(raw_name):
     return s.title()
 
 
-def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable_codes):
+def parse_csv_into_map(stream, label, procedures_map, active_group_tracker, shoppable_codes):
     """Parse a single hospital CSV and merge shoppable rows into procedures_map."""
-    print(f"Parsing {os.path.basename(csv_path)}  [shoppable-only filter active]...")
+    print(f"Parsing {label}  [shoppable-only filter active]...")
     LIMIT_PER_DOC = 5000
 
     shoppable_descriptions = {}
@@ -95,7 +97,7 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                 shoppable_descriptions[s_desc] = (s_row['code'].strip(), s_row['code_type'].strip())
 
     try:
-        with open(csv_path, 'r', encoding='utf-8', errors='replace') as f:
+        with stream as f:
             sample_lines = []
             for _ in range(10):
                 line = f.readline()
@@ -174,6 +176,8 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                             payer = parts[1]
                             plan = "Standard"
                         else:
+                            if col_payer_generic is not None:
+                                continue
                             payer = parts[1]
                             plan = " / ".join(parts[2:-1])
                         wide_price_cols.append((idx, payer, plan))
@@ -352,7 +356,7 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                     procedures_map[current_doc_id]['price_values'].append(p_val)
 
     except Exception as e:
-        print(f"Error parsing {csv_path}: {e}")
+        print(f"Error parsing {label}: {e}")
         import traceback
         traceback.print_exc()
 
@@ -379,26 +383,43 @@ def main():
         print("ERROR: Could not load shoppable codes. Aborting.")
         sys.exit(1)
 
-    csv_files = [
+    data_files = [
         os.path.join(args.data_dir, f)
         for f in os.listdir(args.data_dir)
-        if f.lower().endswith('.csv')
+        if f.lower().endswith(('.csv', '.zip'))
     ]
 
-    if not csv_files:
-        print(f"No CSV files found in {args.data_dir}")
+    if not data_files:
+        print(f"No files (.csv or .zip) found in {args.data_dir}")
         sys.exit(1)
 
-    print(f"Found {len(csv_files)} CSV files to process.")
+    print(f"Found {len(data_files)} files (.csv or .zip) to process.")
 
     procedures_map = {}
     active_group_tracker = {}
     total_records = 0
 
-    for csv_path in csv_files:
-        count = parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable_codes)
-        print(f"  > {os.path.basename(csv_path)} -> {count} shoppable records")
-        total_records += count
+    for fpath in data_files:
+        fname = os.path.basename(fpath)
+        if fpath.lower().endswith('.zip'):
+            try:
+                with zipfile.ZipFile(fpath, 'r') as zf:
+                    for name in (n for n in zf.namelist() if n.lower().endswith('.csv')):
+                        with zf.open(name) as raw:
+                            stream = io.TextIOWrapper(raw, encoding='utf-8', errors='replace', newline='')
+                            count = parse_csv_into_map(stream, f"{fname} / {name}", procedures_map, active_group_tracker, shoppable_codes)
+                            print(f"  > {fname} / {name} -> {count} shoppable records")
+                            total_records += count
+            except Exception as e:
+                print(f"Error reading zip {fpath}: {e}")
+        else:
+            try:
+                with open(fpath, 'r', encoding='utf-8', errors='replace') as stream:
+                    count = parse_csv_into_map(stream, fname, procedures_map, active_group_tracker, shoppable_codes)
+                    print(f"  > {fname} -> {count} shoppable records")
+                    total_records += count
+            except Exception as e:
+                print(f"Error reading {fpath}: {e}")
 
     print(f"\nParsed {total_records} total price records into {len(procedures_map)} procedure documents.")
 

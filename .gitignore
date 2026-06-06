@@ -18,6 +18,7 @@ parts/
 sdist/
 var/
 wheels/
+scratch/
 *.egg-info/
 .installed.cfg
 *.egg

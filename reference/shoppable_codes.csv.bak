@@ -1,0 +1,3046 @@
+code,code_type,description
+90832,CPT,Psychotherapy 30 min
+90834,CPT,Psychotherapy 45 min
+90837,CPT,Psychotherapy 60 min
+90846,CPT,Family psychotherapy without patient 50 min
+90847,CPT,Family psychotherapy with patient 50 min
+90853,CPT,Group psychotherapy
+99203,CPT,New patient office visit typically 30 min
+99204,CPT,New patient office visit typically 45 min
+99205,CPT,New patient office visit typically 60 min
+99243,CPT,Patient office consultation typically 40 min
+99244,CPT,Patient office consultation typically 60 min
+99385,CPT,Initial preventive medicine evaluation 18-39 years
+99386,CPT,Initial preventive medicine evaluation 40-64 years
+80048,CPT,Basic metabolic panel
+80053,CPT,Comprehensive metabolic panel
+80055,CPT,Obstetric blood test panel
+80061,CPT,Lipid panel (cholesterol and triglycerides)
+80069,CPT,Kidney function panel
+80076,CPT,Liver function panel
+81000,CPT,Manual urinalysis with microscope
+81001,CPT,Manual urinalysis with microscope (automated)
+81002,CPT,Automated urinalysis
+81003,CPT,Automated urinalysis without microscope
+84153,CPT,PSA (prostate specific antigen)
+84154,CPT,PSA (prostate specific antigen) complex
+84443,CPT,Thyroid stimulating hormone (TSH)
+85025,CPT,Complete blood count with differential automated
+85027,CPT,Complete blood count automated
+85610,CPT,Prothrombin time (clotting time)
+85730,CPT,Thromboplastin time partial (coagulation)
+70450,CPT,CT scan head or brain without contrast
+70553,CPT,MRI scan of brain with and without contrast
+72110,CPT,X-ray lower back minimum 4 views
+72148,CPT,MRI scan lower spinal canal without contrast
+72193,CPT,CT scan pelvis with contrast
+73721,CPT,MRI scan of leg joint without contrast
+74177,CPT,CT scan abdomen and pelvis with contrast
+76700,CPT,Ultrasound of abdomen
+76805,CPT,Ultrasound pregnant uterus 14+ weeks
+76830,CPT,Ultrasound pelvis transvaginal
+77065,CPT,Mammography one breast
+77066,CPT,Mammography both breasts
+77067,CPT,Mammography screening bilateral
+19120,CPT,Removal of breast growth open procedure
+29826,CPT,Shaving of shoulder bone endoscope
+29881,CPT,Removal of knee cartilage endoscope
+42820,CPT,Removal of tonsils and adenoids patient under 12
+43235,CPT,Upper GI endoscopy diagnostic
+43239,CPT,Upper GI endoscopy with biopsy
+45378,CPT,Colonoscopy diagnostic
+45380,CPT,Colonoscopy with biopsy
+45385,CPT,Colonoscopy with polyp removal
+45391,CPT,Colonoscopy ultrasound lower large bowel
+47562,CPT,Laparoscopic cholecystectomy (gallbladder removal)
+49505,CPT,Repair inguinal hernia age 5 or older
+55700,CPT,Biopsy of prostate gland
+55866,CPT,Laparoscopic prostatectomy with lymph nodes
+59400,CPT,Vaginal delivery routine obstetric care
+59510,CPT,Cesarean delivery routine obstetric care
+59610,CPT,Vaginal delivery after prior cesarean routine care
+62322,CPT,Injection lumbar or sacral epidural without imaging
+62323,CPT,Injection lumbar or sacral epidural with imaging
+64483,CPT,Injection anesthetic/steroid lumbar nerve root
+66821,CPT,Laser capsulotomy for secondary cataract
+66984,CPT,Cataract removal with lens insertion
+93000,CPT,Electrocardiogram routine with report
+93452,CPT,Left heart catheterization diagnostic
+95810,CPT,Polysomnography sleep study
+97110,CPT,Therapeutic exercise physical therapy
+216,MS-DRG,Cardiac valve and major cardiothoracic with catheterization with MCC
+460,MS-DRG,Spinal fusion except cervical without MCC
+470,MS-DRG,Major joint replacement lower extremity without MCC
+473,MS-DRG,Cervical spinal fusion without CC or MCC
+743,MS-DRG,Uterine and adnexa procedures non-malignancy without CC or MCC
+99214,CPT,Established patient office visit typically 25 min
+99213,CPT,Established patient office visit typically 15 min
+97530,CPT,Therapeutic activities physical therapy
+36415,CPT,Routine venipuncture blood collection
+97112,CPT,Neuromuscular reeducation physical therapy
+99232,CPT,Subsequent hospital inpatient care typically 25 min
+97140,CPT,Manual therapy physical therapy
+99233,CPT,Subsequent hospital inpatient care typically 35 min
+17003,CPT,Destruction premalignant lesions 2nd through 14th
+88305,CPT,Tissue examination by pathologist level IV
+93010,CPT,Electrocardiogram interpretation and report
+99309,CPT,Nursing facility care subsequent typically 25 min
+83036,CPT,Hemoglobin A1C glycated hemoglobin test
+99215,CPT,Established patient office visit typically 40 min
+98941,CPT,Chiropractic spinal manipulation 3-4 regions
+87798,CPT,Infectious agent detection by nucleic acid each organism
+71045,CPT,X-ray chest single view
+99308,CPT,Nursing facility care subsequent typically 15 min
+99223,CPT,Initial hospital inpatient care typically 70 min
+92014,CPT,Established patient eye exam with dilation
+99285,CPT,Emergency department visit high complexity
+95004,CPT,Allergy percutaneous skin tests
+90480,CPT,Immunization administration each additional vaccine
+92134,CPT,Computerized optic nerve imaging
+96372,CPT,Therapeutic injection subcutaneous or intramuscular
+99490,CPT,Chronic care management 20 or more minutes
+93306,CPT,Transthoracic echocardiography with Doppler complete
+99212,CPT,Established patient office visit typically 10 min
+71046,CPT,X-ray chest 2 views
+90662,CPT,Influenza vaccine preservative free intramuscular
+82306,CPT,Vitamin D 25-hydroxy test
+17000,CPT,Destruction premalignant lesion first
+99222,CPT,Initial hospital inpatient care typically 50 min
+95165,CPT,Antigen-based allergy immunotherapy professional services
+77063,CPT,Screening digital breast tomosynthesis bilateral
+99291,CPT,Critical care evaluation and management first 30-74 min
+82570,CPT,Urine creatinine test
+84439,CPT,Thyroid hormone T4 free test
+99239,CPT,Hospital discharge management more than 30 min
+11721,CPT,Debridement of nail 6 or more nails
+97116,CPT,Gait training physical therapy
+20610,CPT,Arthrocentesis aspiration and injection major joint
+82607,CPT,Vitamin B12 cyanocobalamin test
+91320,CPT,Noncardiac electrical test of stomach function
+99284,CPT,Emergency department visit moderate-high complexity
+82043,CPT,Urine albumin quantitative
+87086,CPT,Urine culture bacteria quantitative
+99231,CPT,Subsequent hospital inpatient care typically 15 min
+97535,CPT,Self-care and home management training physical therapy
+88341,CPT,Immunohistochemistry each additional antibody
+91322,CPT,Electrogastrography with provocative testing
+98940,CPT,Chiropractic spinal manipulation 1-2 regions
+99349,CPT,Home or residence visit established patient typically 25 min
+67028,CPT,Intravitreal injection of pharmacological agent
+90653,CPT,Influenza vaccine adjuvanted intramuscular
+83540,CPT,Iron serum test
+83735,CPT,Magnesium serum test
+11102,CPT,Tangential biopsy of skin single lesion
+92250,CPT,Fundus photography with interpretation and report
+82728,CPT,Ferritin test
+17110,CPT,Destruction benign lesions up to 14
+92012,CPT,Established patient eye examination
+99439,CPT,Chronic care management each additional 20 minutes
+87481,CPT,Candida species detection by nucleic acid
+83550,CPT,Iron binding capacity test
+77080,CPT,DXA bone density axial skeleton
+73030,CPT,X-ray shoulder minimum 2 views
+77014,CPT,CT scan guidance for needle placement
+92133,CPT,Computerized scanning of optic nerve each eye
+87186,CPT,Susceptibility studies antimicrobial per isolate
+92083,CPT,Visual field examination unilateral or bilateral
+97150,CPT,Therapeutic exercises group physical therapy
+99497,CPT,Advance care planning first 30 min
+84550,CPT,Uric acid blood test
+73502,CPT,X-ray hip 2-3 views
+99457,CPT,Remote physiologic monitoring treatment management 20 or more min
+73630,CPT,X-ray foot 2 views
+82746,CPT,Folate serum test
+71250,CPT,CT scan of thorax without contrast
+86003,CPT,Allergen specific immunoglobulin E quantitative
+88342,CPT,Immunohistochemistry per specimen first antibody
+86140,CPT,C-reactive protein test
+95117,CPT,Allergy injection professional services 2 or more injections
+73562,CPT,X-ray knee 3 views
+99310,CPT,Nursing facility care subsequent typically 35 min
+87088,CPT,Urine bacteria culture identification
+99458,CPT,Remote physiologic monitoring each additional 20 min
+99454,CPT,Remote physiologic monitoring supply device
+85652,CPT,Sedimentation rate erythrocyte automated
+82784,CPT,Gammaglobulin IgA IgD or IgM test
+88185,CPT,Flow cytometry each additional marker
+11042,CPT,Debridement subcutaneous tissue first 20 sq cm
+74176,CPT,CT scan abdomen and pelvis without contrast
+74018,CPT,X-ray abdomen 1 view
+93296,CPT,Remote interrogation of implantable loop recorder
+87077,CPT,Aerobic bacteria culture additional methods
+51798,CPT,Ultrasound post-voiding residual urine measurement
+80307,CPT,Drug test definitive multiple drug classes
+93294,CPT,Remote interrogation pacemaker 90-day period
+71260,CPT,CT scan of thorax with contrast
+11720,CPT,Debridement of nail 1-5 nails
+99348,CPT,Home or residence visit established patient typically 15 min
+11056,CPT,Paring or cutting of benign skin lesion 2-4 lesions
+73564,CPT,X-ray knee 4 or more views
+84100,CPT,Phosphorus serum test
+83970,CPT,Parathyroid hormone PTH test
+97161,CPT,Physical therapy evaluation low complexity
+96413,CPT,Chemotherapy administration intravenous infusion first hour
+00142,CPT,Anesthesia for ophthalmic lens surgery
+92136,CPT,Ophthalmic biometry intraocular lens calculation
+93880,CPT,Duplex scan extracranial arteries bilateral
+86235,CPT,Nuclear antigen antibody ANA test
+72100,CPT,X-ray lower back 2-3 views
+99238,CPT,Hospital discharge management 30 min or less
+90677,CPT,Respiratory syncytial virus vaccine intramuscular
+92004,CPT,New patient comprehensive eye examination
+97113,CPT,Aquatic therapy with therapeutic exercises
+99307,CPT,Nursing facility care subsequent typically 10 min
+71275,CPT,CT angiography chest with contrast
+72125,CPT,CT scan cervical spine without contrast
+93298,CPT,Remote interrogation of implantable cardioverter-defibrillator
+90833,CPT,Psychotherapy add-on 30 min during E&M visit
+84481,CPT,Triiodothyronine T3 free test
+97162,CPT,Physical therapy evaluation moderate complexity
+93971,CPT,Duplex scan of extremity veins unilateral
+69210,CPT,Removal of impacted cerumen ear wax one ear
+87804,CPT,Influenza virus antigen detection by immunoassay
+11103,CPT,Tangential biopsy of skin each additional lesion
+87150,CPT,Culture identification typing nucleic acid
+88313,CPT,Special stains group II with interpretation
+99489,CPT,Complex chronic care management each additional 20 min
+88312,CPT,Special stains group I with interpretation
+93970,CPT,Duplex scan of extremity veins bilateral
+99152,CPT,Moderate sedation same physician first 15 min
+00731,CPT,Anesthesia upper GI endoscopic procedure
+96365,CPT,Intravenous infusion therapeutic first hour
+96375,CPT,Therapeutic drug injection new substance
+00811,CPT,Anesthesia lower intestinal endoscopy
+84156,CPT,Protein urine total test
+84165,CPT,Protein serum electrophoresis
+73560,CPT,X-ray knee 1-2 views
+99306,CPT,Nursing facility care initial typically 70 min
+95024,CPT,Intradermal allergy tests sequential
+73130,CPT,X-ray hand 3 or more views
+95044,CPT,Patch tests with test antigens
+99211,CPT,Established patient office visit minimal
+83615,CPT,Lactate dehydrogenase LDH test
+99350,CPT,Home or residence visit established patient typically 60 min
+99442,CPT,Telephone evaluation and management 11-20 min
+84403,CPT,Total testosterone test
+82550,CPT,Creatine kinase CPK total test
+93793,CPT,Anticoagulation management INR testing
+76770,CPT,Retroperitoneal ultrasound complete
+92557,CPT,Comprehensive audiometry threshold evaluation
+78452,CPT,Myocardial perfusion imaging tomographic multiple studies
+77300,CPT,Radiation therapy basic dosimetry calculation
+73610,CPT,X-ray ankle 3 views
+70551,CPT,MRI scan of brain without contrast
+82565,CPT,Creatinine blood test
+84460,CPT,Transaminase AST liver enzyme test
+90960,CPT,End stage renal disease services per month 4 visits
+99305,CPT,Nursing facility care initial typically 50 min
+20611,CPT,Arthrocentesis aspiration and injection major joint with ultrasound
+97035,CPT,Ultrasound physical therapy
+73110,CPT,X-ray wrist 3 or more views
+76705,CPT,Ultrasound abdomen limited
+76536,CPT,Ultrasound soft tissue head and neck
+92567,CPT,Tympanometry
+97016,CPT,Vasopneumatic compression physical therapy
+98942,CPT,Chiropractic spinal manipulation 5 regions
+0026U,CPT,Onc thyr dna&mrna 112 genes
+0036U,CPT,Xome tum & nml spec seq alys
+0047U,CPT,Onc prst8 mrna 17 gene alg
+0054T,CPT,Bone srgry cmptr fluor image
+0055T,CPT,Bone srgry cmptr ct/mri imag
+0075T,CPT,Perq Stent/Chest Vert Art
+0094U,CPT,Genome rapid sequence alys
+0100T,CPT,Prosth Retina Receive&Gen
+0184T,CPT,Exc rectal tumor endoscopic
+0200T,CPT,Perq sacral augmt unilat inj
+0201T,CPT,Perq sacral augmt bilat inj
+0202T,CPT,Post vert arthrplst 1 lumbar
+0211U,CPT,Onc pan-tum dna&rna gnrj seq
+0212U,CPT,Rare ds gen dna alys proband
+0214U,CPT,Rare ds xom dna alys proband
+0219T,CPT,Plmt post facet implt cerv
+0220T,CPT,Plmt post facet implt thor
+0221T,CPT,Plmt post facet implt lumb
+0234T,CPT,Trluml perip athrc renal art
+0235T,CPT,Trluml perip athrc visceral
+0236T,CPT,Trluml perip athrc abd aorta
+0237T,CPT,Trluml perip athrc brchiocph
+0238T,CPT,Trluml perip athrc iliac art
+0239U,CPT,Trgt gen seq alys pnl 311+
+0242U,CPT,Trgt gen seq alys pnl 55-74
+0264T,CPT,Im b1 mrw cel ther xcl hrvst
+0265T,CPT,Im b1 mrw cel ther hrvst onl
+0265U,CPT,Rar do whl gn&mtcdrl dna als
+0266T,CPT,Implt/rpl crtd sns dev total
+0267T,CPT,Implt/rpl crtd sns dev lead
+0267U,CPT,Rare do id opt gen mapg&seq
+0268T,CPT,Implt/rpl crtd sns dev gen
+0269T,CPT,Rev/remvl crtd sns dev total
+0274T,CPT,Perq lamot/lam crv/thrc
+0275T,CPT,Perq lamot/lam lumbar
+0295U,CPT,Onc brst dux carc 7 proteins
+0308T,CPT,Insj ocular telescope prosth
+0313U,CPT,Onc pncrs dna&mrna seq 74
+0315U,CPT,Onc cutan sq cll ca mrna 40
+0326U,CPT,Trgt gen seq alys pnl 83+
+0334U,CPT,Onc sld orgn tgsa dna 84/+
+0335T,CPT,Extraosseous joint stblztion
+0335U,CPT,Rare ds whl gen seq fetal
+0338T,CPT,Trnscth renal symp denrv unl
+0339T,CPT,Trnscth renal symp denrv bil
+0340U,CPT,Onc pan ca alys mrd plasma
+0388U,CPT,Onc nonsm cll lng ca 37 gen
+0391U,CPT,Onc sld tum dna&rna 437 gen
+0398T,CPT,Mrgfus strtctc les abltj
+0408T,CPT,Insj/rplc cardiac modulj sys
+0409T,CPT,Insj/rplc car modulj pls gn
+0410T,CPT,Insj/rplc car modulj atr elt
+0411T,CPT,Insj/rplc car modulj vnt elt
+0412T,CPT,Rmvl cardiac modulj pls gen
+0413T,CPT,Rmvl car modulj tranvns elt
+0414T,CPT,Rmvl & rpl car modulj pls gn
+0421T,CPT,Waterjet prostate abltj cmpl
+0425U,CPT,Genom rpd seq alys ea cmprtr
+0426U,CPT,Genome ultra-rapid seq alys
+0442T,CPT,Abltj perc plex/trncl nrv
+0449T,CPT,Insj aqueous drain dev 1st
+0473U,CPT,Onc sld tum bld/slv 648 gene
+0474T,CPT,Insj aqueous drg dev io rsvr
+0483T,CPT,Tmvi percutaneous approach
+0485U,CPT,Onc sol tum cfdna&rna ngs gm
+0497U,CPT,Onc prst8 mrna rt-pcr 6 gene
+0505T,CPT,Ev fempop artl revsc
+0511T,CPT,Rmvl&rinsj sinus tarsi implt
+0515T,CPT,Insj wcs lv compl sys
+0516T,CPT,Insj wcs lv eltrd only
+0517T,CPT,Insj wcs lv pg compnt
+0518T,CPT,Rmvl pg compnt wcs
+0519T,CPT,Rmvl & rplcmt pg compnt wcs
+0520T,CPT,Rmvl&rplcmt pg wcs new eltrd
+0523T,CPT,NTRAPX C FFR W/3D FUNCJL MAP
+0525T,CPT,Insj/rplcmt compl iims
+0526T,CPT,Insj/rplcmt iims eltrd only
+0527T,CPT,Insj/rplcmt iims implt mntr
+0532U,CPT,Rare ds whlgen&mitochdrl dna
+0543T,CPT,Ta mv rpr w/artif chord tend
+0553T,CPT,Perq tcat iliac anast implt
+0560U,CPT,Onc mrd gsa cfdna baseline
+0567U,CPT,Rare ds whl gen seq srs&lrs
+0569T,CPT,Ttvr perq appr 1st prosth
+0570T,CPT,Ttvr perq ea addl prosth
+0571T,CPT,Insj/rplcmt icds ss eltrd
+0572T,CPT,Insertion ss dfb electrode
+0573T,CPT,Removal ss dfb electrode
+0574T,CPT,Repos prev ss impl dfb eltrd
+0578U,CPT,Onc cutan mln rna qpcr 10gen
+0580T,CPT,Rmvl ss impl dfb pg only
+0582U,CPT,Rare ds rpd whlgen dna vrnts
+0583U,CPT,Rare ds rpd whlgen cmptr dna
+0584T,CPT,Perq islet cell transplant
+0587T,CPT,Perq impltj/rplcmt isdns ptn
+0594T,CPT,Osteot hum xtrnl lngth dev
+0600T,CPT,Ire abltj 1+tum organ perq
+0601T,CPT,Ire abltj 1+tumors open
+0614T,CPT,Rmvl&rplcmt ss impl dfb pg
+0616T,CPT,Insertion of iris prosthesis
+0617T,CPT,Insj iris prosth w/rmvl&insj
+0618T,CPT,Insj iris prosth sec io lens
+0619T,CPT,Cysto w/prst8 commissurotomy
+0620T,CPT,Evasc ven artlz tibl/prnl vn
+0627T,CPT,Perq njx algc fluor lmbr 1st
+0628T,CPT,PERQ NJX ALGC FLUOR LMBR EA
+0629T,CPT,Perq njx algc ct lmbr 1st
+0630T,CPT,PERQ NJX ALGC CT LMBR EA
+0632T,CPT,Perq tcat us abltj nrv p-art
+0644T,CPT,Tcat rmvl/dblk icar mas perq
+0645T,CPT,Tcat impltj c sins rdctj dev
+0646T,CPT,Ttvi/rplcmt w/prstc vlv perq
+0655T,CPT,Tprnl focal abltj mal prst8
+0656T,CPT,Vrt bdy tethering ant
+0657T,CPT,Vrt bdy tethering ant 8+ seg
+0659T,CPT,Tcat intra-c nfs supersat o2
+0664T,CPT,Don hysterectomy open cdvr
+0665T,CPT,Don hysterectomy open liv
+0666T,CPT,Don hysterectomy laps liv
+0667T,CPT,Don hysterectomy rcp uter
+0668T,CPT,Bkbench prep don uter algrft
+0669T,CPT,Bkbench rcnstj don uter ven
+0670T,CPT,Bkbench rcnstj don uter artl
+0671T,CPT,Insj ant sgm aq drg dev 1+
+0673T,CPT,Abltj b9 thyr ndul perq lasr
+0674T,CPT,Laps insj nw/rpcmt prm isdss
+0675T,CPT,Laps insj nw/rpcmt isdss 1ld
+0677T,CPT,Laps repos lead isdss 1st ld
+0679T,CPT,Laps rmvl lead isdss
+0680T,CPT,Insj/rplcmt pg only isdss
+0686T,CPT,Histotripsy mal hepatcel tis
+0714T,CPT,Tprnl lsr ablt b9 prst8 hypr
+0737T,CPT,Xenograft impltj artclr surf
+0739T,CPT,Abltj mal prst8 mag fld ndct
+0744T,CPT,Insj bioprostc vlv fem vn
+0745T,CPT,Car ablt rad arr n-invas loc
+0746T,CPT,Car ablt rad arr cnv loc map
+0747T,CPT,Car ablt rad arrhyt dlvr rad
+0784T,CPT,Ins/rplmt eltrd ra spi nstim
+0786T,CPT,Insj/rplcmt prq ra sac nstim
+0790T,CPT,Revj rplcmt/rmvl vrt tethrg
+0793T,CPT,Prq tcat thrm ablt nrv p-art
+0795T,CPT,Tcat ins 2chmbr ldls pm cmpl
+0796T,CPT,Tcat ins 2chmbr ldls pm ra
+0797T,CPT,Tcat ins 2chmbr ldls pm rv
+0798T,CPT,Tcat rmv 2chmbr ldls pm cmpl
+0801T,CPT,Tcat rmv&rpl 2chmbr ldls pm
+0802T,CPT,Tcat rmv&rpl2chmb ldls pm ra
+0803T,CPT,Tcat rmv&rpl2chmb ldls pm rv
+0805T,CPT,Tcat s&ivc prstc vl impl prq
+0806T,CPT,Tcat s&ivc prstc vl impl opn
+0809T,CPT,Arthrd si jt prq tfx&implt
+0814T,CPT,Prq njx biod osteo matrl fem
+0816T,CPT,Opn insj/rplcmt ins ptn subq
+0817T,CPT,Opn insj/rplcmt ins ptn subf
+0823T,CPT,Tcat ins 1chmbr ldls pm ra
+0825T,CPT,Tcat rmv&rpl1chmb ldls pm ra
+0843T,CPT,Dgtz gls mcrscp cslt cyt 1st
+0870T,CPT,Imp subq prtl ascts pmp sys
+0871T,CPT,Rplcmt subq prtl ascites pmp
+0872T,CPT,Rplcmt ndwllg bldr&prtl cath
+0873T,CPT,Revj subq prtl asct pmp sys
+0874T,CPT,Rmvl pertl ascites pmp sys
+0888T,CPT,Histotripsy mal renal tissue
+0894T,CPT,Cannulation liver allograft
+0895T,CPT,Connj lvr algrft prfu dev 1
+0896T,CPT,Connj lvr algrft prfu dev ea
+0901T,CPT,PLMT BONE MARROW SMPLG PORT
+0908T,CPT,Opn imp int nstm sys vgs nrv
+0909T,CPT,Rplcmt int nstim sys vgs nrv
+0910T,CPT,Rmvl int nstim sys vagus nrv
+0913T,CPT,PRQ TCAT THER RX NTRAC BALO1
+0914T,CPT,HC PRQ TCAT THR RX NTRC BAL SEP
+0915T,CPT,Insj perm ccm-d sys pg&eltrd
+0916T,CPT,Insj perm ccm-d sys pg only
+0917T,CPT,Insj perm ccm-d sys 1 lead
+0918T,CPT,Insj perm ccm-d sys dual ld
+0919T,CPT,Rmvl perm ccm-d sys pg only
+0920T,CPT,Rmvl perm ccm-d sys 1 pac ld
+0921T,CPT,Rmvl perm ccm-d sys 1 dfb ld
+0922T,CPT,Rmvl perm ccm-d sys dual ld
+0923T,CPT,Rmvl&rplcmt perm ccm-d pg
+0933T,CPT,Tcat impl wrls l atr prs snr
+0935T,CPT,Cysto w/rnl pel symp dnrvtj
+0941T,CPT,Cysto flx ins&xpns urtl scaf
+0942T,CPT,Cysto flx rmv&rplc urtl scaf
+0943T,CPT,Cysto flx rmvl urtl scaffold
+0945T,CPT,INTRAOP ASSMT ABNL TUM TISS
+0947T,CPT,0947T
+0950T,CPT,Abltj b9 prst8 tissue hifu
+0951T,CPT,Tot impl amei 1st plmt
+0952T,CPT,Tot impl amei rev/rplc mstdc
+0953T,CPT,Tot impl amei rev/rplc w/o
+0954T,CPT,Tot impl amei rplc snd proc
+0955T,CPT,Tot impl amei removal
+0956T,CPT,Prt crn ch cr&tun elt s-sclp
+0958T,CPT,Rmv s-sclp eltr ra rcvr&tlmt
+0960T,CPT,Rpl s-sclp eltr ra rcvr&tlmt
+0964T,CPT,I&cust prep jaw xpnsj 1arch
+0965T,CPT,I&cst prp jw xpn dl arch non
+0966T,CPT,I&cst prp jw xpn dl arch fxd
+0968T,CPT,Insj/rplcmt epcrnl nstim sys
+0969T,CPT,Removal epicranial nstim sys
+0970T,CPT,Ablt b9 brst tum perq lsr ea
+0971T,CPT,Ablt mal brst tum pq lsr uni
+0981T,CPT,Tcat impl wrls ivc snr
+0989T,CPT,Revj/rmvl ins ptn subq&subf
+0991T,CPT,Cysto lo-nrg lithtrp&mcrsphr
+0994T,CPT,Evasc Dlvr a-Wal Stbl Rx Prq
+0995T,CPT,Evasc Dlvr a-Wal Stbl Rx Opn
+1003T,CPT,Arthrp 1st crp/mtcrpl prostc
+1012T,CPT,Mtrz ab ntrno trph scl/tr mw
+1013T,CPT,Lap srg imp/rpl eso nea&pg/r
+1014T,CPT,Lap rv/rmv eso sph nstm eltr
+1015T,CPT,Rev/rmv lw esoph sphnc npg/r
+1019T,CPT,Lymphovenous bypass per xtr
+1140,CPT,Anesth amputation at pelvis
+1150,CPT,Anesth pelvic tumor surgery
+11970,CPT,Replace tissue expander
+12010165,CPT,Surgery Level IV 1st 30 Min
+12010175,CPT,Surgery Level V 1st 30 Min
+1212,CPT,Anesth hip disarticulation
+1232,CPT,Anesth amputation of femur
+1234,CPT,Anesth radical femur surg
+1272,CPT,Anesth femoral artery surg
+1274,CPT,Anesth femoral embolectomy
+14010772,CPT,"HC Skin Sub Grft T/Arm/Lg >= 1st 100, 1%Child"
+1404,CPT,Anesth amputation at knee
+1442,CPT,Anesth knee artery surg
+1444,CPT,Anesth knee artery repair
+15010008,CPT,Muscle Bx; Deep
+15010011,CPT,Ablate Bone Tumor(S) Perq
+15010413,CPT,"HC Perq Vert Augmentation, Kyphoplasty, Thoracic"
+15010414,CPT,"HC Perq Vert Augmentation, Kyphoplasty, Lumbar"
+15013,CPT,Prepj skn cll ssp agrft 1st
+1502,CPT,Anesth lwr leg embolectomy
+15769,CPT,Grfg autol soft tiss dir exc
+15770,CPT,Derma-fat-fascia graft
+15771,CPT,Grfg autol fat lipo 50 cc/<
+15777,CPT,Acellular derm matrix implt
+15839,CPT,Excise excess skin & tissue
+15879,CPT,Suction lipectomy lwr extrem
+16010023,CPT,Insert Pleural Catheter W Cuff
+1634,CPT,Anesth shoulder joint amput
+1636,CPT,Anesth forequarter amput
+1652,CPT,Anesth shoulder vessel surg
+1654,CPT,Anesth shoulder vessel surg
+1656,CPT,Anesth arm-leg vessel surg
+17000001,CPT,HC Prq Trluml Mchnl Thrmbc Vein Repeat Tx
+17000002,CPT,HC Tcat Rmvl/Debulk Icar Mass Suction Device Perq
+17010001,CPT,Evasc Rpr a-Ao Ndgft Rpt
+17010002,CPT,Evasc Rpr a-Unilac Ndgft Rpt
+17010003,CPT,Evasc Rpr a-Unilac Ndgft
+17010005,CPT,Evasc Rpr a-Biiliac Rpt
+17010006,CPT,Evasc Rpr Ilio-Iliac Ndgft
+17010007,CPT,Evasc Rpr Ilio-Iliac Rpt
+17010008,CPT,Plmt Xtn Prosth Evasc Rpr
+17010012,CPT,HC Dlyd Plmt Xtn Prosth 1st Vsl
+17010013,CPT,Dlyd Plmt Xtn Prosth Ea Addl
+17010016,CPT,Open Bx/Exc Ln; Axillary Node(S)
+17010020,CPT,Ins Temp Pacemaker
+17010039,CPT,Impella Rp Device
+17010041,CPT,Impella Cp Device
+17010046,CPT,HC Transluminal Balloon Angioplasty 1st Art
+17010048,CPT,HC Transluminal Balloon Angioplasty 1st Vein
+17010049,CPT,HC Transluminal Balloon Angioplasty Addl Vein
+17010052,CPT,HC Intro Cath Dialysis Circuit W. Pta Shunt / Fistulogram
+17010053,CPT,HC Intro Cath Dialysis Circuit W. Pta Stent Shunt / Fistulogram
+17010054,CPT,HC Mechanical Thrombectomy Shunt/Fistulogram
+17010056,CPT,HC Mechanical Thrombectomy W. Pta of the Dialysis Circuit
+17010057,CPT,HC Mechanical Thrombectomy W. Pta and Stent of the Dialysis Circuit
+17010058,CPT,HC Balo Angiop Ctr Dialysis Seg
+17010059,CPT,HC Stent Plmt Ctr Dialysis Seg
+17010061,CPT,HC Embolization or Occlusion Dialysis Circuit
+17010062,CPT,Tcat Insj/Rpl Perm Ldls Pm
+17010063,CPT,Tcat Removal Perm Leadless Pm Right Ventr W/Img
+17010064,CPT,Insj/Rplcmt Compl Iims
+17010065,CPT,Tcat Impl Wrls P-Art Prs Snr
+17010067,CPT,Insj Subq Car Rhythm Mntr
+17010108,CPT,HC Atherectomy Upper Ext
+17010305,CPT,Laser Abltn Extr Vein 1st
+17010430,CPT,"Ins Tunneled Cv Cath, 5 or Old"
+17010435,CPT,"HC Ins Tunneled Cath, Groshong"
+17010460,CPT,Replace Tunneled Cv Cath
+17010490,CPT,Rem Pc Obst Sep Access
+17010540,CPT,Tips Insertion
+17010550,CPT,Tips Revision
+17010551,CPT,Arterial Mechanical Thrombectomy-1st Vessel
+17010553,CPT,Venous Mech Thrombectom
+17010590,CPT,Interruption Ivc
+17010680,CPT,Thrombectomy Coronary
+17011040,CPT,Cath Rt Heart
+17011041,CPT,HC Left Heart Cath
+17011050,CPT,Biopsy Myocardial
+17011060,CPT,"Coronary Angio No LHC, No LV"
+17011070,CPT,HC Cor Angio W Lv
+17011080,CPT,HC Cor Angio W Lv/Rhc
+17011270,CPT,Com Ep W/O Indct Arrhyth
+17011280,CPT,Com Ep W/Induct Arrhythmia
+17011290,CPT,Stim /Pc Hrt Aft Dg Inf/Add
+17011295,CPT,HC Ep Follow Up Study W/Pacing
+17011300,CPT,Ep 3-D Map Intra a/V Add
+17011350,CPT,Defib Lead/Reposition Pace
+17011360,CPT,Insert Lv Lead Exist Sys
+17011370,CPT,Insert Lv Lead at Imp Add
+17011380,CPT,Reposition Lv Lead
+17011400,CPT,Comp Ep W/Cs Rec/Add On
+17011410,CPT,Comp Ep W/Lt Vent Rec/Add On
+17011420,CPT,Cath Ablt of Av Junction
+17011450,CPT,"Map Tach Intra Av, Add On"
+17011510,CPT,Inst/Rplc Ppm-Atrial W/Lead
+17011520,CPT,Inst/Rplc Ppm-Vent W/Lead
+17011530,CPT,Inst/Rplc Ppm-Atr&Vent W/Ld
+17011540,CPT,Temp Pacemaker-Sng Chamb
+17011550,CPT,Temp Pacemaker-Dual Chamb
+17011560,CPT,Insert/Replace 1 Chamb Pg
+17011580,CPT,Insert/Replace 2 Chamb Pg
+17011590,CPT,Upgd Pm Sng to Dual W/Ld
+17011620,CPT,Insert 1 Chamb Electrode
+17011630,CPT,Insert 2 Chamb Electrode
+17011640,CPT,Repair 1 Chamb Electrode
+17011650,CPT,Repair 2 Chamb Electrode
+17011680,CPT,Remove Ppm Pulse Gen
+17011700,CPT,Remove Elect 1 Lead Sys
+17011710,CPT,Remove Elect 2 Lead Sys
+17011791,CPT,R&L Hrt Cath W/Ventriculogrphy
+17013000,CPT,HC Icd Implant Single Lead
+17013001,CPT,HC Icd Implant Dual Lead
+17013003,CPT,HC Icd Single Lead Revision
+17013004,CPT,HC Icd Dual Lead Revision
+17013006,CPT,HC Insert Single Chmbr Icd Gen
+17013007,CPT,HC Insert Dual Chamber Icd Gen
+17013040,CPT,HC Transcath Stent Subclavian/S&I
+17013041,CPT,HC Transcath Stent Artery/S&I
+17013042,CPT,HC Transcath Stent Artery Addl/S&I
+17013043,CPT,HC Transcath Stent Vein/S&I
+17013044,CPT,HC Transcath Stent Vein Addl/S&I
+17013045,CPT,Vascular Embolization or Occlusion Venous Rs&I
+17013046,CPT,HC Transcath Embol Artery/S&I
+17013047,CPT,HC Transcath Embol Tumor/S&I
+17013048,CPT,HC Transcath Embol Hemorrhage/S&I
+17013049,CPT,HC Transcath Renal Denerve Uni
+17013050,CPT,HC Transcath Renal Denerve Bilat
+17014011,CPT,HC US Laser Right Abltn Extr Vein 1st
+17015014,CPT,HC Cl Plcmt Cca Stent W Emb Prot Right
+17015015,CPT,HC Cl Plcmt Cca Stent W Emb Prot Left
+17015022,CPT,"Cl Ins Tunneled Cv Cath, 5 or Old Right"
+17015023,CPT,"Cl Ins Tunneled Cv Cath, 5 or Old Left"
+17015030,CPT,Cath Lab Replace Tunneled Cv Cath Right
+17015031,CPT,HC Cl Replace Tunneled Cv Cath Left
+17015032,CPT,Evasc Rpr a-Ao Ndgft
+17015060,CPT,HC Cor Angio W Rhc No Lv
+17015061,CPT,HC Cor Angio W Rhc No Lv Grafts
+17015062,CPT,HC Cor Angio W Lv W Grafts
+17015063,CPT,HC Cor Angio W Lv/Rhc/Grafts
+17015064,CPT,HC Drug Admin W Cath
+17015065,CPT,HC Rv Angio
+17015066,CPT,HC Pulmonary Angiogram
+17015067,CPT,HC Iliac Atherectomy
+17015068,CPT,HC Iliac Pta
+17015069,CPT,HC Iliac Pta/Stent
+17015070,CPT,HC Iliac Pta Addl
+17015071,CPT,HC Iliac Pta/Stent Addl
+17015072,CPT,HC Fem/Pop Pta
+17015073,CPT,Fem/Popl Revas W/Ather
+17015074,CPT,HC Fem/Pop Pta/Stent
+17015075,CPT,HC Fem/Pop Pta/Stent/Ath
+17015076,CPT,HC Tib/per Pta
+17015077,CPT,HC Tib/per Pta/Ath
+17015078,CPT,HC Tib/per Pta/Stent
+17015079,CPT,HC Tib/per Pta/Stent/Ath
+17015080,CPT,HC Tib/per Pta Addl
+17015081,CPT,HC Tib/per Pta/Ath Addl
+17015082,CPT,HC Tib/per Pta/Stent Addl
+17015083,CPT,HC Tib/per Pta/Stent/Ath Addl
+17015090,CPT,HC Remove&Replace Pm Gen Singl
+17015091,CPT,HC Remv&Replc Pm Gen Dual Lead
+17015092,CPT,HC Remv&Replc Pm Gen Mult Leads
+17015093,CPT,HC Remv&Replc Icd Gen Sing Lead
+17015094,CPT,HC Remv&Replc Icd Gen Dual Lead
+17015095,CPT,HC Remv&Replc Icd Gen Mult Lead
+17015096,CPT,HC Removal Vena Cava Filter
+17015200,CPT,HC Non Sel Carotid and/or Vertebral Art
+17015201,CPT,Cerv Carotid Uni
+17015202,CPT,Cereb/Cerv Carotid Uni
+17015203,CPT,Int Carotid Uni
+17015204,CPT,HC Sel Place Cath Subclavian Art
+17015205,CPT,HC Sel Vertebral
+17015207,CPT,Foreign Body Retreival
+17015208,CPT,Thrombolytic Art Therapy
+17015209,CPT,Thrombolytic Venous Therapy
+17015210,CPT,Thrombolytic a/V Therapy Subsq Day
+17015211,CPT,Cessj Therapy Cath Removal
+17015212,CPT,PTCA
+17015213,CPT,Ptca Add Branch
+17015214,CPT,Cor Ath
+17015215,CPT,Cor Ath Add Branch
+17015216,CPT,Prq Card Stent W/Angio 1 Vsl
+17015217,CPT,Cor Stent Ea Addl
+17015218,CPT,Cor Ath/Cor Stent
+17015219,CPT,Cor Ath/Cor Stent Ea Addl
+17015220,CPT,"HC Revasc Cor Graft, Single Vessel"
+17015221,CPT,"HC Revasc Cor Graft, Ea Addl Vessel"
+17015222,CPT,"HC Revasc Acute Tot/Subtot Occlusion, Single Vessel"
+17015223,CPT,"HC Revasc of Cto, Single Vessel"
+17015224,CPT,"HC Revasc of Cto, Ea Addl Vessel"
+17015225,CPT,Des Stent Ins
+17015226,CPT,Des Stent Ins Ea Addl
+17015227,CPT,Des Ath/Stent
+17015228,CPT,Des Ath/Stent Ea Addl
+17015229,CPT,Pci Des Graft
+17015230,CPT,Pci Des Ea Addl
+17015231,CPT,Pci Des Acute
+17015232,CPT,Pci Des Chronic
+17015233,CPT,Pci Des Ea Addl
+17015235,CPT,Ep Study/Av Svt
+17015236,CPT,Ep Study/Vt Abl
+17015237,CPT,Ablate Arrhythmia Add On
+17015238,CPT,Tx Atrial Fib Pulm Vein Isol
+17015239,CPT,Tx L/R Atrial Fib Addl
+17015240,CPT,HC Cl Intracranial Pta
+17015241,CPT,HC Cl Intracranial Embolization
+17015242,CPT,HC Stent Placemt Ante Carotid
+17015244,CPT,HC Ins/Rep Subq Defibrillator
+17015245,CPT,HC Insj Subq Impltbl Dfb Elctrd
+17015246,CPT,HC Rmvl of Subq Defibrillator
+17015247,CPT,HC Repos Prev Impltbl Subq Dfb
+17015253,CPT,HC Ins Tunneled Cvad W Port Age 5 Yrs/>
+17015254,CPT,HC Transcatheter Bx
+17015256,CPT,HC Replace Cath Only of Vad
+17015262,CPT,Injection for Cholangiogram
+17015263,CPT,"HC Injection for Cholangiogram; S&I, New Access"
+17015264,CPT,HC Plmt Biliary Drainage Cath; S&I; External
+17015265,CPT,"HC Plmt Biliary Drainage Cath; S&I, Internal-External"
+17015266,CPT,HC Conversion Ext Bil Drg Cath; S&I
+17015267,CPT,HC Exchange Biliary Drg Cath; S&I
+17015269,CPT,HC Perq Plmt Bile Duct Stent; S&I; Existing Access
+17015270,CPT,"HC Perq Plmt Bile Duct Stent; S&I, New Access W/O Drainage Cath"
+17015271,CPT,"HC Perq Plmt Bile Duct Stent; S&I, ; New Access W/Drainage Cath"
+17015273,CPT,HC Perq Art M-Thrombect &/Nfs Intracranial
+17015276,CPT,HC Transcath Closure of Asd
+17015277,CPT,Open Bx/Exc Ln; Deep Cerv Node(S)
+17015278,CPT,Open Bx/Exc Ln; Cerv W Sfp Exc
+17020210,CPT,Cath Abl Ns7t-Fl-252-Rt
+17020601,CPT,HC Revasc Intravasc Lithotripsy
+17020602,CPT,Revasc Intra Lithotrip-Stent
+17020603,CPT,Revasc Intra Lithotrip-Ather
+17020604,CPT,Revasc Lithotrip-Stent-Ather
+17020605,CPT,Revasc Lithotrip Tibi/Perone
+17020606,CPT,Revasc Lithotr-Stent Tib/Per
+17020607,CPT,Revasc Lithotr-Ather Tib/Per
+17020608,CPT,Revasc Lith-Sten-Ath Tib/Per
+17020620,CPT,Tc Plcmt Cca Stent W Emb Prot
+17020860,CPT,Bifurcated Stent
+17020862,CPT,Crosser Catheter
+17020900,CPT,HC Impella Device
+17020901,CPT,Rvad Catheter
+17020916,CPT,Cl Laser Tandem Guide Catheter
+17020933,CPT,HC Secondary Percutaneous Transluminal Thrombectomy
+17020934,CPT,"HC Replacement, Complete, Right Tunneled Cv Port-Same Venous Access"
+17020935,CPT,"HC Replacement, Complete, Left Tunneled Cv Port-Same Venous Access"
+17020937,CPT,"HC Coronary Angio/Graft No Lch, No Lv"
+17020946,CPT,"HC Rt Percutaneous Access & Closure Femoral Artery, Evasc"
+17020947,CPT,"HC Lt Percutaneous Access & Closure Femoral Artery, Evasc"
+17020948,CPT,"HC Rt Endovascular Repair Ibe W/ a-Biliac, Same Session"
+17020949,CPT,"HC Lt Endovascular Repair Ibe W/ a-Biliac, Same Session"
+17020963,CPT,HC Unlisted Cardiovascular Service or Procedure
+17100004,CPT,Evac Rpr a-Biiliac Ndgft
+175-3,CPT,EXC MALG LES F/E/N/L >4.0 CM
+175-4,CPT,EXC MALG LES F/E/N/L >4.0 CM
+1756,CPT,Anesth radical humerus surg
+176,CPT,Anesth pharyngeal surgery
+18010110,CPT,HC Percut Ablate 1+ Liver Rf
+18010180,CPT,Endo Bil W Dilitation
+18010190,CPT,Perc Dil Biliary Strict Wstent
+18010300,CPT,Insert Cath Peritoneal Temp
+18010320,CPT,Revision Perit/Ven Shunt
+18011036,CPT,HC Egd Esophagogastrc Fndoplsty
+18011040,CPT,Lap Esophagogastric Fundoplasty
+18020661,CPT,Ercp Biliary/Panc Duct Stent Exchange With Dil and Wire
+19010011,CPT,Dilat Xst Trc Ndurlgc Px
+19010012,CPT,Dilat Xst Trc New Access Rcs
+19081,CPT,Bx breast 1st lesion strtctc
+192,CPT,Anesth facial bone surgery
+19296,CPT,Place po breast cath for rad
+19298,CPT,Place breast rad tube/caths
+19303,CPT,Mast simple complete
+19307,CPT,Mast mod rad
+19316,CPT,Suspension of breast
+19318,CPT,Reduction of large breast
+19325,CPT,Enlarge breast with implant
+19340,CPT,Immediate breast prosthesis
+19342,CPT,Delayed breast prosthesis
+19357,CPT,Breast reconstruction
+19361,CPT,Breast reconstr w/lat flap
+19364,CPT,Breast reconstruction
+19370,CPT,Surgery of breast capsule
+19371,CPT,Removal of breast capsule
+19380,CPT,Revise breast reconstruction
+1990,CPT,Support for organ donor
+20690,CPT,Apply bone fixation device
+20692,CPT,Apply bone fixation device
+20693,CPT,Adjust bone fixation device
+20696,CPT,Comp multiplane ext fixation
+20802,CPT,Replantation arm complete
+20805,CPT,Replant forearm complete
+20808,CPT,Replantation hand complete
+20816,CPT,Replantation digit complete
+20824,CPT,Replantation thumb complete
+20827,CPT,Replantation thumb complete
+20838,CPT,Replantation foot complete
+20900,CPT,Removal of bone for graft
+20902,CPT,Removal of bone for graft
+20924,CPT,Removal of tendon for graft
+20930,CPT,SPINAL BONE ALLOGRAFT
+20931,CPT,SPINAL BONE ALLOGRAFT
+20936,CPT,SPINAL BONE AUTOGRAFT
+20955,CPT,Fibula bone graft microvasc
+20956,CPT,Iliac bone graft microvasc
+20957,CPT,Mt bone graft microvasc
+20962,CPT,Other bone graft microvasc
+20969,CPT,Bone/skin graft microvasc
+20970,CPT,Bone/skin graft iliac crest
+20972,CPT,Bone/skin graft metatarsal
+20973,CPT,Bone/skin graft great toe
+20982,CPT,Ablate bone tumor(s) perq
+20983,CPT,Ablate bone tumor(s) perq
+20985,CPT,CPTR-ASST DIR MS PX
+20999,CPT,Musculoskeletal surgery
+21025,CPT,Excision of bone lower jaw
+21026,CPT,Excision of facial bone(s)
+21044,CPT,Removal of jaw bone lesion
+21045,CPT,Extensive jaw surgery
+21046,CPT,Remove mandible cyst complex
+21047,CPT,Excise lwr jaw cyst w/repair
+21049,CPT,Excis uppr jaw cyst w/repair
+21081,CPT,Prepare face/oral prosthesis
+21087,CPT,Prepare face/oral prosthesis
+211,CPT,Anesth cran surg hemotoma
+21122,CPT,Reconstruction of chin
+21138,CPT,Reduction of forehead
+21139,CPT,Reduction of forehead
+21141,CPT,Lefort i-1 piece w/o graft
+21142,CPT,Lefort i-2 piece w/o graft
+21143,CPT,Lefort i-3/> piece w/o graft
+21145,CPT,Lefort i-1 piece w/ graft
+21146,CPT,Lefort i-2 piece w/ graft
+21147,CPT,Lefort i-3/> piece w/ graft
+21150,CPT,Lefort ii anterior intrusion
+21151,CPT,Lefort ii w/bone grafts
+21154,CPT,Lefort iii w/o lefort i
+21155,CPT,Lefort iii w/ lefort i
+21159,CPT,Lefort iii w/fhdw/o lefort i
+21160,CPT,Lefort iii w/fhd w/ lefort i
+21175,CPT,Reconstruct orbit/forehead
+21179,CPT,Reconstruct entire forehead
+21180,CPT,Reconstruct entire forehead
+21182,CPT,Reconstruct cranial bone
+21183,CPT,Reconstruct cranial bone
+21184,CPT,Reconstruct cranial bone
+21188,CPT,Reconstruction of midface
+21194,CPT,Reconst lwr jaw w/graft
+21195,CPT,Reconst lwr jaw w/o fixation
+21196,CPT,Reconst lwr jaw w/fixation
+21198,CPT,Reconstr lwr jaw segment
+21206,CPT,Reconstruct upper jaw bone
+21210,CPT,Face bone graft
+21215,CPT,Lower jaw bone graft
+21230,CPT,Rib cartilage graft
+21240,CPT,Reconstruction of jaw joint
+21243,CPT,Reconstruction of jaw joint
+21244,CPT,Reconstruction of lower jaw
+21245,CPT,Reconstruction of jaw
+21246,CPT,Reconstruction of jaw
+21247,CPT,Reconstruct lower jaw bone
+21248,CPT,Reconstruction of jaw
+21249,CPT,Reconstruction of jaw
+21255,CPT,Reconstruct lower jaw bone
+21256,CPT,Reconstruction of orbit
+21261,CPT,Revise eye sockets
+21263,CPT,Revise eye sockets
+21267,CPT,Revise eye sockets
+21268,CPT,Revise eye sockets
+21270,CPT,Augmentation cheek bone
+21343,CPT,Open tx dprsd front sinus fx
+21344,CPT,Open tx compl front sinus fx
+21347,CPT,Opn tx nasomax fx multple
+21348,CPT,Opn tx nasomax fx w/graft
+21365,CPT,Opn tx complx malar fx
+21366,CPT,Opn tx complx malar w/grft
+21386,CPT,Opn tx orbit fx periorbital
+21390,CPT,Opn tx orbit periorbtl implt
+214,CPT,Anesth skull drainage
+21422,CPT,Treat mouth roof fracture
+21423,CPT,Treat mouth roof fracture
+21431,CPT,Treat craniofacial fracture
+21432,CPT,Treat craniofacial fracture
+21433,CPT,Treat craniofacial fracture
+21435,CPT,Treat craniofacial fracture
+21436,CPT,Treat craniofacial fracture
+21445,CPT,Treat dental ridge fracture
+21453,CPT,Treat lower jaw fracture
+21461,CPT,Treat lower jaw fracture
+21462,CPT,Treat lower jaw fracture
+21465,CPT,Treat lower jaw fracture
+21470,CPT,Treat lower jaw fracture
+215,CPT,Anesth skull repair/fract
+21510,CPT,Drainage of bone lesion
+21600,CPT,Partial removal of rib
+21601,CPT,Exc chest wall tumor w/ribs
+21602,CPT,Exc ch wal tum w/o lymphadec
+21603,CPT,Exc ch wal tum w/lymphadec
+21616,CPT,Removal of rib and nerves
+21627,CPT,Sternal debridement
+21630,CPT,Extensive sternum surgery
+21685,CPT,Hyoid myotomy & suspension
+21742,CPT,Repair stern/nuss w/o scope
+21743,CPT,Repair sternum/nuss w/scope
+21811,CPT,Optx of rib fx w/fixj scope
+22010,CPT,I&d p-spine c/t/cerv-thor
+22010030,CPT,Insert Uteri Tandem/Ovoids
+22015,CPT,I&d abscess p-spine l/s/ls
+22100,CPT,Remove part of neck vertebra
+22101,CPT,Remove part thorax vertebra
+22110,CPT,Remove part of neck vertebra
+22112,CPT,Remove part thorax vertebra
+22114,CPT,Remove part lumbar vertebra
+22206,CPT,Incis spine 3 column thorac
+22207,CPT,Incis spine 3 column lumbar
+22210,CPT,Incis 1 vertebral seg cerv
+22212,CPT,Incis 1 vertebral seg thorac
+22214,CPT,Incis 1 vertebral seg lumbar
+22220,CPT,Incis w/discectomy cervical
+22222,CPT,Incis w/discectomy thoracic
+22224,CPT,Incis w/discectomy lumbar
+22318,CPT,Treat odontoid fx w/o graft
+22319,CPT,Treat odontoid fx w/graft
+22325,CPT,Treat spine fracture
+22326,CPT,Treat neck spine fracture
+22327,CPT,Treat thorax spine fracture
+22510,CPT,Perq cervicothoracic inject
+22511,CPT,Perq lumbosacral injection
+22513,CPT,Perq vertebral augmentation
+22514,CPT,Perq vertebral augmentation
+22515,CPT,KYPHOPLASTY T-L EA ADD'L GUID
+22532,CPT,Lat thorax spine fusion
+22533,CPT,Lat lumbar spine fusion
+22548,CPT,Neck spine fusion
+22551,CPT,Neck spine fuse&remov bel c2
+22552,CPT,ARTHRD ANT NTRBD CERVICAL EA
+22554,CPT,Neck spine fusion
+22556,CPT,Thorax spine fusion
+22558,CPT,Lumbar spine fusion
+22586,CPT,Prescrl fuse w/ instr l5-s1
+22590,CPT,Spine & skull spinal fusion
+22595,CPT,Neck spinal fusion
+22600,CPT,Neck spine fusion
+22610,CPT,Thorax spine fusion
+22612,CPT,Lumbar spine fusion
+22630,CPT,Lumbar spine fusion
+22633,CPT,Lumbar spine fusion combined
+22800,CPT,Post fusion <=6 vert seg
+22802,CPT,Post fusion 7-12 vert seg
+22804,CPT,Post fusion 13/> vert seg
+22808,CPT,Ant fusion 2-3 vert seg
+22810,CPT,Ant fusion 4-7 vert seg
+22812,CPT,Ant fusion 8/> vert seg
+22818,CPT,Kyphectomy 1-2 segments
+22819,CPT,Kyphectomy 3 or more
+22830,CPT,Exploration of spinal fusion
+22836,CPT,Ant thrc vrt body tethrg <7
+22837,CPT,Ant thrc vrt body tethrg 8+
+22838,CPT,Rev rplc/rmv thrc vrt tethrg
+22840,CPT,INSERT SPINE FIXATION DEVICE
+22845,CPT,INSERT SPINE FIXATION DEVICE
+22849,CPT,Reinsert spinal fixation
+22850,CPT,Remove spine fixation device
+22852,CPT,Remove spine fixation device
+22853,CPT,INSJ BIOMECHANICAL DEVICE
+22855,CPT,Remove spine fixation device
+22856,CPT,Cerv artific diskectomy
+22857,CPT,Lumbar Artif Diskectomy
+22860,CPT,Tot disc arthrp 2ntrspc lmbr
+22861,CPT,Revise cerv artific disc
+22862,CPT,Revise Lumbar Artif Disc
+22864,CPT,Remove cerv artif disc
+22865,CPT,Remove Lumb Artif Disc
+22867,CPT,Insj stablj dev w/dcmprn
+22869,CPT,Insj stablj dev w/o dcmprn
+22870,CPT,INSJ STABLJ DEV W/O DCMPRN ADD
+23155,CPT,Removal of humerus lesion
+23182,CPT,Remove shoulder blade lesion
+23184,CPT,Remove humerus lesion
+23200,CPT,Resect clavicle tumor
+23210,CPT,Resect scapula tumor
+23220,CPT,Resect prox humerus tumor
+23395,CPT,Muscle transfer shoulder/arm
+23397,CPT,Muscle transfers
+23410,CPT,Repair rotator cuff acute
+23412,CPT,Repair rotator cuff chronic
+23415,CPT,Release of shoulder ligament
+23420,CPT,Repair of shoulder
+23430,CPT,Repair biceps tendon
+23455,CPT,Repair shoulder capsule
+23460,CPT,Repair shoulder capsule
+23462,CPT,Repair shoulder capsule
+23466,CPT,Repair shoulder capsule
+23470,CPT,Reconstruct shoulder joint
+23472,CPT,Reconstruct shoulder joint
+23473,CPT,Revis reconst shoulder joint
+23474,CPT,Revis reconst shoulder joint
+23480,CPT,Revision of collar bone
+23485,CPT,Revision of collar bone
+23491,CPT,Reinforce shoulder bones
+23515,CPT,Treat clavicle fracture
+23530,CPT,Treat clavicle dislocation
+23532,CPT,Treat clavicle dislocation
+23550,CPT,Treat clavicle dislocation
+23552,CPT,Treat clavicle dislocation
+23585,CPT,Treat scapula fracture
+23615,CPT,Treat humerus fracture
+23616,CPT,Treat humerus fracture
+23630,CPT,Treat humerus fracture
+23670,CPT,Treat dislocation/fracture
+23680,CPT,Treat dislocation/fracture
+23800,CPT,Fusion of shoulder joint
+23802,CPT,Fusion of shoulder joint
+23900,CPT,Amputation of arm & girdle
+23920,CPT,Amputation at shoulder joint
+24149,CPT,Radical resection of elbow
+24152,CPT,Resect radius tumor
+24320,CPT,Repair of arm tendon
+24340,CPT,Repair of biceps tendon
+24341,CPT,Repair arm tendon/muscle
+24342,CPT,Repair of ruptured tendon
+24344,CPT,Reconstruct elbow lat ligmnt
+24345,CPT,Repr elbw med ligmnt w/tissu
+24346,CPT,Reconstruct elbow med ligmnt
+24360,CPT,Reconstruct elbow joint
+24361,CPT,Reconstruct elbow joint
+24362,CPT,Reconstruct elbow joint
+24363,CPT,Replace elbow joint
+24365,CPT,Reconstruct head of radius
+24366,CPT,Reconstruct head of radius
+24370,CPT,Revise reconst elbow joint
+24371,CPT,Revise reconst elbow joint
+24400,CPT,Revision of humerus
+24410,CPT,Revision of humerus
+24420,CPT,Revision of humerus
+24430,CPT,Repair of humerus
+24435,CPT,Repair humerus with graft
+24498,CPT,Reinforce humerus
+24515,CPT,Treat humerus fracture
+24516,CPT,Treat humerus fracture
+24538,CPT,Treat humerus fracture
+24545,CPT,Treat humerus fracture
+24546,CPT,Treat humerus fracture
+24575,CPT,Treat humerus fracture
+24579,CPT,Treat humerus fracture
+24582,CPT,Treat humerus fracture
+24586,CPT,Treat elbow fracture
+24587,CPT,Treat elbow fracture
+24615,CPT,Treat elbow dislocation
+24635,CPT,Treat elbow fracture
+24665,CPT,Treat radius fracture
+24666,CPT,Treat radius fracture
+24685,CPT,Treat ulnar fracture
+24802,CPT,Fusion/graft of elbow joint
+24900,CPT,Amputation of upper arm
+24920,CPT,Amputation of upper arm
+24931,CPT,Amputate upper arm & implant
+24935,CPT,Revision of amputation
+24940,CPT,Revision of upper arm
+2500002,CPT,IBUPROFEN 800 MG/8 ML (100 MG/ML) INTRAVENOUS SOLUTION
+25010740,CPT,HC Avm Embolization Intracran
+25170,CPT,Resect radius/ulnar tumor
+25280,CPT,Revise wrist/forearm tendon
+25320,CPT,Repair/revise wrist joint
+25337,CPT,Reconstruct ulna/radioulnar
+25350,CPT,Revision of radius
+25360,CPT,Revision of ulna
+25365,CPT,Revise radius & ulna
+25390,CPT,Shorten radius or ulna
+25391,CPT,Lengthen radius or ulna
+25393,CPT,Lengthen radius & ulna
+25400,CPT,Repair radius or ulna
+25405,CPT,Repair/graft radius or ulna
+25415,CPT,Repair radius & ulna
+25420,CPT,Repair/graft radius & ulna
+25431,CPT,Repair nonunion carpal bone
+25440,CPT,Repair/graft wrist bone
+25441,CPT,Reconstruct wrist joint
+25442,CPT,Reconstruct wrist joint
+25443,CPT,Reconstruct wrist joint
+25444,CPT,Reconstruct wrist joint
+25445,CPT,Reconstruct wrist joint
+25446,CPT,Wrist replacement
+25447,CPT,Repair wrist joints
+25448,CPT,Arthrp ntrcrpl/crp/mtcrp ssp
+25449,CPT,Remove wrist joint implant
+25490,CPT,Reinforce radius
+25491,CPT,Reinforce ulna
+25515,CPT,Treat fracture of radius
+25525,CPT,Treat fracture of radius
+25526,CPT,Treat fracture of radius
+25545,CPT,Treat fracture of ulna
+25575,CPT,Treat fracture radius/ulna
+25607,CPT,Treat Fx Rad Extra-Articul
+25608,CPT,Treat Fx Rad Intra-Articul
+25609,CPT,Treat Fx Radial 3+ Frag
+25628,CPT,Treat wrist bone fracture
+25652,CPT,Treat fracture ulnar styloid
+25670,CPT,Treat wrist dislocation
+25800,CPT,Fusion of wrist joint
+25805,CPT,Fusion/graft of wrist joint
+25810,CPT,Fusion/graft of wrist joint
+25820,CPT,Fusion of hand bones
+25825,CPT,Fuse hand bones with graft
+25830,CPT,Fusion radioulnar jnt/ulna
+25900,CPT,Amputation of forearm
+25905,CPT,Amputation of forearm
+25915,CPT,Amputation of forearm
+26123,CPT,Release palm contracture
+26205,CPT,Remove/graft bone lesion
+26352,CPT,Repair/graft hand tendon
+26356,CPT,Repair finger/hand tendon
+26358,CPT,Repair/graft hand tendon
+26372,CPT,Repair/graft hand tendon
+26390,CPT,Revise hand/finger tendon
+26392,CPT,Repair/graft hand tendon
+26442,CPT,Release palm & finger tendon
+26500,CPT,Hand tendon reconstruction
+26530,CPT,Revise knuckle joint
+26531,CPT,Revise knuckle with implant
+26536,CPT,Revise/implant finger joint
+26546,CPT,Repair nonunion hand
+26551,CPT,Great toe-hand transfer
+26553,CPT,Single transfer toe-hand
+26554,CPT,Double transfer toe-hand
+26555,CPT,Positional change of finger
+26556,CPT,Toe joint transfer
+26568,CPT,Lengthen metacarpal/finger
+26615,CPT,Treat metacarpal fracture
+26727,CPT,Treat finger fracture each
+26735,CPT,Treat finger fracture each
+26746,CPT,Treat finger fracture each
+26841,CPT,Fusion of thumb
+26843,CPT,Fusion of hand joint
+26850,CPT,Fusion of knuckle
+26852,CPT,Fusion of knuckle with graft
+26860,CPT,Fusion of finger joint
+2700000013,CPT,HC Therox Cartridge
+2700000017,CPT,HC Watchman Laa Closure Device
+27005,CPT,Incision of hip tendon
+27025,CPT,Incision of hip/thigh fascia
+27030,CPT,Drainage of hip joint
+27036,CPT,Excision of hip joint/muscle
+27054,CPT,Removal of hip joint lining
+27060,CPT,Removal of ischial bursa
+27062,CPT,Remove femur lesion/bursa
+27065,CPT,Remove hip bone les super
+27067,CPT,Remove/graft hip bone lesion
+27071,CPT,Part removal hip bone deep
+27075,CPT,Resect hip tumor
+27076,CPT,Resect hip tum incl acetabul
+27077,CPT,Resect hip tum w/innom bone
+27078,CPT,Rsect hip tum incl femur
+27100,CPT,Transfer of abdominal muscle
+27110,CPT,Transfer of iliopsoas muscle
+27120,CPT,Reconstruction of hip socket
+27122,CPT,Reconstruction of hip socket
+27125,CPT,Partial hip replacement
+27130,CPT,Total hip arthroplasty
+27132,CPT,Total hip arthroplasty
+27134,CPT,Revise hip joint replacement
+27137,CPT,Revise hip joint replacement
+27138,CPT,Revise hip joint replacement
+27140,CPT,Transplant femur ridge
+27146,CPT,Incision of hip bone
+27147,CPT,Revision of hip bone
+27151,CPT,Incision of hip bones
+27156,CPT,Revision of hip bones
+27158,CPT,Revision of pelvis
+27161,CPT,Incision of neck of femur
+27165,CPT,Incision/fixation of femur
+27170,CPT,Repair/graft femur head/neck
+27175,CPT,Treat slipped epiphysis
+27176,CPT,Treat slipped epiphysis
+27177,CPT,Treat slipped epiphysis
+27178,CPT,Treat slipped epiphysis
+27179,CPT,Revise head/neck of femur
+27181,CPT,Treat slipped epiphysis
+27185,CPT,Revision of femur epiphysis
+27187,CPT,Reinforce hip bones
+27200000453,CPT,HC Intracranial Thrombectomy Device
+27226,CPT,Treat hip wall fracture
+27227,CPT,Treat hip fracture(s)
+27228,CPT,Treat hip fracture(s)
+27235,CPT,Treat thigh fracture
+27236,CPT,Treat thigh fracture
+27244,CPT,Treat thigh fracture
+27245,CPT,Treat thigh fracture
+27248,CPT,Treat thigh fracture
+27258,CPT,Treat hip dislocation
+27259,CPT,Treat hip dislocation
+27278,CPT,Arthrd si jt prq wo tfxj dev
+27279,CPT,Arthrodesis sacroiliac joint
+27280,CPT,Fusion of sacroiliac joint
+27282,CPT,Fusion of pubic bones
+27284,CPT,Fusion of hip joint
+27286,CPT,Fusion of hip joint
+27290,CPT,Amputation of leg at hip
+27295,CPT,Amputation of leg at hip
+272C173308,CPT,"HC Catheter, Ep, Diagnostic/Ablation, Other Than 3d or Vector Mapping, Other Than Cool-Tip"
+272C175721,CPT,"HC Catheter, Thrombectomy/Embolectomy"
+272C175726,CPT,"HC Catheter, Thrombectomy/Embolectomy"
+27335,CPT,Remove knee joint lining
+27350,CPT,Removal of kneecap
+27356,CPT,Remove femur lesion/graft
+27357,CPT,Remove femur lesion/graft
+27365,CPT,Resect femur/knee tumor
+27380,CPT,Repair of kneecap tendon
+27381,CPT,Repair/graft kneecap tendon
+27385,CPT,Repair of thigh muscle
+27386,CPT,Repair/graft of thigh muscle
+27393,CPT,Lengthening of thigh tendon
+27394,CPT,Lengthening of thigh tendons
+27397,CPT,Transplants of thigh tendons
+27403,CPT,Repair of knee cartilage
+27405,CPT,Repair of knee ligament
+27409,CPT,Repair of knee ligaments
+27412,CPT,Autochondrocyte implant knee
+27415,CPT,Osteochondral knee allograft
+27416,CPT,Osteochondral knee autograft
+27418,CPT,Repair degenerated kneecap
+27420,CPT,Revision of unstable kneecap
+27422,CPT,Revision of unstable kneecap
+27427,CPT,Reconstruction knee
+27428,CPT,Reconstruction knee
+27429,CPT,Reconstruction knee
+27430,CPT,Revision of thigh muscles
+27438,CPT,Revise kneecap with implant
+27440,CPT,Revision of knee joint
+27441,CPT,Revision of knee joint
+27442,CPT,Revision of knee joint
+27443,CPT,Revision of knee joint
+27445,CPT,Revision of knee joint
+27446,CPT,Revision of knee joint
+27447,CPT,Total knee arthroplasty
+27450,CPT,Incision of thigh
+27454,CPT,Realignment of thigh bone
+27455,CPT,Realignment of knee
+27457,CPT,Realignment of knee
+27458,CPT,Osteot femur imed lngth dev
+27465,CPT,Shortening of thigh bone
+27466,CPT,Lengthening of thigh bone
+27468,CPT,Shorten/lengthen thighs
+27470,CPT,Repair of thigh
+27472,CPT,Repair/graft of thigh
+27475,CPT,Surgery to stop leg growth
+27477,CPT,Surgery to stop leg growth
+27479,CPT,Surgery to stop leg growth
+27485,CPT,Surgery to stop leg growth
+27486,CPT,Revise/replace knee joint
+27487,CPT,Revise/replace knee joint
+27488,CPT,Removal of knee prosthesis
+27495,CPT,Reinforce thigh
+27499,CPT,Decompression of thigh/knee
+27506,CPT,Treatment of thigh fracture
+27507,CPT,Treatment of thigh fracture
+27509,CPT,Treatment of thigh fracture
+27511,CPT,Treatment of thigh fracture
+27513,CPT,Treatment of thigh fracture
+27514,CPT,Treatment of thigh fracture
+27519,CPT,Treat thigh fx growth plate
+27524,CPT,Treat kneecap fracture
+27535,CPT,Treat knee fracture
+27536,CPT,Treat knee fracture
+27540,CPT,Treat knee fracture
+27556,CPT,Treat knee dislocation
+27557,CPT,Treat knee dislocation
+27558,CPT,Treat knee dislocation
+27566,CPT,Treat kneecap dislocation
+27580,CPT,Fusion of knee
+27591,CPT,Amputate leg at thigh
+27592,CPT,Amputate leg at thigh
+27596,CPT,Amputation follow-up surgery
+27598,CPT,Amputate lower leg at knee
+275C1605001,CPT,Aveir Dual Chamber Pacer System W/ Introducer
+275C1786004,CPT,"HC Avier Leadless Dr Pm, Ra"
+275C1786005,CPT,"HC Avier Leadless Dr Pm, Rv"
+275C1786006,CPT,HC Aveir AR Pacer System W/ Introducer
+275C1786007,CPT,HC Aveir Vr Pacer System W/ Introducer
+275C178602,CPT,"HC Pacemaker, Leadless, Single Chamber"
+275C1882002,CPT,"HC Cardioverter-Defibrillator, Other Than Single or Dual Chamber (Implantable)"
+27637,CPT,Remove/graft leg bone lesion
+27638,CPT,Remove/graft leg bone lesion
+27645,CPT,Resect tibia tumor
+27646,CPT,Resect fibula tumor
+27664,CPT,Repair of leg tendon each
+27665,CPT,Repair of leg tendon each
+27676,CPT,Repair lower leg tendons
+27690,CPT,Revise lower leg tendon
+27695,CPT,Repair of ankle ligament
+27696,CPT,Repair of ankle ligaments
+27700,CPT,Revision of ankle joint
+27702,CPT,Reconstruct ankle joint
+27703,CPT,Reconstruction ankle joint
+27705,CPT,Incision of tibia
+27709,CPT,Incision of tibia & fibula
+27712,CPT,Realignment of lower leg
+27713,CPT,Osteot tibia imed lngth dev
+27715,CPT,Revision of lower leg
+27720,CPT,Repair of tibia
+27724,CPT,Repair/graft of tibia
+27725,CPT,Repair of lower leg
+27726,CPT,Repair fibula nonunion
+27727,CPT,Repair of lower leg
+27745,CPT,Reinforce tibia
+27756,CPT,Treatment of tibia fracture
+27758,CPT,Treatment of tibia fracture
+27759,CPT,Treatment of tibia fracture
+27766,CPT,Optx medial ankle fx
+27769,CPT,Optx post ankle fx
+27784,CPT,Treatment of fibula fracture
+27814,CPT,Treatment of ankle fracture
+27822,CPT,Treatment of ankle fracture
+27823,CPT,Treatment of ankle fracture
+27826,CPT,Treat lower leg fracture
+27827,CPT,Treat lower leg fracture
+27828,CPT,Treat lower leg fracture
+27832,CPT,Treat lower leg dislocation
+27848,CPT,Treat ankle dislocation
+27870,CPT,Fusion of ankle joint open
+27871,CPT,Fusion of tibiofibular joint
+27888,CPT,Amputation of foot at ankle
+278C160401,CPT,HC Endologix Endocross Detour System
+278C181701,CPT,"HC Septal Defect Implant System, Intracardiac"
+28103,CPT,Remove/graft foot lesion
+28106,CPT,Remove/graft foot lesion
+28116,CPT,Revision of foot
+28202,CPT,Repair/graft of foot tendon
+28210,CPT,Repair/graft of foot tendon
+28238,CPT,Revision of foot tendon
+28262,CPT,Revision of foot and ankle
+28291,CPT,Corrj halux rigdus w/implt
+28295,CPT,Correction hallux valgus
+28297,CPT,Correction hallux valgus
+28306,CPT,Incision of metatarsal
+28309,CPT,Incision of metatarsals
+28310,CPT,Revision of big toe
+28320,CPT,Repair of foot bones
+28322,CPT,Repair of metatarsals
+28360,CPT,Reconstruct cleft foot
+28406,CPT,Treatment of heel fracture
+28415,CPT,Treat heel fracture
+28420,CPT,Treat/graft heel fracture
+28445,CPT,Treat ankle fracture
+28446,CPT,Osteochondral talus autogrft
+28465,CPT,Treat midfoot fracture each
+28485,CPT,Treat metatarsal fracture
+28555,CPT,Repair foot dislocation
+28585,CPT,Repair foot dislocation
+28615,CPT,Repair foot dislocation
+28705,CPT,Fusion of foot bones
+28715,CPT,Fusion of foot bones
+28725,CPT,Fusion of foot bones
+28730,CPT,Fusion of foot bones
+28735,CPT,Fusion of foot bones
+28737,CPT,Revision of foot bones
+28740,CPT,Fusion of foot bones
+28755,CPT,Fusion of big toe joint
+29806,CPT,Shoulder arthroscopy/surgery
+29807,CPT,Shoulder arthroscopy/surgery
+29823,CPT,Shoulder arthroscopy/surgery
+29824,CPT,Shoulder arthroscopy/surgery
+29827,CPT,Arthroscop rotator cuff repr
+29828,CPT,Arthroscopy biceps tenodesis
+29844,CPT,Wrist arthroscopy/surgery
+29847,CPT,Wrist arthroscopy/surgery
+29855,CPT,Tibial arthroscopy/surgery
+29856,CPT,Tibial arthroscopy/surgery
+29862,CPT,Hip arthr0 w/debridement
+29867,CPT,Allgrft implnt knee w/scope
+29868,CPT,Meniscal trnspl knee w/scpe
+29885,CPT,Knee arthroscopy/surgery
+29887,CPT,Knee arthroscopy/surgery
+29888,CPT,Knee arthroscopy/surgery
+29889,CPT,Knee arthroscopy/surgery
+29892,CPT,Ankle arthroscopy/surgery
+29907,CPT,Subtalar arthro w/fusion
+29914,CPT,Hip arthro w/femoroplasty
+29915,CPT,Hip arthro acetabuloplasty
+29916,CPT,Hip arthro w/labral repair
+30410,CPT,Reconstruction of nose
+30420,CPT,Reconstruction of nose
+30435,CPT,Revision of nose
+30450,CPT,Revision of nose
+30460,CPT,Revision of nose
+30462,CPT,Revision of nose
+30468,CPT,Rpr nsl vlv collapse w/implt
+30469,CPT,Rpr nsl vlv collapse w/rmdlg
+30540,CPT,Repair nasal defect
+30600,CPT,Repair mouth/nose fistula
+30620,CPT,Intranasal reconstruction
+31011280,CPT,Dr Upper Extrem Angio S & I
+31011281,CPT,HC Dr Upper Left Extrem Angio S&I
+31011282,CPT,HC Dr Upper Right Extrem Angio S&I
+31032,CPT,Explore sinus remove polyps
+31040,CPT,Exploration behind upper jaw
+31084,CPT,Removal of frontal sinus
+31225,CPT,Removal of upper jaw
+31243,CPT,Nsl/sinus ndsc cryoabltj pnn
+31253,CPT,Nsl/sins ndsc total
+31256,CPT,Exploration maxillary sinus
+31257,CPT,Nsl/sins ndsc tot w/sphendt
+31259,CPT,Nsl/sins ndsc sphn tiss rmvl
+31276,CPT,Sinus endoscopy surgical
+31287,CPT,Nasal/sinus endoscopy surg
+31288,CPT,Nasal/sinus endoscopy surg
+31293,CPT,Nasal/sinus endoscopy surg
+31294,CPT,Nasal/sinus endoscopy surg
+31295,CPT,Sinus endo w/balloon dil
+31296,CPT,Sinus endo w/balloon dil
+31297,CPT,Sinus endo w/balloon dil
+31298,CPT,Nsl/sins ndsc w/sins dilat
+31380,CPT,Partial removal of larynx
+31400,CPT,Revision of larynx
+31551,CPT,Laryngoplasty laryngeal sten
+31552,CPT,Laryngoplasty laryngeal sten
+31553,CPT,Laryngoplasty laryngeal sten
+31554,CPT,Laryngoplasty laryngeal sten
+31561,CPT,Larynscop remve cart + scop
+31572,CPT,Largsc w/laser dstrj les
+31580,CPT,Laryngoplasty laryngeal web
+31584,CPT,Laryngoplasty fx rdctj fixj
+31587,CPT,Laryngoplasty cricoid split
+31591,CPT,Laryngoplasty medialization
+31592,CPT,Cricotracheal resection
+31610,CPT,Incision of windpipe
+31626,CPT,Bronchoscopy w/markers
+31634,CPT,Bronch w/balloon occlusion
+31647,CPT,Bronchial valve init insert
+31648,CPT,Bronchial valve remov init
+31660,CPT,Bronch thermoplsty 1 lobe
+31661,CPT,Bronch thermoplsty 2/> lobes
+32604,CPT,Thoracoscopy wbx sac
+32607,CPT,Thoracoscopy w/bx infiltrate
+32609,CPT,Thoracoscopy w/bx pleura
+32851,CPT,Lung transplant single
+32852,CPT,Lung transplant with bypass
+32853,CPT,Lung transplant double
+32854,CPT,Lung transplant with bypass
+32994,CPT,Ablate pulm tumor perq crybl
+32998,CPT,Perq rf ablate tx pul tumor
+33010730,CPT,CT Guid Cholecystostomy W Tube Plcmt
+33018,CPT,Prcrd drg 0-5yr or w/anomly
+33019,CPT,Perq prcrd drg insj cath ct
+33206,CPT,Insert heart pm atrial
+33207,CPT,Insert heart pm ventricular
+33208,CPT,Insrt heart pm atrial & vent
+33210,CPT,Insert electrd/pm cath sngl
+33211,CPT,Insert card electrodes dual
+33212,CPT,Insert pulse gen sngl lead
+33213,CPT,Insert pulse gen dual leads
+33214,CPT,Upgrade of pacemaker system
+33216,CPT,Insert 1 electrode pm-defib
+33217,CPT,Insert 2 electrode pm-defib
+33221,CPT,Insert pulse gen mult leads
+33224,CPT,Insert pacing lead & connect
+33225,CPT,L VENTRIC PACING LEAD ADD-ON
+33226,CPT,Reposition l ventric lead
+33227,CPT,Remove&replace pm gen singl
+33228,CPT,Remv&replc pm gen dual lead
+33229,CPT,Remv&replc pm gen mult leads
+33230,CPT,Insrt pulse gen w/dual leads
+33231,CPT,Insrt pulse gen w/mult leads
+33233,CPT,Removal of pm generator
+33234,CPT,Removal of pacemaker system
+33235,CPT,Removal pacemaker electrode
+33240,CPT,Insrt pulse gen w/singl lead
+33244,CPT,Remove elctrd transvenously
+33249,CPT,Insj/rplcmt defib w/lead(s)
+33262,CPT,Rmvl& replc pulse gen 1 lead
+33263,CPT,Rmvl & rplcmt dfb gen 2 lead
+33264,CPT,Rmvl & rplcmt dfb gen mlt ld
+33265,CPT,Ablate atria lmtd endo
+33270,CPT,Ins/rep subq defibrillator
+33271,CPT,Insj subq impltbl dfb elctrd
+33272,CPT,Rmvl of subq defibrillator
+33273,CPT,Repos prev impltbl subq dfb
+33274,CPT,Tcat insj/rpl perm ldls pm
+33276,CPT,Insj phrnc nrv stim sys
+33277,CPT,INSJ PHRNC NRV STIM TRANSVNS
+33278,CPT,Rmvl phrnc nrv stim sys
+33279,CPT,Rmvl phrnc nrv stim transvns
+33281,CPT,Reposg phrnc nrv stim trnsvn
+33285,CPT,Insj subq car rhythm mntr
+33287,CPT,Rmv&rplcmt phrnc nrv stim pg
+33288,CPT,Rmv&rplcmt phrnc nrv stim ld
+33289,CPT,Tcat impl wrls p-art prs snr
+33315,CPT,Exploratory heart surgery
+33340,CPT,Perq clsr tcat l atr apndge
+33361,CPT,Replace aortic valve perq
+33362,CPT,Replace aortic valve open
+33363,CPT,Replace aortic valve open
+33364,CPT,Replace aortic valve open
+33365,CPT,Replace aortic valve open
+33366,CPT,Trcath replace aortic valve
+33367,CPT,Replace aortic valve w/byp
+33368,CPT,Replace aortic valve w/byp
+33369,CPT,Replace aortic valve w/byp
+33418,CPT,Repair tcat mitral valve
+33440,CPT,Rplcmt a-valve tlcj autol pv
+33463,CPT,Valvuloplasty tricuspid
+33477,CPT,Implant tcat pulm vlv perq
+33617,CPT,Repair single ventricle
+33622,CPT,Redo compl cardiac anomaly
+33741,CPT,Tas congenital car anomal
+33745,CPT,Tis cgen car anomal 1st shnt
+33746,CPT,Tis cgen car anomal ea addl
+33783,CPT,Nikaidoh proc w/ostia implt
+33858,CPT,As-aort grf f/aortic dsj
+33864,CPT,Ascending aortic graft
+33871,CPT,Transvrs a-arch grf hypthrm
+33877,CPT,Thoracoabdominal graft
+33880,CPT,Endovasc taa repr incl subcl
+33881,CPT,Endovasc taa repr w/o subcl
+33882,CPT,HC Repair Endovascular Thoracic Aorta by Deployment of Branched Endograft Multipiece System
+33883,CPT,Insert endovasc prosth taa
+33886,CPT,Endovasc prosth delayed
+33889,CPT,Artery transpose/endovas taa
+33894,CPT,Evasc st rpr thrc/aa acrs br
+33895,CPT,Evasc st rpr thrc/aa x crsg
+33897,CPT,Perq trluml angp nt/recr coa
+33900,CPT,Perq p-art revsc 1 nm nt uni
+33901,CPT,Perq p-art revsc 1 nm nt bi
+33902,CPT,Perq p-art revsc 1 abnor uni
+33903,CPT,Perq p-art revsc 1 abnor bi
+33904,CPT,PERQ P-ART REVSC EACH ADDL
+33927,CPT,Impltj tot rplcmt hrt sys
+33928,CPT,Rmvl & rplcmt tot hrt sys
+33935,CPT,Transplantation heart/lung
+33945,CPT,Transplantation of heart
+33946,CPT,Ecmo/ecls initiation venous
+33947,CPT,Ecmo/ecls initiation artery
+33948,CPT,Ecmo/ecls daily mgmt-venous
+33949,CPT,Ecmo/ecls daily mgmt artery
+33975,CPT,Implant ventricular device
+33991,CPT,Insert vad art&vein access
+33995,CPT,Insj perq vad r hrt venous
+33999,CPT,Cardiac surgery procedure
+34010530,CPT,HC Rf Ablation Rt Lwr Ext
+34010531,CPT,HC Rf Ablation Lt Lwr Ext
+34010532,CPT,HC Rf Ablation Bilat Lwr Ext
+34010535,CPT,HC Perc Endovenous Abalation Varithena
+34010538,CPT,Endoven Abltj Incmptnt Vein Mchnchem 1st Vein
+34010716,CPT,HC US Place Po Breast Cath for Rad
+34010717,CPT,HC US Unlisted Procedure Breast
+34010718,CPT,HC Perc Rf Ablate 1+ Renal Tumor
+34010719,CPT,HC Perc Rf Ablation Tx Pulmonary Tumor
+34201,CPT,Removal of artery clot
+34203,CPT,Removal of leg artery clot
+343A958601,CPT,"HC Florbetapir F18, Diagnostic, per Study Dose, Up to 10 Mci"
+34451,CPT,Removal of vein clot
+34501,CPT,Repair valve femoral vein
+34502,CPT,Reconstruct vena cava
+34510,CPT,Transposition of vein valve
+34701,CPT,Evasc rpr a-ao ndgft
+34702,CPT,Evasc rpr a-ao ndgft rpt
+34703,CPT,Evasc rpr a-unilac ndgft
+34704,CPT,Evasc rpr a-unilac ndgft rpt
+34705,CPT,Evac rpr a-biiliac ndgft
+34706,CPT,Evasc rpr a-biiliac rpt
+34707,CPT,Evasc rpr ilio-iliac ndgft
+34708,CPT,Evasc rpr ilio-iliac rpt
+34709,CPT,Plmt xtn prosth evasc rpr
+34710,CPT,Dlyd plmt xtn prosth 1st vsl
+34717,CPT,Evasc rpr a-iliac ndgft
+34718,CPT,Evasc rpr n/a a-iliac ndgft
+34830,CPT,Open Aortic Tube Prosth Repr
+34831,CPT,Open Aortoiliac Prosth Repr
+34832,CPT,Open Aortofemor Prosth Repr
+34841,CPT,Endovasc visc aorta 1 graft
+34842,CPT,Endovasc visc aorta 2 graft
+34843,CPT,Endovasc visc aorta 3 graft
+34844,CPT,Endovasc visc aorta 4 graft
+34845,CPT,Visc & infraren abd 1 prosth
+34846,CPT,Visc & infraren abd 2 prosth
+34847,CPT,Visc & infraren abd 3 prosth
+34848,CPT,Visc & infraren abd 4+ prost
+35010380,CPT,NM Pet Myocardl Metabolic Eval
+35010480,CPT,NM P.E.T. Myocardial Image
+35010730,CPT,NM Pet/CT Skull/Midthigh
+35010740,CPT,NM Pet/CT Wholebody
+35010750,CPT,NM Pet Brain Imaging Perfusion
+35010760,CPT,NM Pet Brain Imaging Metabolic
+35010770,CPT,NM Pet/CT Lmtd Chest/Head/Neck
+35020100,CPT,Zevalin Therpy Yttrium 90/Dose
+35020131,CPT,NM Iodine I-123 Iobenguane =< 15 Mci
+35020140,CPT,NM In111 Satumomab
+35020220,CPT,Indium III Zevalin
+35020230,CPT,NM Samarium Sm153 Inj Up to 150mci
+35020469,CPT,"HC Radium 223, Xofigo per Dose"
+35045,CPT,Repair defect of arm artery
+35236,CPT,Repair blood vessel lesion
+35256,CPT,Repair blood vessel lesion
+35266,CPT,Repair blood vessel lesion
+35303,CPT,Rechanneling of Artery
+35305,CPT,Rechanneling of Artery
+35602,CPT,Bpg Crtd-Clat Crtd
+35800,CPT,Explore neck vessels
+35879,CPT,Revise graft w/vein
+35881,CPT,Revise graft w/vein
+35883,CPT,Revise Graft w/Nonauto Graft
+35884,CPT,Revise graft w/vein
+3600505T01,CPT,HC Endovenous Femoral-Popliteal Arterial Revascularization
+36010170,CPT,3-D Computer Reconstr/Sim
+36010171,CPT,Stp Comp Asst Vol
+36010190,CPT,Imrt Plan
+36010550,CPT,"HC Linac Radiosurg, One Session"
+36010560,CPT,"HC Linac Radiosurg, Multi"
+36010565,CPT,HC Stereotactic Multi Session
+36020108,CPT,"Linac Radiosurg, One Session"
+36020111,CPT,"Linac Radiosurg, Multi"
+36020112,CPT,Stereotactic Multi Session
+3602251001,CPT,"HC Perq Vertebroplasty, 1 Vertebral Body Injection; Cervicothoracic"
+3602251101,CPT,"HC Perq Vertebroplasty, 1 Vertebral Body Injection; Lumbosacral"
+3602251301,CPT,"HC Perq Vertebral Augmentation, Including Cavity Creation; Thoracic"
+3603299401,CPT,"HC Ablation Pulmonary Tumor, Percutaneous; Cryoablation"
+3603334001,CPT,HC Percutaneous Transcatheter Closure of Left Atrial Appendage W/ Implant
+3603648201,CPT,HC Endovenous Therapy by Transcath Deliv. Chem Adhes; 1st Vein
+36049418001,CPT,"HC Perc Insert Tunneled Intraperitoneal Catheter, Complete"
+36049422001,CPT,HC Removal Tunneled Intraperitoneal Catheter
+3605025001,CPT,"HC Ablation, Open, 1 or More Renal Mass Lesion(S), Cryosurgical"
+3605059301,CPT,"HC Ablation, Renal Tumor(S), Unilat, Percutaneous, Cryotherapy"
+36061623001,CPT,"HC Endovascular Temp Balloon Arterial Occlusion, Head or Neck"
+36061624001,CPT,"HC Trans Cath Occulision or Embolization, Percutaneous Cns"
+36061626001,CPT,"HC Trans Cath Occulision or Embolization, Percutaneous Non-Cns"
+36061635001,CPT,"HC Transcath Plcmt Intravasc Stent(S), Intracranial"
+36061640001,CPT,"HC Balloon Dilatation Intracranial Vasospasm, Initial"
+36061642001,CPT,"HC Balloon Dilitation, Ea Add'l Vessel, Different Territory"
+36221,CPT,Place cath thoracic aorta
+36222,CPT,Place cath carotid/inom art
+36223,CPT,Place cath carotid/inom art
+36224,CPT,Place cath carotd art
+36225,CPT,Place cath subclavian art
+36226,CPT,Place cath vertebral art
+36228,CPT,PLACE CATH INTRACRANIAL ART BL
+36251,CPT,Ins cath ren art 1st unilat
+36252,CPT,Ins cath ren art 1st bilat
+36253,CPT,Ins cath ren art 2nd+ unilat
+36254,CPT,Ins cath ren art 2nd+ bilat
+36473,CPT,Endovenous mchnchem 1st vein
+36474,CPT,ABLN THPY ENDO MEC CHEM ADD BL
+36475,CPT,Endovenous rf 1st vein
+36482,CPT,Endoven ther chem adhes 1st
+36522,CPT,Photopheresis
+36560,CPT,Insert tunneled cv cath
+36563,CPT,Insert tunneled cv cath
+36566,CPT,Insert tunneled cv cath
+36570,CPT,Insert picvad cath
+36571,CPT,Insert picvad cath
+36583,CPT,Replace tunneled cv cath
+36818,CPT,Av fuse uppr arm cephalic
+36825,CPT,Artery-vein autograft
+36836,CPT,Prq av fstl crtj uxtr 1 acs
+36837,CPT,Prq av fstl crt uxtr sep acs
+36838,CPT,Dist revas ligation hemo
+36902,CPT,Intro cath dialysis circuit
+36903,CPT,Intro cath dialysis circuit
+36904,CPT,Thrmbc/nfs dialysis circuit
+36905,CPT,Thrmbc/nfs dialysis circuit
+36906,CPT,Thrmbc/nfs dialysis circuit
+36908,CPT,STENT PLMT CENTRAL DIAL VEIN
+37010110,CPT,Thor Ao Serial S&I
+37010120,CPT,Abao Serial S&I
+37010130,CPT,Abao Bfa Serial S&I
+37010190,CPT,Angio Ext Unlt S&I
+37010200,CPT,Angio Ext Bil S&I
+37010205,CPT,Angio Renal Unilat
+37010210,CPT,Angio Ab/Rnl Blt
+37010220,CPT,Angio Visc Sel S&I
+37010225,CPT,Angio Pelvic Selective S&I
+37010230,CPT,Angio Bil Pulm S&I
+37010270,CPT,Veno Ivc Serial S&I
+37010300,CPT,Venous Sampling S&I
+37010551,CPT,3-D Radiotherapy Plan
+37010560,CPT,Gamma Knife Delivery
+37010600,CPT,Angio Sel Spinal S&I
+37010604,CPT,HC Plmt Nephroureteral Catheter; S&I
+37010608,CPT,HC Plmt Ureteral Stent Prq; Existing
+37010609,CPT,HC Plmt Ureteral Stent Prq; S&I; New Access W/O Cath
+37010610,CPT,HC Plmt Ureteral Stent Prq; S&I; New Access W/ Cath
+37010613,CPT,HC Plmt Access Bil Tree Sm Bwl
+37020235,CPT,HC Thrombolytic Infusion Catheter
+37020570,CPT,Atherectomy Cor Rotablator
+37021020,CPT,Catheter Atherectomy Peri
+37021080,CPT,Aaa Bifucated Body Graft
+37021181,CPT,HC Diagnostic Bone Marrow; Biopsy(Ies) and Aspiration(S)
+37182,CPT,Insert hepatic shunt (tips)
+37183,CPT,Remove hepatic shunt (tips)
+37184,CPT,Prim art m-thrmbc 1st vsl
+37187,CPT,Venous mech thrombectomy
+37191,CPT,Ins endovas vena cava filtr
+37192,CPT,Redo endovas vena cava filtr
+37197,CPT,Remove intrvas foreign body
+37200,CPT,Transcatheter biopsy
+37211,CPT,Thrombolytic art therapy
+37212,CPT,Thrombolytic venous therapy
+37213,CPT,Thromblytic art/ven therapy
+37216,CPT,Transcath stent cca w/o eps
+37217,CPT,Stent placemt retro carotid
+37218,CPT,Stent placemt ante carotid
+37220,CPT,Iliac revasc
+37221,CPT,Iliac revasc w/stent
+37224,CPT,Fem/popl revas w/tla
+37225,CPT,Fem/popl revas w/ather
+37226,CPT,Fem/popl revasc w/stent
+37227,CPT,Fem/popl revasc stnt & ather
+37228,CPT,Tib/per revasc w/tla
+37229,CPT,Tib/per revasc w/ather
+37230,CPT,Tib/per revasc w/stent
+37231,CPT,Tib/per revasc stent & ather
+37233,CPT,ATHERECTOMY TIB/PRNL ADDL VSL
+37234,CPT,INSERT STENT TIB/PRN ADDL VSL
+37235,CPT,ATHRCTMY&STENT TIB/PRNL ADDL
+37236,CPT,Open/perq place stent 1st
+37237,CPT,OPEN/PERQ PLACE STENT EA ADD
+37238,CPT,Open/perq place stent same
+37239,CPT,PLCMT NONCOR STENT VEN ADDL
+37240,CPT,Peripheral Vascular Procedures
+37241,CPT,Vasc embolize/occlude venous
+37242,CPT,Vasc embolize/occlude artery
+37243,CPT,Vasc embolize/occlude organ
+37244,CPT,Vasc embolize/occlude bleed
+37245,CPT,Peripheral Vascular Procedures
+37246,CPT,Trluml balo angiop 1st art
+37247,CPT,TRANS PLASTY ADD ART NON LE BL
+37248,CPT,Trluml balo angiop 1st vein
+37249,CPT,TRANSLM ANGIOPLSTY ADD VEIN BL
+37254,CPT,Revsc evasc ivt angio sf 1st
+37255,CPT,HC Revascularization Endovascular Iliac Terr W/Transluminal Angp Uni Strghtfwd Les Ea Vess Add-on Lt
+37256,CPT,Revsc evasc ivt angio cplx 1
+37257,CPT,Revsc Evsc Ivt Angio Cplx Ea
+37258,CPT,Revsc evasc ivt stent sf 1st
+37259,CPT,Revsc Evasc Ivt Stent Sf Ea
+37260,CPT,Revsc evasc ivt st cplx 1st
+37261,CPT,HC Revascularization Endovascular Iliac Terr W/Transluminal Stnt Uni Complex Les Ea Vess Add-on Bl
+37262,CPT,HC Intravascular Lithotripsy Iliac Territory Same Artery Add-on Lt
+37263,CPT,Revsc evasc fpvt angio sf 1
+37264,CPT,HC Revascularization Endovascular Fem-Pop Terr W/Transluminal Angp Uni Strfwd Les Ea Vess Add-on Rt
+37265,CPT,Revsc evsc fpvt angio cplx 1
+37266,CPT,HC Revascularization Endovascular Fem-Pop Terr W/Transluminal Angp Uni Complex Les Ea Vess Add-on Rt
+37267,CPT,Revsc evsc fpvt stent sf 1st
+37268,CPT,HC Revascularization Endovascular Fem-Pop Terr W/Transluminal Stnt Uni Strfwd Les Ea Vess Add-on Rt
+37269,CPT,Revsc evasc fpvt st cplx 1st
+37270,CPT,HC Revascularization Endovascular Fem-Pop Terr W/Transluminal Stnt Uni Complex Les Ea Vess Add-on Rt
+37271,CPT,Revsc evsc fpvt athrc sf 1st
+37272,CPT,Revsc Evsc Fpvt Athrc Sf Ea
+37273,CPT,Revsc evsc fpvt athrc cplx 1
+37274,CPT,Rvsc Evsc Fpvt Athrc Cplx Ea
+37275,CPT,Rvsc evsc fpvt st athrc sf 1
+37276,CPT,Rvsc Evsc Fpvt St Athr Sf Ea
+37277,CPT,Rvsc evsc fpvt st athr cpx 1
+37278,CPT,Rvsc Evsc Fpvt St Ath Cpx Ea
+37279,CPT,HC Intravascular Lithotripsy Femoral-Popliteal Terr Same Artery Add-on Rt
+37280,CPT,Revsc evsc tpvt angio sf 1st
+37281,CPT,HC Revascularization Endovascular Tib&Pero Terr W/Transluminal Angp Uni Strfwd Les Ea Vess Add-on Bl
+37282,CPT,Rvsc evsc tpvt angio cplx 1
+37283,CPT,HC Revascularization Endovascular Tib&Pero Terr W/Transluminal Angp Uni Cmplx Les Ea Vess Add-on Bl
+37284,CPT,Revsc evasc tpvt st sf 1st
+37285,CPT,Revsc Evasc Tpvt St Sf Ea
+37286,CPT,Revsc evasc tpvt st cplx 1st
+37287,CPT,Revsc Evasc Tpvt St Cplx Ea
+37288,CPT,Revsc evsc tpvt athrc sf 1st
+37289,CPT,Revsc Evsc Tpvt Athrc Sf Ea
+37290,CPT,Revsc evsc tpvt athrc cplx 1
+37291,CPT,Revsc Evsc Tpvt Athr Cplx Ea
+37292,CPT,Rvsc evsc tpvt st athrc sf 1
+37293,CPT,Rvsc Evsc Tpvt St Athr Sf Ea
+37294,CPT,Rvsc evsc tpvt st athr cpx 1
+37295,CPT,Rvsc Evsc Tpvt St Ath Cpx Ea
+37296,CPT,Revsc evasc imvt angio sf 1
+37297,CPT,HC Revascularization Endovascular Inframall Terr W/Transluminal Angp Uni Stfwd Les Ea Ves Add-on Bl
+37298,CPT,Revsc evsc imvt angio cplx 1
+37299,CPT,HC Revascularization Endovascular Inframall Terr W/Transluminal Angp Uni Cplx Les Ea Ves Add-on Bl
+37403,CPT,AORTO/ILIAC RPR UNI NON RUP
+37617,CPT,Ligation of abdomen artery
+37619,CPT,Ligation of inf vena cava
+37765,CPT,Stab phleb veins xtr 10-20
+37766,CPT,Phleb veins - extrem 20+
+38129,CPT,Laparoscope proc spleen
+38205,CPT,Harvest allogeneic stem cell
+38228,CPT,Car-t admn autologous
+38240,CPT,Transplt allo hct/donor
+38555,CPT,Removal neck/armpit lesion
+38562,CPT,Removal pelvic lymph nodes
+38570,CPT,Laparoscopy lymph node biop
+38572,CPT,Laparoscopy lymphadenectomy
+38573,CPT,Laps pelvic lymphadec
+38589,CPT,Laparoscope proc lymphatic
+38700,CPT,Removal of lymph nodes neck
+38720,CPT,Removal of lymph nodes neck
+38724,CPT,Removal of lymph nodes neck
+38745,CPT,Remove armpit lymph nodes
+38760,CPT,Remove groin lymph nodes
+39401,CPT,Mediastinoscpy w/medstnl bx
+39402,CPT,Mediastinoscpy w/lmph nod bx
+39503,CPT,Repair of diaphragm hernia
+40700,CPT,Repair cleft lip/nasal
+40701,CPT,Repair cleft lip/nasal
+40702,CPT,Repair cleft lip/nasal
+40761,CPT,Repair cleft lip/nasal
+40842,CPT,Reconstruction of mouth
+40845,CPT,Reconstruction of mouth
+41827,CPT,Excision of gum lesion
+42200,CPT,Reconstruct cleft palate
+42210,CPT,Reconstruct cleft palate
+42215,CPT,Reconstruct cleft palate
+42220,CPT,Reconstruct cleft palate
+42225,CPT,Reconstruct cleft palate
+42226,CPT,Lengthening of palate
+42227,CPT,Lengthening of palate
+42235,CPT,Repair palate
+42410,CPT,Excise parotid gland/lesion
+42420,CPT,Excise parotid gland/lesion
+42425,CPT,Excise parotid gland/lesion
+42450,CPT,Excise sublingual gland
+42505,CPT,Repair salivary duct
+42815,CPT,Excision of neck cyst
+42844,CPT,Extensive surgery of throat
+42870,CPT,Excision of lingual tonsil
+42890,CPT,Partial removal of pharynx
+43116,CPT,Partial removal of esophagus
+43123,CPT,Partial removal of esophagus
+43210,CPT,Egd esophagogastrc fndoplsty
+43257,CPT,Egd w/thrml txmnt gerd
+43260,CPT,Ercp w/specimen collection
+43262,CPT,Endo cholangiopancreatograph
+43264,CPT,Ercp remove duct calculi
+43265,CPT,Ercp lithotripsy calculi
+43274,CPT,Ercp duct stent placement
+43276,CPT,Ercp stent exchange w/dilate
+43279,CPT,Lap myotomy heller
+43280,CPT,Laparoscopy fundoplasty
+43282,CPT,Lap paraesoph her rpr w/mesh
+43284,CPT,Laps esophgl sphnctr agmntj
+43285,CPT,Rmvl esophgl sphnctr dev
+43286,CPT,Esphg tot w/laps moblj
+43287,CPT,Esphg dstl 2/3 w/laps moblj
+43288,CPT,Esphg thrsc moblj
+43289,CPT,Laparoscope proc esoph
+43497,CPT,Transorl lwr esophgl myotomy
+43644,CPT,Lap gastric bypass/roux-en-y
+43645,CPT,Lap gastr bypass incl smll i
+43647,CPT,Lap impl electrode antrum
+43648,CPT,Lap revise/remv eltrd antrum
+43651,CPT,Laparoscopy vagus nerve
+43659,CPT,Laparoscope proc stom
+43770,CPT,Lap place gastr adj device
+43772,CPT,Lap rmvl gastr adj device
+43773,CPT,Lap replace gastr adj device
+43889,CPT,Gstr rstcv px trnsorl esg
+44238,CPT,Laparoscope proc intestine
+44314,CPT,Revision of ileostomy
+44402,CPT,Colonoscopy w/stent plcmt
+44979,CPT,Laparoscope proc app
+4502434101,CPT,"HC Repair, Tendon or Muscle, Upper Arm or Elbow, Each Tendon or Muscle, Primary or Secondary (Excludes Rotator Cuff)"
+4502502801,CPT,"HC I&D, Forearm and/or Wrist; Deep Abscess or Hematoma"
+4502526001,CPT,"HC Repair, Tendon or Muscle, Flexor, Forearm and/or Wrist; Primary, Single, Each Tendon or Muscle"
+4502527001,CPT,"HC Repair, Tendon or Muscle, Extensor, Forearm and/or Wrist; Primary, Single, Each Tendon or Muscle"
+4502699001,CPT,"HC I&D, Pelvis or Hip Joint Area; Deep Abscess or Hematoma"
+4502708701,CPT,"HC Removal FB, Pelvis or Hip; Deep (Subfascial or Intramuscular)"
+4504100801,CPT,"HC Intraoral I&D of Abscess, Cyst, or Hematoma of Tongue or Floor of Mouth; Submandibular Space"
+4504218201,CPT,"HC Repair, Laceration of Palate; Over 2 Cm or Complex"
+4504530701,CPT,"HC Proctosigmoidoscopy, Rigid; W/ Removal FB"
+4505644001,CPT,HC Marsupialization of Bartholin's Gland Cyst
+45389,CPT,Colonoscopy w/stent plcmt
+45499,CPT,Laparoscope proc rectum
+47133,CPT,Removal of donor liver
+47135,CPT,Transplantation of liver
+47141,CPT,Partial removal donor liver
+47142,CPT,Partial removal donor liver
+47370,CPT,Laparo ablate liver tumor rf
+47371,CPT,Laparo ablate liver cryosurg
+47379,CPT,Laparoscope procedure liver
+47382,CPT,Percut ablate liver rf
+47383,CPT,Perq abltj lvr cryoablation
+47384,CPT,Abltj ire liver 1+ tum perq
+474,CPT,Anesth surgery of rib
+47532,CPT,Injection for cholangiogram
+47534,CPT,Plmt biliary drainage cath
+47535,CPT,Conversion ext bil drg cath
+47538,CPT,Perq plmt bile duct stent
+47539,CPT,Perq plmt bile duct stent
+47540,CPT,Perq plmt bile duct stent
+47541,CPT,Plmt access bil tree sm bwl
+47553,CPT,Biliary endoscopy thru skin
+47554,CPT,Biliary endoscopy thru skin
+47556,CPT,Biliary endoscopy thru skin
+47579,CPT,Laparoscope proc biliary
+47801,CPT,Placement bile duct support
+4810795T001,CPT,"HC Transcath Insert Dual Chmbr Ldls Pacemaker, Complete"
+4810796T001,CPT,"HC Transcath Insert Dual Chmbr Ldls Pacemaker, Rt Atrial"
+4810797T001,CPT,"HC Transcath Insert Dual Chmbr Ldls Pacemaker, Rt Ventricular"
+4810801T001,CPT,HC Transcath Rmvl & Rpl Dual Chmbr Ldls Pacemaker
+4810802T001,CPT,"HC Transcath Rmvl & Rpl Dual Chmbr Ldls Pacemaker, Rt Atrial"
+4810803T001,CPT,"HC Transcath Rmvl & Rpl Dual Chmbr Ldls Pacemaker, Rt Ventricular"
+4810823T001,CPT,"HC Transcath Insert Single Chmbr Ldls Pacemaker, Rt Atrial"
+4810825T001,CPT,"HC Transcath Rmvl & Rpl Single Chmbr Ldls Pacemaker, Rt Atrial"
+48133230001,CPT,HC Insert of Implantable Defib Pulse Gen Only; W/ Existing Dual Leads
+48133231001,CPT,HC Insert of Implantable Defib Pulse Gen Only; W/ Existing Multiple Leads
+48133240001,CPT,HC Insert of Implantable Defib Pulse Gen Only; W/ Existing Single Lead
+4813324101,CPT,HC Removal of Implantable Defibrillator Pulse Generator Only
+4819346201,CPT,HC Left Heart Cath by Transseptal Punct Through Intact Septum or by Transapical Punct
+4819346401,CPT,HC Physiologic Exercise Study Including Assessing Hemodynamic Measurements Before and After
+48550,CPT,Donor pancreatectomy
+49187,CPT,Opn exc/dstr ntra-abd 5.1-10
+49188,CPT,Opn exc/dst ntra-abd 10.1-20
+49190,CPT,Opn exc/dstr ntra-abd >30 cm
+49323,CPT,Laparo drain lymphocele
+49329,CPT,Laparo proc abdm/per/oment
+49419,CPT,Insert tun ip cath w/port
+49491,CPT,Rpr hern preemie reduc
+49500,CPT,Rpr ing hernia init reduce
+49540,CPT,Repair lumbar hernia
+49595,CPT,Rpr aa hrn 1st > 10 rdc
+49605,CPT,Repair umbilical lesion
+49613,CPT,Rpr aa hrn rcr < 3 rdc
+49614,CPT,Rpr aa hrn rcr < 3 ncr/strn
+49615,CPT,Rpr aa hrn rcr 3-10 rdc
+49617,CPT,Rpr aa hrn rcr > 10 rdc
+49659,CPT,Laparo proc hernia repair
+50080,CPT,Removal of kidney stone
+50081,CPT,Removal of kidney stone
+50400,CPT,Revision of kidney/ureter
+50433,CPT,Plmt nephroureteral catheter
+50436,CPT,Dilat xst trc ndurlgc px
+50437,CPT,Dilat xst trc new access rcs
+50541,CPT,Laparo ablate renal cyst
+50542,CPT,Laparo ablate renal mass
+50543,CPT,Laparo partial nephrectomy
+50544,CPT,Laparoscopy pyeloplasty
+50549,CPT,Laparoscope proc renal
+50555,CPT,Kidney endoscopy & biopsy
+50557,CPT,Kidney endoscopy & treatment
+50562,CPT,Renal scope w/tumor resect
+50576,CPT,Kidney endoscopy & treatment
+50592,CPT,Perc rf ablate renal tumor
+50593,CPT,Perc cryo ablate renal tum
+50693,CPT,Plmt ureteral stent prq
+50694,CPT,Plmt ureteral stent prq
+50695,CPT,Plmt ureteral stent prq
+50780,CPT,Reimplant ureter in bladder
+50947,CPT,Laparo New Ureter/Bladder
+50948,CPT,Laparo New Ureter/Bladder
+50949,CPT,Laparoscope proc ureter
+51721,CPT,Ins trurl ablt trnsdc thr us
+51992,CPT,Laparo sling operation
+51999,CPT,Laparoscope proc bla
+52284,CPT,Cysto rx balo cath urtl strx
+52353,CPT,Cystouretero W/Lithotripsy
+52356,CPT,Cysto/uretero w/lithotripsy
+524,CPT,Anesth chest drainage
+52443,CPT,Cysto 1st trurl prst8 comis
+52597,CPT,Trurl rbtc wtrjt rescj prst8
+52648,CPT,Laser surgery of prostate
+52649,CPT,Prostate laser enucleation
+53440,CPT,Male sling procedure
+53444,CPT,Insert tandem cuff
+53445,CPT,Insert uro/ves nck sphincter
+53447,CPT,Remove/replace ur sphincter
+53449,CPT,Repair uro sphincter
+53451,CPT,Tprnl balo cntnc dev bi
+53452,CPT,Tprnl balo cntnc dev uni
+53453,CPT,Tprnl balo cntnc dev rmvl ea
+53865,CPT,Cysto insj dev ischmc rmdlg
+540,CPT,Anesth chest surgery
+54112,CPT,Treat penis lesion graft
+542,CPT,Anesthesia removal pleura
+54316,CPT,Reconstruction of urethra
+54344,CPT,Secondary urethral surgery
+54352,CPT,Reconstruct urethra/penis
+54400,CPT,Insert semi-rigid prosthesis
+54401,CPT,Insert self-contd prosthesis
+54405,CPT,Insert multi-comp penis pros
+54408,CPT,Repair multi-comp penis pros
+54410,CPT,Remove/replace penis prosth
+54411,CPT,Remov/replc penis pros comp
+54416,CPT,Remv/repl penis contain pros
+54417,CPT,Remv/replc penis pros compl
+546,CPT,Anesth lung chest wall surg
+54690,CPT,Laparoscopy orchiectomy
+54692,CPT,Laparoscopy orchiopexy
+54699,CPT,Laparoscope proc testis
+55550,CPT,Laparo ligate spermatic vein
+55559,CPT,Laparo proc spermatic cord
+55708,CPT,Bx prst8 trct us w/mri fus 1
+55710,CPT,Bx prst8 tprn us w/mri fus 1
+55712,CPT,Bx prst8 tprnl mri-us 1st
+55867,CPT,Laps surg prst8ect smpl stot
+55868,CPT,Lap srg prst8ct lymph nod bx
+55869,CPT,Lap srg prst8ct bi pl lmphad
+55873,CPT,Cryoablate Prostate
+55874,CPT,Tprnl plmt biodegrdabl matrl
+55875,CPT,Transperi needle place pros
+55877,CPT,Abltj ire prst8 1+ tum perq
+55880,CPT,Abltj mal prst8 tiss hifu
+55881,CPT,Ablt trurl prst8 tis thrm us
+55882,CPT,Ablt trurl prst8 tis trnsdcr
+55970,CPT,Sex transformation m to f
+560,CPT,Anesth heart surg w/o pump
+561,CPT,Anesth heart surg <1 yr
+562,CPT,Anesth hrt surg w/pmp age 1+
+56630,CPT,Extensive vulva surgery
+567,CPT,Anesth cabg w/pump
+57260,CPT,Repair of vagina
+57282,CPT,Colpopexy extraperitoneal
+57283,CPT,Colpopexy intraperitoneal
+57285,CPT,Repair paravag defect vag
+57289,CPT,Repair bladder & vagina
+57310,CPT,Repair urethrovaginal lesion
+57423,CPT,Repair paravag defect lap
+57425,CPT,Laparoscopy surg colpopexy
+57426,CPT,Revise prosth vag graft lap
+580,CPT,Anesth heart/lung transplnt
+58262,CPT,Vag hyst including t/o
+58290,CPT,Vag hyst complex
+58292,CPT,Vag hyst t/o & repair compl
+58541,CPT,Lsh uterus 250 g or less
+58542,CPT,Lsh w/t/o ut 250 g or less
+58543,CPT,LSH Uterus Above 250 g
+58544,CPT,LSH w/t/o Uterus Above 250 g
+58546,CPT,Laparo-myomectomy complex
+58552,CPT,Laparo-vag hyst incl t/o
+58553,CPT,Laparo-vag hyst complex
+58554,CPT,Laparo-vag hyst w/t/o compl
+58570,CPT,Tlh uterus 250 g or less
+58578,CPT,Laparo proc uterus
+58580,CPT,Transcrv abltj utrn fibrd rf
+58670,CPT,Laparoscopy tubal cautery
+58671,CPT,Laparoscopy tubal block
+58674,CPT,Laps abltj uterine fibroids
+58679,CPT,Laparo proc oviduct-ovary
+59150,CPT,Treat ectopic pregnancy
+59898,CPT,Laparo proc ob care/deliver
+60212,CPT,Partial thyroid excision
+60225,CPT,Partial removal of thyroid
+60252,CPT,Removal of thyroid
+60260,CPT,Repeat thyroid surgery
+60271,CPT,Removal of thyroid
+60281,CPT,Remove thyroid duct lesion
+604,CPT,Anesth sitting procedure
+60502,CPT,Re-explore parathyroids
+60520,CPT,Removal of thymus gland
+60650,CPT,Laparoscopy adrenalectomy
+60659,CPT,Laparo proc endocrine
+60660,CPT,Abltj 1/+thyr ndul 1lobe prq
+60699,CPT,Endocrine surgery procedure
+61215,CPT,Insert brain-fluid device
+61343,CPT,Incise skull (press relief)
+61510,CPT,Removal of brain lesion
+61520,CPT,Removal of brain lesion
+61526,CPT,Removal of brain lesion
+61576,CPT,Skull base/brainstem surgery
+61580,CPT,Craniofacial approach skull
+61590,CPT,Infratemporal approach/skull
+61591,CPT,Infratemporal approach/skull
+61595,CPT,Transtemporal approach/skull
+61600,CPT,Resect/excise cranial lesion
+61605,CPT,Resect/excise cranial lesion
+61618,CPT,Repair dura
+61623,CPT,Endovasc tempory vessel occl
+61624,CPT,Transcath occlusion cns
+61626,CPT,Transcath occlusion non-cns
+61630,CPT,Intracranial angioplasty
+61635,CPT,Intracran angioplsty w/stent
+61640,CPT,Dilate ic vasospasm init
+61642,CPT,Dilate ic vasospasm add-on
+61645,CPT,Perq art m-thrombect &/nfs
+61650,CPT,Evasc prlng admn rx agnt 1st
+61651,CPT,Evasc prlng admn rx agnt add
+61682,CPT,Intracranial vessel surgery
+61686,CPT,Intracranial vessel surgery
+61692,CPT,Intracranial vessel surgery
+61697,CPT,Brain aneurysm repr complx
+61698,CPT,Brain aneurysm repr complx
+61700,CPT,Brain aneurysm repr simple
+61702,CPT,Inner skull vessel surgery
+61705,CPT,Revise circulation to head
+61708,CPT,Revise circulation to head
+61710,CPT,Revise circulation to head
+61715,CPT,Mrgfus strtctc ablt trgt icr
+61720,CPT,Incise skull/brain surgery
+61736,CPT,Litt icr 1 traj 1 smpl les
+61783,CPT,SCAN PROC SPINAL
+61867,CPT,Implant neuroelectrode
+61885,CPT,Insrt/redo neurostim 1 array
+61886,CPT,Implant neurostim arrays
+61888,CPT,Revise/remove neuroreceiver
+61891,CPT,Rev/rplcmt sk-mnt crnl nstm
+62121,CPT,Incise skull repair
+62230,CPT,Replace/revise brain shunt
+62330,CPT,Dcmprn prq rmv lig flv 1lmbr
+62350,CPT,Implant spinal canal cath
+62351,CPT,Implant spinal canal cath
+62360,CPT,Insert spine infusion device
+62361,CPT,Implant spine infusion pump
+62362,CPT,Implant spine infusion pump
+62380,CPT,Ndsc dcmprn 1 ntrspc lumbar
+63001,CPT,Remove spine lamina 1/2 crvl
+63003,CPT,Remove spine lamina 1/2 thrc
+63005,CPT,Remove spine lamina 1/2 lmbr
+63011,CPT,Remove spine lamina 1/2 scrl
+63012,CPT,Remove lamina/facets lumbar
+63015,CPT,Remove spine lamina >2 crvcl
+63016,CPT,Remove spine lamina >2 thrc
+63017,CPT,Remove spine lamina >2 lmbr
+63020,CPT,Neck spine disk surgery
+63030,CPT,Low back disk surgery
+63040,CPT,Laminotomy single cervical
+63042,CPT,Laminotomy single lumbar
+63045,CPT,Remove spine lamina 1 crvl
+63046,CPT,Remove spine lamina 1 thrc
+63047,CPT,Remove spine lamina 1 lmbr
+63048,CPT,REMOVE SPINAL LAMINA ADD-ON
+63052,CPT,LAM FACETC/FRMT ARTHRD LUM 1
+63055,CPT,Decompress spinal cord thrc
+63056,CPT,Decompress spinal cord lmbr
+63064,CPT,Decompress spinal cord thrc
+63075,CPT,Neck spine disk surgery
+63081,CPT,Remove vert body dcmprn crvl
+63090,CPT,Remove vert body dcmprn lmbr
+632,CPT,Anesth removal of nerves
+63252,CPT,Revise spine cord vsl thrlmb
+63265,CPT,Excise intraspinl lesion crv
+63266,CPT,Excise intrspinl lesion thrc
+63267,CPT,Excise intrspinl lesion lmbr
+63268,CPT,Excise intrspinl lesion scrl
+63650,CPT,Implant neuroelectrodes
+63651,CPT,OP Neuro/Pain Stimulator
+63652,CPT,OP Neuro/Pain Stimulator
+63653,CPT,OP Neuro/Pain Stimulator
+63654,CPT,OP Neuro/Pain Stimulator
+63655,CPT,Implant neuroelectrodes
+63656,CPT,OP Neuro/Pain Stimulator
+63657,CPT,OP Neuro/Pain Stimulator
+63658,CPT,OP Neuro/Pain Stimulator
+63659,CPT,OP Neuro/Pain Stimulator
+63663,CPT,Revise spine eltrd perq aray
+63664,CPT,Revise spine eltrd plate
+63665,CPT,OP Neuro/Pain Stimulator
+63666,CPT,OP Neuro/Pain Stimulator
+63667,CPT,OP Neuro/Pain Stimulator
+63668,CPT,OP Neuro/Pain Stimulator
+63669,CPT,OP Neuro/Pain Stimulator
+63670,CPT,OP Neuro/Pain Stimulator
+63671,CPT,OP Neuro/Pain Stimulator
+63672,CPT,OP Neuro/Pain Stimulator
+63673,CPT,OP Neuro/Pain Stimulator
+63674,CPT,OP Neuro/Pain Stimulator
+63675,CPT,OP Neuro/Pain Stimulator
+63676,CPT,OP Neuro/Pain Stimulator
+63677,CPT,OP Neuro/Pain Stimulator
+63678,CPT,OP Neuro/Pain Stimulator
+63679,CPT,OP Neuro/Pain Stimulator
+63680,CPT,OP Neuro/Pain Stimulator
+63681,CPT,OP Neuro/Pain Stimulator
+63682,CPT,OP Neuro/Pain Stimulator
+63683,CPT,OP Neuro/Pain Stimulator
+63684,CPT,OP Neuro/Pain Stimulator
+63685,CPT,Insrt/redo spine n generator
+63686,CPT,OP Neuro/Pain Stimulator
+63687,CPT,OP Neuro/Pain Stimulator
+63741,CPT,Install spinal shunt
+63744,CPT,Revision of spinal shunt
+64553,CPT,Implant neuroelectrodes
+64554,CPT,OP Neuro/Pain Stimulator
+64555,CPT,Implant neuroelectrodes
+64556,CPT,OP Neuro/Pain Stimulator
+64557,CPT,OP Neuro/Pain Stimulator
+64558,CPT,OP Neuro/Pain Stimulator
+64559,CPT,OP Neuro/Pain Stimulator
+64560,CPT,OP Neuro/Pain Stimulator
+64561,CPT,Implant neuroelectrodes
+64562,CPT,OP Neuro/Pain Stimulator
+64563,CPT,OP Neuro/Pain Stimulator
+64564,CPT,OP Neuro/Pain Stimulator
+64568,CPT,Inc for vagus n elect impl
+64569,CPT,Revise/repl vagus n eltrd
+64570,CPT,Remove vagus n eltrd
+64571,CPT,OP Neuro/Pain Stimulator
+64572,CPT,OP Neuro/Pain Stimulator
+64573,CPT,OP Neuro/Pain Stimulator
+64574,CPT,OP Neuro/Pain Stimulator
+64575,CPT,Implant neuroelectrodes
+64576,CPT,OP Neuro/Pain Stimulator
+64577,CPT,OP Neuro/Pain Stimulator
+64578,CPT,OP Neuro/Pain Stimulator
+64579,CPT,OP Neuro/Pain Stimulator
+64580,CPT,Implant neuroelectrodes
+64581,CPT,Implant neuroelectrodes
+64582,CPT,Opn mpltj hpglsl nstm ary pg
+64583,CPT,Rev/rplct hpglsl nstm ary pg
+64584,CPT,Rmvl hpglsl nstim ary pg
+64586,CPT,OP Neuro/Pain Stimulator
+64587,CPT,OP Neuro/Pain Stimulator
+64588,CPT,OP Neuro/Pain Stimulator
+64589,CPT,OP Neuro/Pain Stimulator
+64590,CPT,Insrt/redo pn/gastr stimul
+64591,CPT,OP Neuro/Pain Stimulator
+64592,CPT,OP Neuro/Pain Stimulator
+64593,CPT,OP Neuro/Pain Stimulator
+64594,CPT,OP Neuro/Pain Stimulator
+64596,CPT,Ins/rplcmt prq eltrd ra pn 1
+64597,CPT,INS/RPLCM PRQ ELTRD RA PN EA
+64628,CPT,Trml dstrj ios bvn 1st 2 l/s
+64654,CPT,1st opn implt bat modulj sys
+64655,CPT,Revj/rplcmt bat mod sys lead
+64656,CPT,Revj/rplcmt bat mod sys pg
+64657,CPT,Rmvl bat modulj sys tot sys
+64658,CPT,Rmvl bat modul sys lead only
+64659,CPT,Rmvl bat modulj sys pg only
+64786,CPT,Remove sciatic nerve lesion
+64857,CPT,Repair arm/leg nerve
+64864,CPT,Repair of facial nerve
+64865,CPT,Repair of facial nerve
+64885,CPT,Nerve graft head/neck <=4 cm
+64886,CPT,Nerve graft head/neck >4 cm
+64890,CPT,Nerve graft hand/foot <=4 cm
+64892,CPT,Nerve graft arm/leg <4 cm
+64893,CPT,Nerve graft arm/leg >4 cm
+64896,CPT,Nerve graft hand/foot >4 cm
+64897,CPT,Nerve graft arm/leg <=4 cm
+64898,CPT,Nerve graft arm/leg >4 cm
+64910,CPT,Nerve repair w/allograft
+64911,CPT,Neurorraphy w/vein autograft
+64912,CPT,Nrv rpr w/nrv algrft 1st
+65285,CPT,Repair of eye wound
+65756,CPT,Corneal trnspl endothelial
+65770,CPT,Revise cornea with implant
+65785,CPT,Impltj ntrstrml crnl rng seg
+65820,CPT,Relieve inner eye pressure
+66174,CPT,Translum dil eye canal
+66175,CPT,Trnslum dil eye canal w/stnt
+66179,CPT,Aqueous shunt eye w/o graft
+66180,CPT,Aqueous shunt eye w/graft
+66183,CPT,Insert ant drainage device
+66683,CPT,Implantation iris prosthesis
+66987,CPT,Xcapsl ctrc rmvl cplx w/ecp
+66988,CPT,Xcapsl ctrc rmvl w/ecp
+66989,CPT,Xcpsl ctrc rmvl cplx insj 1+
+66991,CPT,Xcapsl ctrc rmvl insj 1+
+67000004,CPT,Triever 20 CATH THROMBECTOMY/EMBOLECT
+67000005,CPT,Triever 24 CATH THROMBECTOMY/EMBOLECT
+67000006,CPT,Triever 16 CATH THROMBECTOMY/EMBOLECT
+67000008,CPT,Cath Angiovac C180 Cannula & Circui
+67020081,CPT,HC Kyphoplasty Kit
+67020088,CPT,Pipeline Flex Embolization Device #Ped-450-10
+67020089,CPT,Pipeline Flex Embolization Device #Ped-425-16
+67027,CPT,Implant eye drug system
+67039,CPT,Laser treatment of retina
+67040,CPT,Laser treatment of retina
+67042,CPT,Vit for macular hole
+67108,CPT,Repair detached retina
+67113,CPT,Repair retinal detach cplx
+68025070,CPT,Pump Morphine 8627-18 (8703)
+68025165,CPT,HC Impella 5.0
+68025322,CPT,"Clottriever Cath, Fixed Length, 16mm, 105cm #40-102"
+68025325,CPT,Penumbra System 3d Revascularization Device #Psr3d
+68025326,CPT,Implant/Insert Device
+68025407,CPT,HC Intracranial Thrombectomy Device
+68025453,CPT,HC Wireless Pressure Sensor
+68025454,CPT,HC Pipeline Intracranial Stent
+68025458,CPT,"HC Integra Bilayer Matrix Wound Dressing (Bmwd), 8x10cm"
+69150,CPT,Extensive ear canal surgery
+69310,CPT,Rebuild outer ear canal
+69320,CPT,Rebuild outer ear canal
+69502,CPT,Mastoidectomy
+69511,CPT,Extensive mastoid surgery
+69530,CPT,Extensive mastoid surgery
+69535,CPT,Remove part of temporal bone
+69550,CPT,Remove ear lesion
+69552,CPT,Remove ear lesion
+69603,CPT,Mastoid surgery revision
+69620,CPT,Repair of eardrum
+69632,CPT,Rebuild eardrum structures
+69633,CPT,Rebuild eardrum structures
+69635,CPT,Repair eardrum structures
+69636,CPT,Rebuild eardrum structures
+69637,CPT,Rebuild eardrum structures
+69641,CPT,Revise middle ear & mastoid
+69642,CPT,Revise middle ear & mastoid
+69643,CPT,Revise middle ear & mastoid
+69644,CPT,Revise middle ear & mastoid
+69645,CPT,Revise middle ear & mastoid
+69646,CPT,Revise middle ear & mastoid
+69660,CPT,Revise middle ear bone
+69661,CPT,Revise middle ear bone
+69670,CPT,Remove mastoid air cells
+69705,CPT,Nps surg dilat eust tube uni
+69706,CPT,Nps surg dilat eust tube bi
+69714,CPT,Implant Temple Bone W/Stimul
+69716,CPT,Impltj oi implt skl tc esp
+69717,CPT,Temple Bone Implant Revision
+69719,CPT,Revj/rplcmt oi implt tc esp
+69720,CPT,Release facial nerve
+69725,CPT,Release facial nerve
+69729,CPT,Impl oi implt sk tc esp>=100
+69730,CPT,Rplc oi implt sk tc esp>=100
+69805,CPT,Explore inner ear
+69905,CPT,Remove inner ear
+69910,CPT,Remove inner ear & mastoid
+69930,CPT,Implant cochlear device
+69955,CPT,Release facial nerve
+69960,CPT,Release inner ear canal
+69970,CPT,Remove inner ear lesion
+75600,CPT,Contrast exam thoracic aorta
+75605,CPT,Contrast exam thoracic aorta
+75625,CPT,Contrast exam abdominl aorta
+75630,CPT,X-ray aorta leg arteries
+75705,CPT,Artery x-rays spine
+75726,CPT,Artery x-rays abdomen
+75741,CPT,Artery x-rays lung
+75893,CPT,Venous sampling by catheter
+76136557001,CPT,"HC Ins Tunneled Cv Cath, Younger Than 5"
+77295,CPT,RT-RAD TX SIMU 3D - VARIAN 151
+77301,CPT,RT-DOSE PLAN IMRT - VARIAN 151
+77371,CPT,"SRS,(CEREBRAL)1 SES MULTI CO60"
+77372,CPT,SRS LINAC CRANIAL TXMT DELIV
+77373,CPT,RT-SRS LINEAR - VARIAN 151
+77425,CPT,IO RAD TX DELIVER BY ELCTRNS
+78431,CPT,Myocrd img pet rst&strs ct
+78432,CPT,Myocrd img pet 2rtracer
+78433,CPT,Myocrd img pet 2rtracer ct
+792,CPT,Anes iper upr abd prtl hptc
+794,CPT,Anes iper upr abd pncrtect
+796,CPT,Anes iper upr abd lvr trnspl
+81415,CPT,Exome sequence analysis
+81416,CPT,Exome sequence analysis
+81425,CPT,Genome sequence analysis
+81440,CPT,Mitochondrial gene
+81455,CPT,Targeted genomic seq analys
+81456,CPT,Tgsap so/hl 51/< rna alys
+81519,CPT,Oncology breast mrna
+81523,CPT,Onc brst mrna 70 cnt 31 gene
+81529,CPT,Onc cutan mlnma mrna 31 gene
+81540,CPT,Oncology tum unknown origin
+81552,CPT,Onc uveal mlnma mrna 15 gene
+81554,CPT,Pulm ds ipf mrna 190 gen alg
+81595,CPT,Cardiology hrt trnspl mrna
+844,CPT,Anesth pelvis surgery
+846,CPT,Anesth hysterectomy
+848,CPT,Anesth pelvic organ surg
+864,CPT,Anesth removal of bladder
+866,CPT,Anesth removal of adrenal
+868,CPT,Anesth kidney transplant
+882,CPT,Anesth major vein ligation
+90288,CPT,Botulism ig iv
+90378,CPT,Rsv mab im 50mg
+90396,CPT,Varicella-zoster ig im
+904,CPT,Anesth perineal surgery
+908,CPT,Anesth removal of prostate
+92920,CPT,Prq cardiac angioplast 1 art
+92921,CPT,"IC-PTCA, ADDL - GL 106"
+92922,CPT,Percutaneous Cardiovascular Procedure (PTCA) without stent
+92923,CPT,Percutaneous Cardiovascular Procedure (PTCA) without stent
+92924,CPT,Prq card angio/athrect 1 art
+92925,CPT,PERC CARD/ANGIO/ATHR ADDL RC
+92928,CPT,Prq card stent w/angio 1 vsl
+92929,CPT,PRC DRUG-EL CORSTENT BR ADD RC
+92930,CPT,PRQ TCAT PLMT NTRAC ST 2+LES
+92931,CPT,Percutaneous Cardiovascular Procedure (PTCA) with drug-eluting stent
+92932,CPT,Percutaneous Cardiovascular Procedure (PTCA) with drug-eluting stent
+92933,CPT,Prq card stent/ath/angio
+92934,CPT,PRC D-E COR STENT ATHR BR ADRC
+92935,CPT,Percutaneous Cardiovascular Procedure (PTCA) with drug-eluting stent
+92936,CPT,Percutaneous Cardiovascular Procedure (PTCA) with drug-eluting stent
+92937,CPT,Prq revasc byp graft 1 vsl
+92938,CPT,IC-PRQ RV BYP GRF AD - GL 106
+92939,CPT,Percutaneous Cardiovascular Procedure (PTCA) with drug-eluting stent
+92940,CPT,Percutaneous Cardiovascular Procedure (PTCA) with drug-eluting stent
+92941,CPT,Prq card revasc mi 1 vsl
+92942,CPT,Percutaneous Cardiovascular Procedure (PTCA) with drug-eluting stent
+92943,CPT,Prq card revasc chronic 1vsl
+92944,CPT,PRC D-E COR REVASC CHRO ADD RC
+92945,CPT,Prq trl rvs ch occ ant&rtrgr
+92972,CPT,CC-REVASC IVL CORNRY - GL 106
+92986,CPT,Revision of aortic valve
+92987,CPT,Revision of mitral valve
+92990,CPT,Revision of pulmonary valve
+92997,CPT,PULM ART BALLOON REPR PERCUT
+932,CPT,Anesth amputation of penis
+934,CPT,Anesth penis nodes removal
+93451,CPT,Right heart cath
+93453,CPT,R&l hrt cath w/ventriclgrphy
+93454,CPT,Coronary artery angio s&i
+93455,CPT,Coronary art/grft angio s&i
+93456,CPT,R hrt coronary artery angio
+93457,CPT,R hrt art/grft angio
+93458,CPT,L hrt artery/ventricle angio
+93459,CPT,L hrt art/grft angio
+93460,CPT,R&l hrt art/ventricle angio
+93461,CPT,R&l hrt art/ventricle angio
+93462,CPT,CC-L HRT CATH TRNSPT - GL 106
+93580,CPT,Transcath closure of asd
+93581,CPT,Transcath closure of vsd
+93582,CPT,Perq transcath closure pda
+93583,CPT,Perq transcath septal reduxn
+93584,CPT,VNGRPH CHD ANOM/PERSIST SVC
+93585,CPT,VNGRPH CHD AZYGS/HEMIAZYGS
+93586,CPT,VNGRPH CHD CORONARY SINUS
+93587,CPT,VNGRPH CHD VNVN CLTRL AT/ABV
+93588,CPT,VNGRPH CHD VNVN CLTRL BELOW
+93590,CPT,Perq transcath cls mitral
+93591,CPT,Perq transcath cls aortic
+93592,CPT,PERC TRANSCATH CLS MITRAL EA
+93593,CPT,R hrt cath chd nml nt cnj
+93594,CPT,R hrt cath chd abnl nt cnj
+93595,CPT,L hrt cath chd nm/abn nt cnj
+93596,CPT,R&l hrt cath chd nml nt cnj
+93597,CPT,R&l hrt cath chd abnl nt cnj
+936,CPT,Anesth penis nodes removal
+93600,CPT,EP-HIS BUNDLE REC - GL 106
+93602,CPT,INTRA-ATRIAL RECORDING
+93610,CPT,INTRA-ATRIAL PACING
+93612,CPT,INTRAVENTRICULAR PACING
+93613,CPT,EP-MAP ADD - GL 106
+93619,CPT,FULL RT EP STUDY WO ARHYTHM OP
+93620,CPT,EP-COMP EP W- ARRY - GL 106
+93621,CPT,EP-LA PACING[INP]
+93622,CPT,EP-LV PACING[INP]
+93624,CPT,EP FOLLOW-UP STUDY
+93650,CPT,Ablate heart dysrhythm focus
+93653,CPT,Ep & ablate supravent arrhyt
+93654,CPT,Ep & ablate ventric tachy
+93655,CPT,EP-ABLATE ART ADD-ON - GL 106
+93656,CPT,Tx atrial fib pulm vein isol
+95716,CPT,VIDEO SEEG 12-26 HR CONT MNTR
+95965,CPT,MEG SPONTANEOUS
+A0225,CPT,Neonatal emergency transport
+A0430,CPT,Fixed wing air transport
+A0431,CPT,Rotary wing air transport
+A0434,CPT,Specialty care transport
+A4264,CPT,INTRATUBAL OCCLUSION DEVICE
+A6011,CPT,Collagen gel/paste wound fil
+A7002,CPT,Tubing used w suction pump
+A9515,CPT,Choline c-11
+A9542,CPT,"In111 ibritumomab, dx"
+A9543,CPT,"Y90 ibritumomab, rx"
+A9557,CPT,Tc99m bicisate
+A9566,CPT,PR TC99M FANOLESOMAB
+A9570,CPT,Indium In-111 auto WBC
+A9571,CPT,Indium IN-111 auto platelet
+A9572,CPT,Indium In-111 pentetreotide
+A9582,CPT,Iodine I-123 iobenguane
+A9584,CPT,Iodine i-123 ioflupane
+A9586,CPT,Florbetapir F18
+A9598,CPT,JAPANESE ENCEPHALITIS VACC 1ML
+A9600,CPT,Sr89 strontium
+A9604,CPT,Sm 153 lexidronam
+A9699,CPT,Radiopharm rx agent noc
+C1052,CPT,HEMOSTATIC AGENT GI TOPIC
+C1062,CPT,Intravertebral fx aug impl
+C1601,CPT,"Endo, single, pulmonary"
+C1602,CPT,ORTH/MATRX/BN FILL DRUG-ELUT
+C1603,CPT,SHEATH LASER CAVACLEAR 14F
+C1604,CPT,"GRAFT, TRANSMURAL TRANSVENOUS ARTERIAL BYPASS (IMPLANTABLE), WITH ALL DELIVERY SYSTEM COMPONENTS"
+C1605,CPT,"PMKR, DUAL, LEADLESS"
+C1714,CPT,BARD-CATH ATHRCM 14S RX CROSSER 146[INP]
+C1721,CPT,DEFIB CARDVRT GLLNT DR 2CH ICD - CDDRA500Q[INP]
+C1722,CPT,DEFIB CARDVRT GLLNT VR 1CH ICD x - CDVRA500Q[INP]
+C1724,CPT,CATH ATHRTM RTPR PRCNT 1.25 - H749394671250[INP]
+C1727,CPT,CATH BAL TIS DIS NON-VAS
+C1728,CPT,CATH BRACHYTX SEED ADM
+C1732,CPT,BOST-CATH PLRS STRBL X 2.5/5/2.5MM[INP]
+C1733,CPT,ABBO-CATH ABL SFR BDR LG SWP 7F[INP]
+C1735,CPT,CATHETER ANGIOGRAPHIC SYMPLICITY SPYRAL RENAL 117CM 6FR
+C1737,CPT,"JOINT FUSION AND FIXATION DEVICE(S), SACROILIAC AND PELVIS, INCLUDING ALL SYSTEM COMPONENTS (IMPLANTABLE)"
+C1747,CPT,"ENDO, SINGLE, URINARY TRACT"
+C1748,CPT,BOST-XALT MODL B SU SLM[INP]
+C1754,CPT,CATHETER INTRADISCAL
+C1757,CPT,CATH GD FLTRVR 20 ASP CRV 20 - 21-201[INP]
+C1759,CPT,ABBO-CATH ICE VWFLX X TEMP 9FX90CM[INP]
+C1761,CPT,CATH IVL COR SHWV C2+ 2.5X12 - C2PIVL2512[INP]
+C1762,CPT,MUSC-GRFT ALGRF ADPS MTRX LENEVA 3[INP]
+C1763,CPT,BIOV-GFT BN BIOACTV INTRFC 1 STRL[INP]
+C1764,CPT,MEDT-MNTR CRD LINQ 2 INS 22[INP]
+C1767,CPT,MEDT-NRSTM INSTM X CHRG FR 44X51[INP]
+C1768,CPT,WL G-GFT LEG XCLDR CNTRLT 14.5X10[INP]
+C1771,CPT,CALD-SLNG TRNVG DSRA BL TV W/DIL TB[INP]
+C1772,CPT,PMP MGMT SFWR PRGM 40ML - 8637-40[INP]
+C1777,CPT,MEDT-LD PCNG SQ SCR S DF4 8.6FX97[INP]
+C1778,CPT,STIM-STIMLATOR SYS 8 ELTRD STIMQ 4[INP]
+C1781,CPT,DAVO-MSH ST PHASIX 7X10CM RECT[INP]
+C1785,CPT,SYS CRD CRDMMS PA SNSR DLV - CMPATIENTSYSTEM[INP]
+C1786,CPT,MEDT-SYS TRNCTH PCNG MICRA AV SYN[INP]
+C1787,CPT,ABBO-KIT NRSTM PT CTRLR[INP]
+C1813,CPT,PROSTHESIS STANDARD PENILE TITAN ASSEMBLY KIT[ARS]
+C1815,CPT,BOST-PROS PENL CUF W/INHBZN 4.5CM[INP]
+C1816,CPT,RECEIVER/TRANSMITTER NEURO
+C1817,CPT,SEPTAL DEFECT IMP SYS
+C1818,CPT,Integrated keratoprosthesis
+C1820,CPT,KIT IPG PRCSN SPCTR - M365SC11320[INP]
+C1821,CPT,NUVA-CG CRNT XL W LRD 100 50X22X10[INP]
+C1822,CPT,NEVR-KIT IMPL IPG SENZA PLS GNTR[INP]
+C1823,CPT,GEN NEURO TRANS SEN/STIM
+C1824,CPT,KIT IPG OPTIMIZER SMART
+C1825,CPT,GENERATOR STIM BARORECEPTOR NEO LEGACY IMPLANT PULSE
+C1826,CPT,HC OR 278 C1826 INCEPTIV IMPLANT
+C1827,CPT,KIT PLS GNTR PRCSN NOVI IMPL - M365SC11400[INP]
+C1831,CPT,CAGE SPINAL INTERBODY NANOHIVE TLIF 0DEG 9 X 26 X 7MM
+C1832,CPT,DEV CELL HRVT RECELL ATLGS - AVRL0101[INP]
+C1833,CPT,CARDIAC MONITOR SYS
+C1874,CPT,STNT ENDO VNS WLSTNT 16X60X75 - H74912044166070[IN
+C1875,CPT,STENT COATED/COV W/O DEL SY
+C1876,CPT,BARD-LFSTNT VASC STNT 135CM 7X100 5[INP]
+C1877,CPT,CORD-STENT XL 30MM 10MM BIL BLN XPN[INP]
+C1880,CPT,BARD-FLTR VENA CAVA FEM DENALI[INP]
+C1882,CPT,ABBO-DEFIB CRD GLLNT HF 2CH CRT[INP]
+C1884,CPT,EMB SYS SPIDRX 4.0MM - SPD2-US-040-320[INP]
+C1885,CPT,SPEC-CATH RX RX PERPH 1.4MM 5F 150[INP]
+C1886,CPT,MEDT-PRB ELTX OSTEOCL 17GA 2X20MM[INP]
+C1888,CPT,CATH IMG DRGFLY OPSTAR SYR 3 - 1014651[INP]
+C1889,CPT,MEDT-VLV AOR RT BIOPROS FRSTL 23X32[INP]
+C1891,CPT,INFUSION PUMPNON-PROG PERM
+C1895,CPT,MEDT-LD PCNG IS-1 CPSRFX NVS 5.7X45[INP]
+C1896,CPT,MEDT-LEAD 41CM 33CM 7.5FR 10.5FR PA[INP]
+C1899,CPT,LEAD PMKR/AICD COMBINATION
+C1900,CPT,MEDT-LEAD 78CM PCNG VN 2 ELCTRD OTW[INP]
+C1982,CPT,HC SYSTEM FLX TRINAV INFUSION
+C2596,CPT,"Probe, robotic, water-jet"
+C2615,CPT,SEALANT PULMONARY LIQUID
+C2616,CPT,BRACHTX SRC YTRIUM90 CPT C2616
+C2618,CPT,Endocare Rt Angled Slimline Cryoprobe 1.7MM Round
+C2619,CPT,"Pmkr, dual, non rate-resp"
+C2621,CPT,MEDT-PCMKR SRSCN SOLARA QD CRTP MRI[INP]
+C2622,CPT,BOST-PROS PENL TACTRA MLBL 11 16-25[INP]
+C2624,CPT,CARDIO MEMS CM3000 NON-IDE
+C2629,CPT,INTRO/SHEATH LASER
+C2630,CPT,ABBO-CATH ABL TCTCTH QTZ 7FX75MM[INP]
+C2642,CPT,BRACHYTX STRANDED C-131
+C7500,CPT,Deb bone 20 cm2 w/drug dev
+C7501,CPT,Perc bx breast lesions stero
+C7502,CPT,Perc bx breast lesions mr
+C7503,CPT,Open exc cerv node(s) w/ id
+C7504,CPT,Perq cvt&ls inj vert bodies
+C7505,CPT,Perq ls&cvt inj vert bodies
+C7506,CPT,Fusion of finger joints
+C7507,CPT,Perq thor&lumb vert aug
+C7508,CPT,Perq lumb&thor vert aug
+C7509,CPT,Dx bronch w/ navigation
+C7510,CPT,Bronch/lavag w/ navigation
+C7511,CPT,Bronch/bpsy(s) w/ navigation
+C7512,CPT,Bronch/bpsy(s) w/ ebus
+C7513,CPT,Cath/angio dialcir w/aplasty
+C7514,CPT,Cath/angio dial cir w/stents
+C7515,CPT,Cath/angio dial cir w/embol
+C7516,CPT,Cor angio w/ ivus or oct
+C7517,CPT,Cor angio w/ilic/fem angio
+C7518,CPT,Cor/gft angio w/ ivus or oct
+C7519,CPT,Cor/gft angio w/ flow resrv
+C7520,CPT,Cor/gft angio w/ilic/fem ang
+C7521,CPT,R hrt angio w/ ivus or oct
+C7522,CPT,R hrt angio w/flow resrv
+C7523,CPT,L hrt angio w/ ivus or oct
+C7524,CPT,L hrt angio w/flow resrv
+C7525,CPT,L hrt gft ang w/ ivus or oct
+C7526,CPT,L hrt gft ang w/flow resrv
+C7527,CPT,R&l hrt angio w/ ivus or oct
+C7528,CPT,R&l hrt angio w/flow resrv
+C7529,CPT,R&l hrt gft ang w/flow resrv
+C7530,CPT,Cath/aplasty dial cir w/stnt
+C7531,CPT,Angio fem/pop w/ us
+C7532,CPT,Angio w/ us non-coronary
+C7533,CPT,Ptca w/ plcmt brachytx dev
+C7534,CPT,Fem/pop revasc w/arthr & us
+C7535,CPT,Fem/pop revasc w/stent & us
+C7537,CPT,Insrt atril pm w/l vent lead
+C7538,CPT,Insrt vent pm w/l vent lead
+C7539,CPT,Insrt a & v pm w/l vent lead
+C7540,CPT,Rmv&rplc pm dul w/l vnt lead
+C7541,CPT,Ercp w/ pancreatoscopy
+C7542,CPT,Ercp w/bx & pancreatoscopy
+C7543,CPT,"Ercp w/otomy, pancreatoscopy"
+C7544,CPT,Ercp rmv calc pancreatoscopy
+C7545,CPT,Exch bil cath w/ rmv calculi
+C7546,CPT,Rep nph/urt cath w/dil stric
+C7547,CPT,Cnvrt neph cath w/ dil stric
+C7548,CPT,Exch neph cath w/ dil stric
+C7549,CPT,Chge urtr stent w/ dil stric
+C7550,CPT,Cysto w/ bx(s) w/ blue light
+C7551,CPT,Exc neuroma w/ implnt nv end
+C7552,CPT,R hrt art/grft ang hrt flow
+C7553,CPT,R&l hrt art/vent ang drg ad
+C7554,CPT,Cystureth blu li cyst fl img
+C7555,CPT,Rmvl thyrd w/autotran parath
+C7556,CPT,Bronch lavage w/ebus
+C7557,CPT,Cor angio/vent w/ffr
+C7558,CPT,Outpatient Surgery Grouper Procedures: CPT/HCPCS
+C7560,CPT,Ercp remove forgn body&endo
+C7562,CPT,R&l hrt angio w/ffr & 3d map
+C7563,CPT,Trluml ballo angiop all art
+C7564,CPT,Vein mech throm w/intrvas us
+C7565,CPT,Rpr aa hrn < 3 rdc w/ rmvl
+C7568,CPT,HC Cor Diag Coronary W/Ffr
+C7569,CPT,HC Cor Intv Pta W/Ivus/Oct
+C7570,CPT,HC Cor Diag Coronary W/Ffr & 3d Mapping
+C7571,CPT,HC Cor Intv Coronary Lithoplasty Lc
+C8002,CPT,"Prep skin cell susp, automtd"
+C8003,CPT,Imp extar knee shck absrb
+C8004,CPT,Sim ang w/prs cath rad emb
+C8005,CPT,Pef bronch ablt 3d nav ebus
+C8006,CPT,Inst pleu-perit shnt w pump
+C9065,CPT,ROMIDEPSIN 27.5 MG/5.5ML IV SOLN
+C9150,CPT,Chemotherapy Drugs
+C9158,CPT,RISPERIDONE ER 250 MG/0.7ML SC SUSY
+C9172,CPT,"Inj, beqvez, per tx dose"
+C9293,CPT,"Injection, glucarpidase"
+C9354,CPT,"Veritas collagen matrix, cm2"
+C9361,CPT,NeuroMend nerve wrap
+C9362,CPT,IMPLNTBON VOID FILLER-STRIP
+C9399,CPT,00024-5914-01 - NC dupilumab 300 mg/2 mL Soln
+C9600,CPT,Perc drug-el cor stent sing
+C9601,CPT,IC-PRQ DE COR STNT B - GL 106
+C9602,CPT,Perc d-e cor stent ather s
+C9603,CPT,IC-PR DE CR STN AR B - GL 106
+C9604,CPT,Perc d-e cor revasc t cabg s
+C9605,CPT,IC-PR DE CR RV CAB B - GL 106
+C9606,CPT,Perc d-e cor revasc w AMI s
+C9607,CPT,Perc d-e cor revasc chro sin
+C9608,CPT,IC-PR DE CR RV CH EA - GL 106
+C9610,CPT,HC OR 278 C9610  CATH CORONARY DRUG DELIVERY
+C9726,CPT,Rxt breast appl place/remov
+C9734,CPT,"U/s trtmt, not leiomyomata"
+C9738,CPT,Blue light cysto imag agent
+C9739,CPT,Cystoscopy prostatic imp 1-3
+C9740,CPT,Cysto impl 4 or more
+C9751,CPT,"Microwave bronch, 3d, ebus"
+C9756,CPT,Fluorescence lymph map w/icg
+C9757,CPT,Spine/lumbar disk surgery
+C9758,CPT,Interatrial shunt IDE
+C9759,CPT,Transcath intraop microinf
+C9760,CPT,Non-blind interatrial shunt
+C9761,CPT,"Cysto, litho, vacuum kidney"
+C9764,CPT,Revasc intravasc lithotripsy
+C9765,CPT,Revasc intra lithotrip-stent
+C9766,CPT,Revasc intra lithotrip-ather
+C9767,CPT,Revasc lithotrip-stent-ather
+C9769,CPT,Cysto w/temp pros implant
+C9772,CPT,Revasc lithotrip tibi/perone
+C9773,CPT,Revasc lithotr-stent tib/per
+C9774,CPT,Revasc lithotr-ather tib/per
+C9775,CPT,Revasc lith-sten-ath tib/per
+C9776,CPT,PR Intraop Near-Infrated Fluorescence Imaging Major Extra-Hepatic Bile Duct
+C9777,CPT,Esophag muc integ w/eso egd
+C9778,CPT,"Colpopexy, min/inv, ex-perit"
+C9779,CPT,ESD endoscopy or colonoscopy
+C9780,CPT,Insert cv cath inf & sup app
+C9781,CPT,Arthro/shoul surg; w/spacer
+C9782,CPT,Blind myocar trpl bon marrow
+C9783,CPT,Blind cor sinus reducer impl
+C9784,CPT,Endo sleeve gastro w/tube
+C9785,CPT,Endo outlet restrict w/tube
+C9789,CPT,Instill pharm renal pelvis
+C9792,CPT,Blind/nonblind trans atrial
+C9795,CPT,Other Outpatient Services: CPT/HCPCS
+C9797,CPT,Vasc emb/occ w/prs cath
+C9901,CPT,Endo defect closure GI tract
+D4210,CPT,Gingivectomy/plasty 4 or mor
+D4211,CPT,Gingivectomy/plasty 1 to 3
+D4212,CPT,Gingivectomy/plasty rest
+D4230,CPT,Ana crown exp 4 or> per quad
+D4240,CPT,Gingival flap proc w/ planin
+D4260,CPT,Osseous surgery 4 or more
+D4261,CPT,Osseous surg 1 to 3 teeth
+D4286,CPT,Remove non-resorb barrier
+D5913,CPT,Nasal prosthesis
+D5914,CPT,Auricular prosthesis
+D5915,CPT,Orbital prosthesis
+D5932,CPT,Postsurgical obturator
+D5934,CPT,Mandibular flange prosthesis
+D5935,CPT,Mandibular denture prosth
+D5936,CPT,Temp obturator prosthesis
+D5953,CPT,Adult speech aid
+D5954,CPT,Superimposed prosthesis
+D5955,CPT,Palatal lift prosthesis
+D5995,CPT,"Peri medicament w/seal, max"
+D5996,CPT,"Peri medicament w/seal, mand"
+D6040,CPT,Odontics eposteal implant
+D6050,CPT,Odontics transosteal implnt
+D6105,CPT,Remove implant body
+D6106,CPT,Tissue regen resorbable
+D6107,CPT,Tissue regen non-resorbable
+D6191,CPT,Semi precision abutment
+D6192,CPT,Semi precision attachment
+D6197,CPT,Replace material prosthesis
+D6198,CPT,Remove interim implant
+D7298,CPT,Remove screw retained plate
+D7299,CPT,Rem anchorage device w/flap
+D7300,CPT,Rem anchorage dev w/o flap
+D7340,CPT,Vestibuloplasty ridge extens
+D7350,CPT,Vestibuloplasty exten graft
+D7440,CPT,Malig tumor exc to 1.25 cm
+D7441,CPT,Malig tumor > 1.25 cm
+D7450,CPT,Rem odontogen cyst to 1.25cm
+D7451,CPT,Rem odontogen cyst > 1.25 cm
+D7471,CPT,Rem exostosis any site
+D7485,CPT,Surg reduct osseoustuberosit
+D7490,CPT,Maxilla or mandible resectio
+D7509,CPT,Marsupialization odon cyst
+D7630,CPT,Open red simpl mandible fx
+D7670,CPT,Closd rductn splint alveolus
+D7671,CPT,Alveolus open reduction
+D7680,CPT,Reduct simple facial bone fx
+D7710,CPT,Maxilla open reduct compound
+D7730,CPT,Open reduct compd mandble fx
+D7750,CPT,Open red comp malar/zygma fx
+D7770,CPT,Open reduc compd alveolus fx
+D7771,CPT,Alveolus clsd reduc stblz te
+D7780,CPT,Reduct compnd facial bone fx
+D7810,CPT,Tmj open reduct-dislocation
+D7840,CPT,Removal of tmj condyle
+D7850,CPT,Tmj meniscectomy
+D7852,CPT,Tmj repair of joint disc
+D7854,CPT,Tmj excisn of joint membrane
+D7856,CPT,Tmj cutting of a muscle
+D7858,CPT,Tmj reconstruction
+D7860,CPT,Tmj cutting into joint
+D7865,CPT,Tmj reshaping components
+D7874,CPT,Tmj arthroscopy disc reposit
+D7875,CPT,Tmj arthroscopy synovectomy
+D7876,CPT,Tmj arthroscopy discectomy
+D7877,CPT,Tmj arthroscopy debridement
+D7941,CPT,Bone cutting ramus closed
+D7943,CPT,Cutting ramus open w/graft
+D7944,CPT,Bone cutting segmented
+D7945,CPT,Bone cutting body mandible
+D7946,CPT,Reconstruction maxilla total
+D7947,CPT,Reconstruct maxilla segment
+D7948,CPT,Reconstruct midface no graft
+D7949,CPT,Reconstruct midface w/graft
+D7950,CPT,Mandible graft
+D7956,CPT,Tiss regen edent resorb
+D7957,CPT,Tiss regen edent nonresorb
+D7961,CPT,Buccal/labial frenectomy
+D7962,CPT,Lingual frenectomy
+D7991,CPT,Dental coronoidectomy
+D7993,CPT,Surg place craniofacial impl
+D7994,CPT,Surg place zygomatic impl
+D8060,CPT,Intercep dental tx transitn
+D8070,CPT,Compre dental tx transition
+D8080,CPT,Compre dental tx adolescent
+D8090,CPT,Compre dental tx adult
+D9949,CPT,Repair sleep apnea appliance
+D9990,CPT,Trans or sign language svcs
+DELET,CPT,BELANTAMAB (BLENREP) INJ 100MG
+E0194,CPT,Air fluidized bed
+E0465,CPT,Home vent invasive interface
+E0466,CPT,Home vent non-invasive inter
+E0471,CPT,RAD w/backup non inv intrfc
+E0481,CPT,Intrpulmnry percuss vent sys
+E0483,CPT,Chest compression gen system
+E0616,CPT,EVENT RECORDER CARDIAC
+E0636,CPT,PT support & positioning sys
+E0652,CPT,Pneum compres w/cal pressure
+E0694,CPT,Uvl md cabinet sys 6 ft
+E0749,CPT,ZIMM-STM SPNL SPF-XL IIB 40 8CM MSH[INP]
+E0764,CPT,Functional neuromuscularstim
+E0766,CPT,Elec stim cancer treatment
+E0783,CPT,INFUSION PUMP PROGRAMMABLE
+E0786,CPT,Implantable pump replacement
+E0787,CPT,Cgs dose adj insulin inf pmp
+E2230,CPT,Manual standing system
+E2510,CPT,SGD w multi methods msg/accs
+G0276,CPT,Pild/placebo control clin tr
+G0330,CPT,Facility svs dental rehab
+G0339,CPT,"Robot lin-radsurg com, first"
+G0340,CPT,Robt lin-radsurg fractx 2-5
+G0341,CPT,Percutaneous islet celltrans
+G0342,CPT,Laparoscopy islet cell trans
+G0343,CPT,Laparotomy islet cell transp
+G0390,CPT,T1 ACT FULL PREARRIVE W/CC
+G0412,CPT,Open tx iliac spine uni/bil
+G0413,CPT,Pelvic ring fracture uni/bil
+G0414,CPT,Pelvic ring fx treat int fix
+G0415,CPT,Open tx post pelvic fxcture
+G0428,CPT,Collagen meniscus implant
+G0448,CPT,Place perm pacing cardiovert
+G0563,CPT,Sbrt w/positron emission del
+G0564,CPT,365 d implant glucose sensor
+G0565,CPT,Rem/ins glu snsr 365 dif sit
+G2070,CPT,Med assist tx implant
+G2072,CPT,Med tx insert/remove imp
+G2170,CPT,Avf by tissue w thermal e
+G2171,CPT,Avf use magnetic/art/ven
+J0202,CPT,"Injection, alemtuzumab"
+J0225,CPT,"Inj, vutrisiran, 1 mg"
+J0480,CPT,Basiliximab
+J0578,CPT,"Inj brixadi, more than 7 day"
+J0600,CPT,Edetate calcium disodium inj
+J0638,CPT,Canakinumab injection
+J0716,CPT,Centruroides immune f(ab)
+J0800,CPT,Corticotropin injection
+J0801,CPT,Inj. acthar gel to 40 units
+J0802,CPT,"Inj. (ani), up to 40 units"
+J0840,CPT,Crotalidae poly immune fab
+J0850,CPT,Cytomegalovirus imm IV /vial
+J1162,CPT,Digoxin immune fab (ovine)
+J1411,CPT,"Inj, hemgenix, per tx dose"
+J1412,CPT,Inj roctavian ml 2x10^13vc g
+J1413,CPT,Inj delandistrogene mox rokl
+J1414,CPT,"Inj, beqvez, per tx dose"
+J1747,CPT,"Inj, spesolimab-sbzo, 1 mg"
+J1823,CPT,"Inj. inebilizumab-cdon, 1 mg"
+J1950,CPT,Leuprolide acetate /3.75 mg
+J2326,CPT,"Inj, nusinersen, 0.1mg"
+J2350,CPT,"Injection, ocrelizumab, 1 mg"
+J2351,CPT,Inj ocrelizumab 1mg hya-ocsq
+J2505,CPT,"Injection, pegfilgrastim 6mg"
+J2507,CPT,Pegloticase injection
+J2787,CPT,Riboflavin 5?phos opth<=3ml
+J2993,CPT,Reteplase injection
+J3101,CPT,Tenecteplase injection
+J3240,CPT,Thyrotropin injection
+J3241,CPT,Inj. teprotumumab-trbw 10 mg
+J3316,CPT,"Inj., triptorelin xr 3.75 mg"
+J3357,CPT,"Ustekinumab sub cu inj, 1 mg"
+J3387,CPT,J3387
+J3389,CPT,J3389
+J3391,CPT,"Inj, atidarsagene autotemcel"
+J3392,CPT,"Inj, exagamglogene autotem"
+J3393,CPT,"Inj, betibeglogene autotemce"
+J3394,CPT,"Inj, lovotibeglogene autotem"
+J3399,CPT,Inj onase abepar-xioi treat
+J3402,CPT,Inj. remestemcel-l-rknd/ td
+J3403,CPT,"Revakinagene, per implant"
+J3490,CPT,AMBULANCE; SCT
+J3590,CPT,99999-1024-61 - skin substitute 15 cm2 Misc
+J7170,CPT,"Inj., emicizumab-kxwh 0.5 mg"
+J7189,CPT,Factor viia
+J7294,CPT,Seg acet and eth estr yearly
+J7310,CPT,Ganciclovir long act implant
+J7330,CPT,Cultured chondrocytes implnt
+J7352,CPT,"Afamelanotide implant, 1 mg"
+J7504,CPT,Lymphocyte immune globulin
+J9015,CPT,Aldesleukin injection
+J9022,CPT,"Inj, atezolizumab,10 mg"
+J9026,CPT,"Inj, tarlatamab-dlle, 1 mg"
+J9029,CPT,"Inj, adstiladrin, per tx dos"
+J9042,CPT,Brentuximab vedotin inj
+J9043,CPT,Cabazitaxel injection
+J9160,CPT,Denileukin diftitox inj
+J9200,CPT,Floxuridine injection
+J9216,CPT,Interferon gamma 1-b inj
+J9225,CPT,Vantas implant
+J9226,CPT,Supprelin LA implant
+J9228,CPT,Ipilimumab injection
+J9229,CPT,Inj inotuzumab ozogam 0.1 mg
+J9266,CPT,Pegaspargase injection
+J9268,CPT,Pentostatin injection
+J9286,CPT,"Inj glofitamab gxbm, 2.5 mg"
+J9289,CPT,Inj nivolumab 2 mg hyaluron
+J9298,CPT,Inj nivol relatlimab 3mg/1mg
+J9309,CPT,"Inj, polatuzumab vedotin 1mg"
+J9325,CPT,Inj talimogene laherparepvec
+J9347,CPT,"Inj, tremelimumab-actl, 1 mg"
+J9350,CPT,"Inj mosunetuzumab-axgb, 1 mg"
+J9359,CPT,Inj lon tesirin-lpyl 0.075mg
+J9371,CPT,Inj vincristine sul lip 1mg
+J9600,CPT,Porfimer sodium injection
+K0008,CPT,Cstm manual wheelchair/base
+K0013,CPT,Custom power whlchr base
+K0014,CPT,Other power whlchr base
+K0606,CPT,Aed garment w elec analysis
+K0830,CPT,Pwc gp2 std seat elevate s/b
+K0854,CPT,PWC gp 3 xhd seat/back
+K0855,CPT,PWC gp 3 xhd cap chair
+K0859,CPT,PWC gp3 hd sing pow opt cap
+K0860,CPT,PWC gp3 vhd sing pow opt s/b
+K0862,CPT,PWC gp3 hd mult pow opt s/b
+K0863,CPT,PWC gp3 vhd mult pow opt s/b
+K0864,CPT,PWC gp3 xhd mult pow opt s/b
+K0868,CPT,Pwc gp 4 std seat/back
+K0869,CPT,Pwc gp 4 std cap chair
+K0870,CPT,Pwc gp 4 hd seat/back
+K0871,CPT,Pwc gp 4 vhd seat/back
+K0877,CPT,Pwc gp4 std sing pow opt s/b
+K0878,CPT,Pwc gp4 std sing pow opt cap
+K0879,CPT,Pwc gp4 hd sing pow opt s/b
+K0880,CPT,Pwc gp4 vhd sing pow opt s/b
+K0884,CPT,Pwc gp4 std mult pow opt s/b
+K0885,CPT,Pwc gp4 std mult pow opt cap
+K0886,CPT,Pwc gp4 hd mult pow s/b
+K0890,CPT,Pwc gp5 ped sing pow opt s/b
+K0891,CPT,Pwc gp5 ped mult pow opt s/b
+K1007,CPT,Bil hkaf pc s/d micro sensor
+K1022,CPT,Endoskel posit rotat unit
+L0460,CPT,TLSO 2 SHL SYMPHYS-STERN CST
+L0462,CPT,TLSO 3MOD SACRO-SCAP PRE
+L0482,CPT,TLSO RIGID LINED CUSTOM FAB
+L0484,CPT,TLSO RIGID PLASTIC CUST FAB
+L0486,CPT,ORTH- SUPP ORTH CSTM TLSO 2 PC[INP]
+L0638,CPT,LSO SAG-CORONAL PANEL CUSTOM
+L0639,CPT,LSO S/C SHELL/PANEL PREFAB
+L0700,CPT,CTLSO A-P-L CONTROL MOLDED
+L0710,CPT,CTLSO A-P-L CONTROL W/ INTER
+L0810,CPT,HALO CERVICAL INTO JCKT VEST
+L0830,CPT,Halo cerv into milwaukee typ
+L0859,CPT,MRI COMPATIBLE SYSTEM
+L1000,CPT,CTLSO MILWAUKE INITIAL MODEL
+L1005,CPT,Tension based scoliosis orth
+L1200,CPT,FURNSH INITIAL ORTHOSIS ONLY
+L1685,CPT,POST-OP HIP ABDUCT CUSTOM FA
+L2005,CPT,KAFO sng/dbl mechanical act
+L2006,CPT,Kaf sng/dbl swg/stn mcpr cus
+L2037,CPT,KAFO PLAS SING FREE KNEE MOL
+L2128,CPT,KAFO FEM FX CAST MOLDED TO P
+L2136,CPT,Kafo femoral fx cast rigid
+L2525,CPT,TH/WGHT BEAR NAR M-L BRIM MO
+L2627,CPT,PLASTIC MOLD RECIPRO HIP & C
+L3904,CPT,Whfo electric custom fitted
+L5060,CPT,Symes met fr leath socket ar
+L5105,CPT,Plast socket jts/thgh lacer
+L5150,CPT,Mold sckt ext knee shin sach
+L5160,CPT,Mold socket bent knee shin s
+L5200,CPT,Kne sing axis fric shin sach
+L5220,CPT,No knee joint with artic ali
+L5230,CPT,Fem focal defic constant fri
+L5250,CPT,Hip canad sing axi cons fric
+L5270,CPT,Tilt table locking hip sing
+L5280,CPT,Hemipelvect canad sing axis
+L5312,CPT,"Knee disart, SACH ft, endo"
+L5321,CPT,Ak open end sach
+L5331,CPT,Hip disart canadian sach ft
+L5341,CPT,Hemipelvectomy canadian sach
+L5585,CPT,Prep AK ischial open end
+L5595,CPT,Hip disartic sach thermopls
+L5600,CPT,Hip disart sach laminat mold
+L5615,CPT,Ak 4 bar link hydl swg/stanc
+L5700,CPT,Replace socket below knee
+L5701,CPT,Replace socket above knee
+L5702,CPT,Replace socket hip
+L5781,CPT,Lower limb pros vacuum pump
+L5782,CPT,HD low limb pros vacuum pump
+L5814,CPT,Endo knee-shin hydral swg ph
+L5826,CPT,Miniature knee joint
+L5827,CPT,Endo knee shin single axis
+L5828,CPT,Endo knee-shin fluid swg/sta
+L5840,CPT,Multi-axial knee/shin system
+L5856,CPT,Elec knee-shin swing/stance
+L5857,CPT,Elec knee-shin swing only
+L5858,CPT,Stance phase only
+L5859,CPT,Knee-shin pro flex/ext cont
+L5930,CPT,High activity knee frame
+L5961,CPT,"Endo poly hip, pneu/hyd/rot"
+L5968,CPT,Multiaxial ankle w dorsiflex
+L5969,CPT,Ak/ft power asst incl motors
+L5973,CPT,Ank-foot sys dors-plant flex
+L5980,CPT,Flex foot system
+L5981,CPT,Flex-walk sys low ext prosth
+L5987,CPT,Shank ft w vert load pylon
+L5991,CPT,Low pros ext osseo connector
+L6026,CPT,Part hand myo exclu term dev
+L6055,CPT,Wrst mold sock w/exp interfa
+L6130,CPT,Elbow stump activated lock h
+L6200,CPT,Elbow mold outsid lock hinge
+L6205,CPT,Elbow molded w/ expand inter
+L6250,CPT,Elbow inter loc elbow forarm
+L6300,CPT,Shlder disart int lock elbow
+L6310,CPT,Shoulder passive restor comp
+L6350,CPT,Thoracic intern lock elbow
+L6360,CPT,Thoracic passive restor comp
+L6450,CPT,Elb disart prosth tiss shap
+L6500,CPT,Above elbow prosth tiss shap
+L6550,CPT,Shldr disar prosth tiss shap
+L6570,CPT,Scap thorac prosth tiss shap
+L6588,CPT,Shdr fair lead cable molded
+L6590,CPT,Shdr fair lead cable direct
+L6624,CPT,Flex/ext/rotation wrist unit
+L6646,CPT,Multipo locking shoulder jnt
+L6648,CPT,Ext pwrd shlder lock/unlock
+L6700,CPT,Ue add ext power myoel
+L6715,CPT,"Term device, multi art digit"
+L6880,CPT,Elec hand ind art digits
+L6881,CPT,Term dev auto grasp feature
+L6882,CPT,Microprocessor control uplmb
+L6885,CPT,Replc sockt shldr dis/interc
+L6920,CPT,Wrist disarticul switch ctrl
+L6925,CPT,Wrist disart myoelectronic c
+L6930,CPT,Below elbow switch control
+L6935,CPT,Below elbow myoelectronic ct
+L6940,CPT,Elbow disarticulation switch
+L6945,CPT,Elbow disart myoelectronic c
+L6950,CPT,Above elbow switch control
+L6955,CPT,Above elbow myoelectronic ct
+L6960,CPT,Shldr disartic switch contro
+L6965,CPT,Shldr disartic myoelectronic
+L6970,CPT,Interscapular-thor switch ct
+L6975,CPT,Interscap-thor myoelectronic
+L7007,CPT,Adult electric hand
+L7008,CPT,Pediatric electric hand
+L7009,CPT,Adult electric hook
+L7040,CPT,Prehensile actuator
+L7170,CPT,Electronic elbow hosmer swit
+L7180,CPT,Electronic elbow sequential
+L7181,CPT,Electronic elbo simultaneous
+L7185,CPT,Electron elbow adolescent sw
+L7186,CPT,Electron elbow child switch
+L7190,CPT,Elbow adolescent myoelectron
+L7191,CPT,Elbow child myoelectronic ct
+L7259,CPT,Electronic wrist rotator any
+L8035,CPT,CSTM BRST PROSTH POST MASTECT MOLD
+L8043,CPT,Upper facial prosthesis
+L8044,CPT,Hemi-facial prosthesis
+L8604,CPT,DEXTRANOMER/HYALURONIC ACID
+L8605,CPT,Inj bulking agent anal canal
+L8614,CPT,ADVA-ELCTRD BKUP HIRES ULT 3D CI[INP]
+L8618,CPT,COCH IMPLANT TRAN CABLE REPL
+L8619,CPT,COCH IMP EXT PROC/CONTR RPLC
+L8627,CPT,CID ext speech process repl
+L8628,CPT,CID EXT CONTROLLER REPL
+L8630,CPT,INTE-JNT FNGR 30 PYROCARBON MCP[INP]
+L8641,CPT,METATARSAL JOINT IMPLANT
+L8659,CPT,INTERPHALANGEAL JOINT REPL
+L8679,CPT,Imp neurosti pls gn any type
+L8680,CPT,LEAD NEUROSTIMULATOR
+L8681,CPT,PATIENT PROGR NEUROSTIM
+L8682,CPT,RECEIVER/TRANSMITTER NEURO
+L8683,CPT,Radiofq trsmtr for implt neu
+L8685,CPT,IMPLT NROSTM PLS GEN SNG REC
+L8686,CPT,GENERATOR NEURO NON-RECHARG
+L8687,CPT,GENERATOR NEURO RECHG BAT SY
+L8688,CPT,LEAD NEUROSTIMULATOR
+L8689,CPT,EXTERNAL RECHARG SYS INTERN
+L8690,CPT,COCH-IMPL ABTMNT 4MM W/12MM BA400[INP]
+L8691,CPT,AOI SND PROC REPL EXCL ACTUA
+L8692,CPT,BAHA SND PROCESSOR W/O OSSEO
+L8693,CPT,AUD OSSEO DEV ABUTMENT
+L8695,CPT,EXTERNAL RECHARG SYS EXTERN
+L8701,CPT,Pow ue rom dev ewh uprt cust
+L8702,CPT,Pow ue rom dev ewhf uprt cus
+L9900,CPT,COCHLEAR REPLACE INTERNAL
+Q0222,CPT,Bebtelovimab 175 mg
+Q0224,CPT,"Inj, pemivibart, 4500 mg"
+Q0247,CPT,Sotrovimab
+Q0478,CPT,POWER ADAPTER COMBO VAD
+Q0479,CPT,POWER MODULE COMBO VAD REP
+Q0480,CPT,"driver pneumatic vad, rep"
+Q0481,CPT,MICROPRCSR CU ELEC VAD REP
+Q0483,CPT,MONITOR ELEC VAD REP
+Q0484,CPT,monitor elec or comb vad rep
+Q0485,CPT,MONITOR CABLE ELEC VAD REP
+Q0487,CPT,LEADS ANY TYPE VAD REP ONLY
+Q0488,CPT,Pwr pack base elec vad- rep
+Q0489,CPT,"pwr pck base combo vad, rep"
+Q0495,CPT,CHARGER ELEC/COMBO VAD REP
+Q0507,CPT,Misc sup/acc ext vad
+Q0508,CPT,MIS SUP/ACC IMP VAD
+Q2017,CPT,"Teniposide, 50 mg"
+Q2041,CPT,Axicabtagene ciloleucel car+
+Q2042,CPT,Tisagenlecleucel car-pos t
+Q2043,CPT,Sipuleucel-t auto cd54+
+Q2053,CPT,Brexucabtagene car pos t
+Q2054,CPT,Lisocabtagene mara car pos t
+Q2055,CPT,Idecabtagene vicleucel car
+Q2056,CPT,Ciltacabtagene car-pos t
+Q2057,CPT,Afamitresgene autoleucel
+Q2058,CPT,Obecbtge autol up to 400 mil
+Q3001,CPT,Brachytherapy radioelements
+Q4100,CPT,MIME-ALGRF IMPL AMNBRN MMDX SHT 6X6[INP]
+Q4114,CPT,Integra flowable wound matri
+Q4139,CPT,AMNIO OR BIODMATRIX INJ 1 CC
+Q4168,CPT,AMNIOBAND 1 MG
+Q4169,CPT,"Artacent wound, per sq cm"
+Q4244,CPT,Procenta- per 200 mg
+Q9982,CPT,flutemetamol f18 diagnostic
+Q9983,CPT,florbetaben f18 diagnostic
+Q9991,CPT,Buprenorph xr 100 mg or less
+Q9992,CPT,Buprenorphine xr over 100 mg
+S1034,CPT,Art pancreas system
+S2065,CPT,Simult panc kidn trans
+S2095,CPT,Transcath emboliz microspher
+S2152,CPT,Solid organ transpl pkg
+S2404,CPT,Fetal surg myelomeningo
+S2900,CPT,Robotic surgical system
+S5000,CPT,Prescription drug- generic
+S5165,CPT,Home modifications per serv
+S9960,CPT,Air ambulanc nonemerg fixed
+S9961,CPT,Air ambulan nonemerg rotary
+T2029,CPT,Special med equip- noswaiver
+T2039,CPT,Vehicle mod waiver/service
+V2785,CPT,FEE CORNEA PROCESSING
+V2790,CPT,AMNIOTIC MEMBRANE
+V5211,CPT,"HEARING AID, CONTRALATERAL ROUTING SYSTEM, BINAURAL, ITE/ITE"
+V5221,CPT,"HEARING AID, CONTRALATERAL ROUTING SYSTEM, BINAURAL, BTE/BTE"
+V5258,CPT,"HEARING AID, DIGITAL, BINAURAL, CIC"
+V5259,CPT,"HEARING AID, DIGITAL, BINAURAL, ITC"
+V5260,CPT,"HEARING AID, DIGITAL, BINAURAL, ITE"
+q5159,CPT,DENOSUMAB-DSSB 60 MG/ML SUBCUTANEOUS SYRINGE

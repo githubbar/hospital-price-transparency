@@ -47,8 +47,23 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
             gz_filename = db_filename + ".gz"
             source_gz_path = os.path.join(db_dir, gz_filename)
             
-            # Check if cache needs update (either doesn't exist, or source file is newer)
-            source_file = source_gz_path if os.path.exists(source_gz_path) else source_path
+            # Determine which source file is newer/relevant
+            use_gz = False
+            if os.path.exists(source_gz_path):
+                if os.path.exists(source_path):
+                    if os.path.getmtime(source_gz_path) >= os.path.getmtime(source_path):
+                        use_gz = True
+                        source_file = source_gz_path
+                    else:
+                        use_gz = False
+                        source_file = source_path
+                else:
+                    use_gz = True
+                    source_file = source_gz_path
+            else:
+                use_gz = False
+                source_file = source_path
+
             need_copy = not os.path.exists(db_path)
             if not need_copy and os.path.exists(source_file):
                 if os.path.getmtime(source_file) > os.path.getmtime(db_path):
@@ -57,7 +72,7 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
             
             if need_copy:
                 # Try compressed source first for 13x speed & no composite GCS FUSE corruption
-                if os.path.exists(source_gz_path):
+                if use_gz and os.path.exists(source_gz_path):
                     try:
                         os.makedirs('/tmp', exist_ok=True)
                         tmp_gz_path = os.path.join('/tmp', gz_filename)
@@ -73,6 +88,7 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
                         # Delete temp archive to free RAM
                         os.remove(tmp_gz_path)
                         print(f"[RAM Cache] Decompression complete!")
+                        need_copy = False
                     except Exception as e:
                         print(f"[RAM Cache] Failed to copy/decompress {gz_filename}: {e}")
                         # Clean up failed decompression attempt if any
@@ -112,6 +128,17 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
                 cursor.execute(attach_sql)
                 print(f"[SQLite Attach] Attached {db_filename} as `{db_alias}`")
                 
+                if not force_full:
+                    full_db_filename = f"{state}_full.sqlite3"
+                    full_db_path = os.path.join(db_dir, full_db_filename)
+                    if os.path.exists(full_db_path):
+                        full_db_alias = f"{state}_full_db"
+                        if full_db_alias in attached:
+                            cursor.execute(f"DETACH DATABASE `{full_db_alias}`")
+                        full_attach_sql = f"ATTACH DATABASE 'file:{full_db_path}?mode=ro' AS `{full_db_alias}`"
+                        cursor.execute(full_attach_sql)
+                        print(f"[SQLite Attach] Attached {full_db_filename} as `{full_db_alias}`")
+                
                 active_dbs.append(state)
             except Exception as e:
                 print(f"[SQLite Attach] Error attaching {db_filename}: {e}")
@@ -130,7 +157,7 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
 
 def _load_hospitals():
     """Load Indiana hospital list from reference file with computed ES-compatible IDs."""
-    cache_key = 'indiana_hospitals_list_v1'
+    cache_key = 'indiana_hospitals_list_v2'
     cached = cache.get(cache_key)
     if cached is not None:
         return cached
@@ -138,6 +165,17 @@ def _load_hospitals():
         ref_path = os.path.join(settings.BASE_DIR, 'reference', 'indiana_hospitals.json')
         with open(ref_path, 'r', encoding='utf-8') as f:
             raw = json.load(f)
+            
+        # Load mapping to translate reference IDs to database IDs
+        mapping = {}
+        mapping_path = os.path.join(settings.BASE_DIR, 'prices', 'hospital_mapping.json')
+        if os.path.exists(mapping_path):
+            try:
+                with open(mapping_path, 'r', encoding='utf-8') as mf:
+                    mapping = json.load(mf)
+            except Exception as e:
+                print(f"Error loading hospital mapping: {e}")
+
         result = []
         for h in raw:
             name = h.get('name', '').strip()
@@ -148,6 +186,11 @@ def _load_hospitals():
             cleaned = cleaned.replace('_', ' ').replace('-', ' ').replace('.', ' ')
             cleaned = re.sub(r'\s+', ' ', cleaned).strip().title()
             h_id = hashlib.md5(cleaned.lower().encode('utf-8')).hexdigest()
+            
+            # Map reference ID to database ID if mapping exists
+            if h_id in mapping:
+                h_id = mapping[h_id]['db_id']
+                
             result.append({
                 'id': h_id,
                 'name': cleaned,
@@ -162,6 +205,7 @@ def _load_hospitals():
     except Exception as e:
         print(f'Error loading hospital registry: {e}')
         return []
+
 
 
 def _save_filter_token(hospital_ids):
@@ -377,17 +421,27 @@ def search(request):
             except Exception as e:
                 print(f"Error fetching total records: {e}")
 
-    # Fetch unique Payers for the dropdown (pre-computed statically to avoid 14.4M row scans in serverless)
+    # Fetch unique Payers and Plans for the dropdown (pre-computed statically to avoid 14.4M row scans in serverless)
     try:
-        json_path = os.path.join(settings.BASE_DIR, 'prices', 'static_payers.json')
+        json_path = os.path.join(settings.BASE_DIR, 'prices', 'static_payers_and_plans.json')
         with open(json_path, 'r', encoding='utf-8') as f:
             payers_list = json.load(f)
     except Exception as e:
-        print(f"Error loading static payers: {e}")
+        print(f"Error loading static payers and plans: {e}")
         payers_list = []
 
     selected_payers = request.GET.getlist('payer')  # multi-select list; always kept in URL
     selected_payers_set = set(selected_payers)
+    
+    # Parse selected payer-plans into specific raw tuples (payer_raw, plan_raw)
+    selected_payer_plans = []
+    for item in selected_payers:
+        for sub_item in item.split(','):
+            if '|' in sub_item:
+                parts = sub_item.split('|', 1)
+                selected_payer_plans.append((parts[0], parts[1]))
+            else:
+                selected_payer_plans.append((sub_item, None))
     hospitals_list = _load_hospitals()
     hospital_cities = sorted(set(h['city'] for h in hospitals_list if h['city']))
 
@@ -539,16 +593,22 @@ def search(request):
                         if selected_hospitals:
                             h_placeholders = ",".join(["%s"] * len(selected_hospitals))
                             db_where_conditions.append(
-                                f"EXISTS (SELECT 1 FROM {price_db_prefix}prices WHERE {price_db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {price_db_prefix}prices.hospital_id IN ({h_placeholders}))"
+                                f"EXISTS (SELECT 1 FROM {price_db_prefix}prices p JOIN {price_db_prefix}hospitals h ON p.hospital_id = h.id WHERE p.procedure_id = {db_prefix}fts_procedures.procedure_id AND h.hospital_hash IN ({h_placeholders}))"
                             )
                             db_params.extend(selected_hospitals)
                             
-                        if selected_payers:
-                            p_placeholders = ",".join(["%s"] * len(selected_payers))
+                        if selected_payer_plans:
+                            sub_conditions = []
+                            for p_raw, pl_raw in selected_payer_plans:
+                                if pl_raw is not None:
+                                    sub_conditions.append(f"(pay.name = %s AND pl.name = %s)")
+                                    db_params.extend([p_raw, pl_raw])
+                                else:
+                                    sub_conditions.append(f"(pay.name = %s)")
+                                    db_params.extend([p_raw])
                             db_where_conditions.append(
-                                f"EXISTS (SELECT 1 FROM {price_db_prefix}prices WHERE {price_db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {price_db_prefix}prices.payer_name IN ({p_placeholders}))"
+                                f"EXISTS (SELECT 1 FROM {price_db_prefix}prices p JOIN {price_db_prefix}plans pl ON p.plan_id = pl.id JOIN {price_db_prefix}payers pay ON pl.payer_id = pay.id WHERE p.procedure_id = {db_prefix}fts_procedures.procedure_id AND ({' OR '.join(sub_conditions)}))"
                             )
-                            db_params.extend(selected_payers)
                             
                         db_where_clause = " WHERE " + " AND ".join(db_where_conditions)
                         parts.append(f"SELECT DISTINCT procedure_id FROM {db_prefix}fts_procedures {db_where_clause}")
@@ -585,16 +645,22 @@ def search(request):
                     if selected_hospitals:
                         h_placeholders = ",".join(["%s"] * len(selected_hospitals))
                         db_where_conditions.append(
-                            f"EXISTS (SELECT 1 FROM {price_db_prefix}prices WHERE {price_db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {price_db_prefix}prices.hospital_id IN ({h_placeholders}))"
+                            f"EXISTS (SELECT 1 FROM {price_db_prefix}prices p JOIN {price_db_prefix}hospitals h ON p.hospital_id = h.id WHERE p.procedure_id = {db_prefix}fts_procedures.procedure_id AND h.hospital_hash IN ({h_placeholders}))"
                         )
                         db_params.extend(selected_hospitals)
                         
-                    if selected_payers:
-                        p_placeholders = ",".join(["%s"] * len(selected_payers))
+                    if selected_payer_plans:
+                        sub_conditions = []
+                        for p_raw, pl_raw in selected_payer_plans:
+                            if pl_raw is not None:
+                                sub_conditions.append(f"(pay.name = %s AND pl.name = %s)")
+                                db_params.extend([p_raw, pl_raw])
+                            else:
+                                sub_conditions.append(f"(pay.name = %s)")
+                                db_params.extend([p_raw])
                         db_where_conditions.append(
-                            f"EXISTS (SELECT 1 FROM {price_db_prefix}prices WHERE {price_db_prefix}prices.procedure_id = {db_prefix}fts_procedures.procedure_id AND {price_db_prefix}prices.payer_name IN ({p_placeholders}))"
+                            f"EXISTS (SELECT 1 FROM {price_db_prefix}prices p JOIN {price_db_prefix}plans pl ON p.plan_id = pl.id JOIN {price_db_prefix}payers pay ON pl.payer_id = pay.id WHERE p.procedure_id = {db_prefix}fts_procedures.procedure_id AND ({' OR '.join(sub_conditions)}))"
                         )
-                        db_params.extend(selected_payers)
                         
                     db_where_clause = " WHERE " + " AND ".join(db_where_conditions)
                     
@@ -604,6 +670,7 @@ def search(request):
                                {db_prefix}procedures.stats_min, {db_prefix}procedures.stats_max, {db_prefix}procedures.stats_avg, {db_prefix}procedures.stats_count,
                                {db_prefix}procedures.is_standard_group,
                                bm25(fts_procedures) as rank,
+                               {db_prefix}procedures.all_codes,
                                '{db}' as source_db
                         FROM {db_prefix}fts_procedures
                         JOIN {db_prefix}procedures ON {db_prefix}procedures.id = {db_prefix}fts_procedures.procedure_id
@@ -616,43 +683,53 @@ def search(request):
                         {' UNION ALL '.join(results_parts)}
                     )
                     ORDER BY rank ASC
-                    LIMIT {items_per_page} OFFSET {(page_number - 1) * items_per_page}
                 """
                 cursor.execute(combined_results_sql, results_params)
                 proc_rows = cursor.fetchall()
                 
+                settings_by_proc = {}
                 hits = []
                 if proc_rows:
                     proc_ids = [row[0] for row in proc_rows]
                     price_placeholders = ",".join(["%s"] * len(proc_ids))
                     
-                    # Batch fetch all auxiliary codes across all active databases
-                    code_queries = []
-                    code_params = []
+                    # Batch fetch all unique settings for each procedure ID from the prices table
+                    setting_queries = []
+                    setting_params = []
                     for db in active_dbs:
-                        db_prefix = f"{db}_db." if db != "main" else ""
-                        code_queries.append(f"""
-                            SELECT procedure_id, code_value, code_type 
-                            FROM {db_prefix}procedure_codes 
-                            WHERE procedure_id IN ({price_placeholders})
+                        p_prefix = f"{db}_db." if (db == "main" or is_currently_full) else f"{db}_full_db."
+                        setting_queries.append(f"""
+                            SELECT DISTINCT p.procedure_id, s.name 
+                            FROM {p_prefix}prices p
+                            JOIN {p_prefix}settings s ON p.setting_id = s.id
+                            WHERE p.procedure_id IN ({price_placeholders})
                         """)
-                        code_params.extend(proc_ids)
+                        setting_params.extend(proc_ids)
                         
-                    cursor.execute(" UNION ALL ".join(code_queries), code_params)
-                    codes_fetched = cursor.fetchall()
+                    cursor.execute(" UNION ALL ".join(setting_queries), setting_params)
+                    settings_fetched = cursor.fetchall()
 
-                    codes_by_proc = {}
-                    for c_row in codes_fetched:
-                        pid, val, c_type = c_row
-                        codes_by_proc.setdefault(pid, []).append({
-                            'value': val,
-                            'type': c_type
-                        })
+                    settings_by_proc = {}
+                    for s_row in settings_fetched:
+                        pid, setting = s_row
+                        if setting:
+                            setting_clean = setting.strip().lower()
+                            if setting_clean and 'unknown' not in setting_clean:
+                                settings_by_proc.setdefault(pid, set()).add(setting_clean)
+
 
                     # Construct hit structures
                     for row in proc_rows:
                         pid = row[0]
-                        source_db = row[16]
+                        source_db = row[17]
+                        all_codes_raw = row[16]
+                        codes = []
+                        if all_codes_raw:
+                            try:
+                                codes = json.loads(all_codes_raw)
+                            except Exception:
+                                pass
+                        
                         hits.append({
                             '_source': {
                                 'id': pid,
@@ -674,7 +751,7 @@ def search(request):
                                 'is_standard_group': bool(row[14]),
                                 'source_db': source_db,
                                 'prices': [],
-                                'codes': codes_by_proc.get(pid, [])
+                                'codes': codes
                             }
                         })
             
@@ -757,19 +834,29 @@ def search(request):
 
             grouped_results = list(matches_by_code.values())
 
-            # --- Merge overflow variant-parts (same code+code_type split across multiple ES docs) ---
-            # When a code's prices exceed LIMIT_PER_DOC they become separate ES documents,
-            # each appearing as a separate variant. Re-merge them so payer rows are not duplicated.
+            # --- Merge overflow variant-parts (same code split across multiple ES docs/types) ---
+            # Merge variants sharing the same code. Treats CPT, HCPCS, and CDM as equivalent.
             for group in grouped_results:
                 if len(group['variants']) <= 1:
                     continue
                 merged_map = {}
                 order = []
                 for variant in group['variants']:
-                    key = (variant['code'].strip().upper(), variant['code_type'])
+                    v_code = variant['code'].strip().upper()
+                    # If code is present, merge by code. If empty, keep separate using unique procedure ID.
+                    key = v_code if v_code else variant['procedure_ids'][0]
+                    
                     if key not in merged_map:
                         merged_map[key] = variant
                         order.append(key)
+                        # Determine canonical code type for CPT/HCPCS/CDM
+                        orig_type = (variant.get('code_type') or '').strip().upper()
+                        if v_code and orig_type in ('CPT', 'HCPCS', 'CDM', 'LOCAL', 'CPT/HCPCS', ''):
+                            # HCPCS Level II code starts with a letter A-V
+                            if v_code[0].isalpha() and v_code[0].upper() in 'ABCDEFGHJKLMNOPQRSTUV':
+                                merged_map[key]['code_type'] = 'HCPCS'
+                            else:
+                                merged_map[key]['code_type'] = 'CPT/HCPCS'
                     else:
                         merged_map[key]['procedure_ids'].extend(variant['procedure_ids'])
                         # Consolidate unique descriptions
@@ -781,7 +868,12 @@ def search(request):
                     # At least one merge happened — recalculate per-variant stats from precomputed stats
                     for key in order:
                         v = merged_map[key]
-                        matching_variants = [orig for orig in group['variants'] if (orig['code'].strip().upper(), orig['code_type']) == key]
+                        v_code = v['code'].strip().upper()
+                        # Find all matching variants from the original group list
+                        matching_variants = [
+                            orig for orig in group['variants']
+                            if (v_code and orig['code'].strip().upper() == v_code) or (not v_code and orig['procedure_ids'][0] == key)
+                        ]
                         if len(matching_variants) > 1:
                             mins = [mv['stats']['min'] for mv in matching_variants if mv['stats'].get('min') is not None]
                             maxs = [mv['stats']['max'] for mv in matching_variants if mv['stats'].get('max') is not None]
@@ -806,6 +898,16 @@ def search(request):
                 g_max = float('-inf')
                 
                 for variant in group['variants']:
+                    # Resolve common_setting from all procedure_ids in this variant
+                    v_settings = set()
+                    for pid in variant['procedure_ids']:
+                        if pid in settings_by_proc:
+                            v_settings.update(settings_by_proc[pid])
+                    if len(v_settings) == 1:
+                        variant['common_setting'] = list(v_settings)[0]
+                    else:
+                        variant['common_setting'] = None
+
                     v_stats = variant.get('stats', {})
                     if v_stats:
                         if v_stats.get('min') is not None: g_min = min(g_min, v_stats['min'])
@@ -825,9 +927,10 @@ def search(request):
             elapsed_time = time.time() - start_time
             
             # Setup Pagination
-            paginator = Paginator(range(results_count), items_per_page)
+            results_count = len(grouped_results)
+            paginator = Paginator(grouped_results, items_per_page)
             page_obj = paginator.get_page(page_number)
-            page_obj.object_list = grouped_results
+            grouped_results = list(page_obj.object_list)
 
 
         except Exception as e:
@@ -981,6 +1084,42 @@ def explain_code(request):
         return JsonResponse({'error': error_detail}, status=500)
 
 
+_payer_plan_mapping_cache = None
+
+def _get_payer_plan_mapping():
+    global _payer_plan_mapping_cache
+    if _payer_plan_mapping_cache is not None:
+        return _payer_plan_mapping_cache
+        
+    mapping = {}
+    try:
+        from django.conf import settings
+        import json
+        json_path = os.path.join(settings.BASE_DIR, 'prices', 'static_payers_and_plans.json')
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as f:
+                payers_list = json.load(f)
+                
+            for group in payers_list:
+                parent_name = group.get('parent_name', 'Other / Local Insurers')
+                for plan in group.get('plans', []):
+                    display = plan.get('display', 'Standard / All Plans')
+                    combined_raw = plan.get('combined_raw', '')
+                    for pair_str in combined_raw.split(','):
+                        if '|' in pair_str:
+                            p_raw, pl_raw = pair_str.split('|', 1)
+                        else:
+                            p_raw, pl_raw = pair_str, ''
+                        
+                        key = (p_raw.strip().lower(), pl_raw.strip().lower())
+                        mapping[key] = (parent_name, display)
+    except Exception as e:
+        print(f"Error building reverse mapping: {e}")
+        
+    _payer_plan_mapping_cache = mapping
+    return mapping
+
+
 @require_GET
 def prices_details(request):
     """
@@ -999,8 +1138,17 @@ def prices_details(request):
         return HttpResponse("<div class='alert alert-warning'>No procedures selected.</div>")
         
     proc_ids = [pid.strip() for pid in proc_ids_str.split(',') if pid.strip()]
-    selected_payers = set([p.strip() for p in selected_payers_str.split(',') if p.strip()])
+    selected_payers = [p.strip() for p in selected_payers_str.split(',') if p.strip()]
     selected_hospitals = set([h.strip() for h in selected_hospitals_str.split(',') if h.strip()])
+    
+    selected_payer_plans = set()
+    for item in selected_payers:
+        for sub_item in item.split(','):
+            if '|' in sub_item:
+                parts = sub_item.split('|', 1)
+                selected_payer_plans.add((parts[0].lower(), parts[1].lower()))
+            else:
+                selected_payer_plans.add((sub_item.lower(), None))
     
     try:
         with connection.cursor() as cursor:
@@ -1012,9 +1160,20 @@ def prices_details(request):
             # Fetch prices
             price_placeholders = ",".join(["%s"] * len(proc_ids))
             sql = f"""
-                SELECT procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price 
-                FROM {db_prefix}prices 
-                WHERE procedure_id IN ({price_placeholders})
+                SELECT 
+                    p.procedure_id, 
+                    h.hospital_hash AS hospital_id, 
+                    h.name AS hospital_name, 
+                    pay.name AS payer_name, 
+                    pl.name AS plan_name, 
+                    s.name AS setting, 
+                    p.price 
+                FROM {db_prefix}prices p
+                LEFT JOIN {db_prefix}hospitals h ON p.hospital_id = h.id
+                LEFT JOIN {db_prefix}plans pl ON p.plan_id = pl.id
+                LEFT JOIN {db_prefix}payers pay ON pl.payer_id = pay.id
+                LEFT JOIN {db_prefix}settings s ON p.setting_id = s.id
+                WHERE p.procedure_id IN ({price_placeholders})
             """
             cursor.execute(sql, proc_ids)
             prices_fetched = cursor.fetchall()
@@ -1053,13 +1212,28 @@ def prices_details(request):
             # Prepare items with hue
             items = []
             for item in raw_items:
-                p_name = item.get('payer_name', 'Unknown')
+                p_name = item.get('payer_name') or 'Unknown'
+                if p_name.lower() in ('gross', 'gross charge', 'negotiated dollar'):
+                    continue
                 h_id = item.get('hospital_id')
                 pid = item.get('procedure_id')
                 
                 # Filter displayed items if payers selected
-                if selected_payers and p_name not in selected_payers:
-                    continue
+                if selected_payer_plans:
+                    row_payer = (item.get('payer_name') or '').strip().lower()
+                    row_plan = (item.get('plan_name') or '').strip().lower()
+                    matched = False
+                    for sel_payer, sel_plan in selected_payer_plans:
+                        if sel_plan is not None:
+                            if row_payer == sel_payer and row_plan == sel_plan:
+                                matched = True
+                                break
+                        else:
+                            if row_payer == sel_payer:
+                                matched = True
+                                break
+                    if not matched:
+                        continue
 
                 # Filter displayed items if hospitals selected
                 if selected_hospitals and h_id not in selected_hospitals:
@@ -1079,73 +1253,121 @@ def prices_details(request):
                 
                 items.append({
                     'payer_name': p_name,
-                    'plan_name': item.get('plan_name', 'Unknown'),
+                    'plan_name': item.get('plan_name') or 'Unknown',
                     'hospital_id': h_id,
-                    'hospital_name': item.get('hospital_name', 'Unnamed Hospital'),
+                    'hospital_name': item.get('hospital_name') or 'Unnamed Hospital',
                     'standard_charge_negotiated_dollar': val if val > 0 else 0.0,
                     'price_hue': hue,
-                    'setting': item.get('setting', 'Unknown')
+                    'setting': item.get('setting') or 'Unknown'
                 })
                 
             # Now consolidate Payer Groups
             from collections import Counter
             import re as _re
             
-            def _human_payer_name(raw):
-                s = (raw or "Unknown").strip().replace('_', ' ')
-                return s.title()
-
-            def _normalize_plan_name(raw):
-                s = (raw or "Unknown").strip()
-                s = _re.sub(r'[-/]', ' ', s)
-                s = _re.sub(r'\s+', ' ', s).strip()
-                return s.title()
-
-            payer_map = {}
-            for item in items:
-                p_name = _human_payer_name(item.get('payer_name') or "Unknown")
-                pl_name = _normalize_plan_name(item.get('plan_name') or "Unknown")
-                key = (p_name, pl_name)
-                
-                if key not in payer_map:
-                    payer_map[key] = []
-                payer_map[key].append(item)
+            mapping = _get_payer_plan_mapping()
             
-            consolidated_items = []
-            all_price_values = []
-            for (p_name, pl_name), rows in payer_map.items():
-                prices = [r['standard_charge_negotiated_dollar'] for r in rows if r.get('standard_charge_negotiated_dollar') is not None]
-                if not prices:
-                    continue
-                all_price_values.extend(prices)
-                c_min = min(prices)
-                c_max = max(prices)
-                c_avg = sum(prices) / len(prices)
+            # Group by payer first, then plan
+            payer_groups = {}
+            for item in items:
+                raw_p = (item.get('payer_name') or '').strip()
+                raw_pl = (item.get('plan_name') or '').strip()
                 
-                hosps = sorted(list(set([r['hospital_name'] or r['hospital_id'] for r in rows])))
-                hosp_display = ", ".join(hosps) if len(hosps) <= 2 else f"{len(hosps)} Hospitals"
+                mapped = mapping.get((raw_p.lower(), raw_pl.lower()))
+                if mapped:
+                    p_name, pl_name = mapped
+                else:
+                    def _human_payer_name(raw):
+                        s = (raw or "Unknown").strip().replace('_', ' ')
+                        return s.title()
 
-                hosp_prices = {}
-                for r in rows:
-                    h = r['hospital_name'] or r['hospital_id']
-                    if h not in hosp_prices:
-                        hosp_prices[h] = r['standard_charge_negotiated_dollar']
-                hosp_list = [{'name': h, 'price': p} for h, p in sorted(hosp_prices.items())]
+                    def _normalize_plan_name(raw):
+                        s = (raw or "Unknown").strip()
+                        s = _re.sub(r'[-/]', ' ', s)
+                        s = _re.sub(r'\s+', ' ', s).strip()
+                        return s.title()
+                    
+                    p_name = _human_payer_name(raw_p or "Unknown")
+                    pl_name = _normalize_plan_name(raw_pl or "Unknown")
+                
+                if p_name not in payer_groups:
+                    payer_groups[p_name] = {}
+                if pl_name not in payer_groups[p_name]:
+                    payer_groups[p_name][pl_name] = []
+                payer_groups[p_name][pl_name].append(item)
+            
+            consolidated_payers = []
+            all_price_values = []
+            
+            for p_name, plans_dict in payer_groups.items():
+                payer_plans = []
+                payer_all_prices = []
+                
+                for pl_name, rows in plans_dict.items():
+                    prices = [r['standard_charge_negotiated_dollar'] for r in rows if r.get('standard_charge_negotiated_dollar') is not None]
+                    if not prices:
+                        continue
+                    all_price_values.extend(prices)
+                    payer_all_prices.extend(prices)
+                    
+                    c_min = min(prices)
+                    c_max = max(prices)
+                    c_avg = sum(prices) / len(prices)
+                    
+                    hosps = sorted(list(set([r['hospital_name'] or r['hospital_id'] for r in rows])))
+                    hosp_display = ", ".join(hosps) if len(hosps) <= 2 else f"{len(hosps)} Hospitals"
 
-                consolidated_items.append({
+                    hosp_prices = {}
+                    for r in rows:
+                        h = r['hospital_name'] or r['hospital_id']
+                        if h not in hosp_prices:
+                            hosp_prices[h] = r['standard_charge_negotiated_dollar']
+                    hosp_list = [{'name': h, 'price': p} for h, p in sorted(hosp_prices.items())]
+
+                    payer_plans.append({
+                        'plan_name': pl_name,
+                        'hospital_display': hosp_display,
+                        'hospitals': hosp_list,
+                        'price_min': c_min,
+                        'price_max': c_max,
+                        'price_avg': c_avg,
+                        'count': len(prices),
+                        'price_hue': rows[0]['price_hue']
+                    })
+                
+                if not payer_plans:
+                    continue
+                
+                # Sort plans under parent alphabetically
+                payer_plans.sort(key=lambda x: x['plan_name'].lower())
+                
+                p_min = min(payer_all_prices)
+                p_max = max(payer_all_prices)
+                p_avg = sum(payer_all_prices) / len(payer_all_prices)
+                p_count = len(payer_all_prices)
+                
+                # Compute aggregate hue for the payer based on its average price
+                p_hue = 120
+                if proc_ids:
+                    proc_stats = stats_by_proc.get(proc_ids[0], {})
+                    local_min = proc_stats.get('min', 0) or 0
+                    local_max = proc_stats.get('max', 0) or 0
+                    if local_max > local_min:
+                        ratio = (p_avg - local_min) / (local_max - local_min)
+                        p_hue = int(120 - (ratio * 120))
+                
+                consolidated_payers.append({
                     'payer_name': p_name,
-                    'plan_name': pl_name,
-                    'hospital_display': hosp_display,
-                    'hospitals': hosp_list,
-                    'price_min': c_min,
-                    'price_max': c_max,
-                    'price_avg': c_avg,
-                    'count': len(prices),
-                    'price_hue': rows[0]['price_hue']
+                    'plans': payer_plans,
+                    'price_min': p_min,
+                    'price_max': p_max,
+                    'price_avg': p_avg,
+                    'count': p_count,
+                    'price_hue': p_hue
                 })
             
-            _pinned = ['negotiated dollar', 'cash price', 'cash', 'gross charge', 'gross']
-            consolidated_items.sort(key=lambda x: (
+            _pinned = ['cash / self-pay', 'cash', 'negotiated dollar', 'cash price', 'gross charge', 'gross']
+            consolidated_payers.sort(key=lambda x: (
                 next((i for i, p in enumerate(_pinned) if x['payer_name'].lower().startswith(p)), len(_pinned)),
                 x['payer_name'].lower()
             ))
@@ -1153,13 +1375,17 @@ def prices_details(request):
             # Generate distribution SVG for the whole variant
             distribution_svg = generate_distribution_svg(all_price_values)
             
+            # Generate unique identifier for nested accordion to prevent ID collisions
+            unique_id = proc_ids_str.replace(',', '-')
+            
             context = {
-                'items': consolidated_items,
+                'payers': consolidated_payers,
                 'distribution_svg': distribution_svg,
+                'unique_id': unique_id,
             }
             return render(request, 'prices/price_table.html', context)
             
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return HttpResponse(f"<div class='alert alert-danger'>Error loading prices: {e}</div>")
+        return HttpResponse(f"<div class='alert alert-danger'>Error loading prices: {e}</div>")

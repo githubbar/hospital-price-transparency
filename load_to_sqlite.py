@@ -19,6 +19,8 @@ import re
 import sys
 import argparse
 import django
+import zipfile
+import io
 from tqdm import tqdm
 
 # Raise CSV field size limits for oversized hospital sheets
@@ -49,6 +51,10 @@ def init_db(conn, clean=False):
         print("Cleaning existing database tables...")
         cursor.execute("DROP TABLE IF EXISTS fts_procedures;")
         cursor.execute("DROP TABLE IF EXISTS prices;")
+        cursor.execute("DROP TABLE IF EXISTS plans;")
+        cursor.execute("DROP TABLE IF EXISTS payers;")
+        cursor.execute("DROP TABLE IF EXISTS hospitals;")
+        cursor.execute("DROP TABLE IF EXISTS settings;")
         cursor.execute("DROP TABLE IF EXISTS procedure_codes;")
         cursor.execute("DROP TABLE IF EXISTS unique_words;")
         cursor.execute("DROP TABLE IF EXISTS synonyms;")
@@ -73,17 +79,40 @@ def init_db(conn, clean=False):
         stats_min REAL,
         stats_max REAL,
         stats_avg REAL,
-        stats_count INTEGER
+        stats_count INTEGER,
+        all_codes TEXT
     );
     """)
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS procedure_codes (
+    CREATE TABLE IF NOT EXISTS hospitals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        procedure_id TEXT,
-        code_value TEXT,
-        code_type TEXT,
-        FOREIGN KEY (procedure_id) REFERENCES procedures(id) ON DELETE CASCADE
+        hospital_hash TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS payers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT UNIQUE NOT NULL
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS plans (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        payer_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        FOREIGN KEY (payer_id) REFERENCES payers(id) ON DELETE CASCADE,
+        UNIQUE(payer_id, name)
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT UNIQUE NOT NULL
     );
     """)
 
@@ -91,13 +120,14 @@ def init_db(conn, clean=False):
     CREATE TABLE IF NOT EXISTS prices (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         procedure_id TEXT,
-        hospital_id TEXT,
-        hospital_name TEXT,
-        payer_name TEXT,
-        plan_name TEXT,
-        setting TEXT,
+        hospital_id INTEGER,
+        plan_id INTEGER,
+        setting_id INTEGER,
         price REAL,
-        FOREIGN KEY (procedure_id) REFERENCES procedures(id) ON DELETE CASCADE
+        FOREIGN KEY (procedure_id) REFERENCES procedures(id) ON DELETE CASCADE,
+        FOREIGN KEY (hospital_id) REFERENCES hospitals(id) ON DELETE CASCADE,
+        FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE CASCADE,
+        FOREIGN KEY (setting_id) REFERENCES settings(id) ON DELETE CASCADE
     );
     """)
 
@@ -114,6 +144,7 @@ def init_db(conn, clean=False):
         apc,
         ndc,
         cdm,
+        all_codes,
         tokenize = 'porter'
     );
     """)
@@ -135,9 +166,7 @@ def init_db(conn, clean=False):
     """)
 
     # Relational search performance indexes
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_procedure_id ON prices(procedure_id);")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_procedure_codes_procedure_id ON procedure_codes(procedure_id);")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_proc_payer ON prices(procedure_id, payer_name);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_proc_plan ON prices(procedure_id, plan_id);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_prices_proc_hosp ON prices(procedure_id, hospital_id);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_procedures_ms_drg ON procedures(ms_drg);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_procedures_apr_drg ON procedures(apr_drg);")
@@ -218,21 +247,27 @@ def clean_hospital_name(raw_name):
     return s.title()
 
 
-def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable_codes=None):
-    print(f"Parsing {os.path.basename(csv_path)}{'  [shoppable-only filter active]' if shoppable_codes else ''}...")
+def parse_csv_into_map(stream, label, procedures_map, active_group_tracker, shoppable_codes=None):
+    print(f"Parsing {label}{'  [shoppable-only filter active]' if shoppable_codes else ''}...")
     LIMIT_PER_DOC = 5000
 
     shoppable_descriptions = {}
+    standard_code_descriptions = {}
     shoppable_csv_path = os.path.join(REFERENCE_DIR, 'shoppable_codes.csv')
     if os.path.exists(shoppable_csv_path):
         with open(shoppable_csv_path, 'r', encoding='utf-8') as sf:
             s_reader = csv.DictReader(sf)
             for s_row in s_reader:
-                s_desc = s_row['description'].strip().lower()
-                shoppable_descriptions[s_desc] = (s_row['code'].strip(), s_row['code_type'].strip())
+                s_code = s_row['code'].strip()
+                s_type = s_row['code_type'].strip().upper()
+                s_desc = s_row['description'].strip()
+                if s_desc:
+                    shoppable_descriptions[s_desc.lower()] = (s_code, s_type)
+                if s_code and s_type and s_desc:
+                    standard_code_descriptions[(s_code, s_type)] = s_desc
 
     try:
-        with open(csv_path, 'r', encoding='utf-8', errors='replace') as f:
+        with stream as f:
             sample_lines = []
             for _ in range(10):
                 line = f.readline()
@@ -303,6 +338,8 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                     last_part = parts[-1] 
                     if last_part == 'negotiated_dollar':
                         if len(parts) == 2:
+                            if col_payer_generic is not None:
+                                continue
                             payer = 'Negotiated Dollar'
                             plan = 'Negotiated Dollar'
                         elif len(parts) == 4:
@@ -386,18 +423,27 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                 row_prices = []
                 setting_val = row[col_setting] if col_setting is not None and col_setting < len(row) else "Unknown"
 
-                if is_wide_format:
+                if col_payer_generic is not None:
+                    # Tall / hybrid format
+                    price = parse_currency(row[col_price_generic]) if col_price_generic is not None and col_price_generic < len(row) else None
+                    if price is not None:
+                        payer = normalize_payer_name(row[col_payer_generic]) if col_payer_generic is not None and col_payer_generic < len(row) else "Unknown"
+                        plan = normalize_payer_name(row[col_plan_generic]) if col_plan_generic is not None and col_plan_generic < len(row) else "Unknown"
+                        row_prices.append((price, payer, plan, setting_val))
+                    
+                    # Also parse wide columns if present (e.g. Gross, Cash)
                     for idx, payer, plan in wide_price_cols:
                         if idx < len(row):
                             p_val = parse_currency(row[idx])
                             if p_val is not None:
                                 row_prices.append((p_val, payer, plan, setting_val))
                 else:
-                    price = parse_currency(row[col_price_generic]) if col_price_generic is not None and col_price_generic < len(row) else None
-                    if price is not None:
-                        payer = normalize_payer_name(row[col_payer_generic]) if col_payer_generic is not None and col_payer_generic < len(row) else "Unknown"
-                        plan = normalize_payer_name(row[col_plan_generic]) if col_plan_generic is not None and col_plan_generic < len(row) else "Unknown"
-                        row_prices.append((price, payer, plan, setting_val))
+                    # Pure wide format
+                    for idx, payer, plan in wide_price_cols:
+                        if idx < len(row):
+                            p_val = parse_currency(row[idx])
+                            if p_val is not None:
+                                row_prices.append((p_val, payer, plan, setting_val))
 
                 if not row_prices:
                     continue
@@ -424,6 +470,11 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                 records_processed += 1
 
                 if primary_code:
+                    # Look up standardized description from shoppable_codes.csv
+                    lookup_key = (primary_code.strip(), primary_code_type.strip().upper())
+                    if lookup_key in standard_code_descriptions:
+                        description = standard_code_descriptions[lookup_key]
+                        
                     prefix = primary_code_type if primary_code_type else "CODE"
                     group_key = f"{prefix}_{primary_code}"
                     is_standard_group = True
@@ -473,7 +524,7 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                         'id': current_doc_id,
                         'is_standard_group': is_standard_group,
                         'group_key': group_key,
-                        'description': description + f" (Part {tracker['part_count'] + 1})", 
+                        'description': description, 
                         'code': primary_code,
                         'code_type': primary_code_type,
                         **flat_codes,
@@ -482,20 +533,28 @@ def parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable
                         'price_values': [] 
                     }
                 
+                existing_keys = {
+                    (p['hospital_id'], p['payer_name'].lower(), p['plan_name'].lower(), p['setting'].lower())
+                    for p in procedures_map[current_doc_id]['prices']
+                }
                 for p_val, p_payer, p_plan, p_setting in row_prices:
-                    price_record = {
-                        'hospital_id': final_h_id,
-                        'hospital_name': final_h_name,
-                        'payer_name': p_payer,
-                        'plan_name': p_plan,
-                        'setting': p_setting,
-                        'price': p_val
-                    }
-                    procedures_map[current_doc_id]['prices'].append(price_record)
-                    procedures_map[current_doc_id]['price_values'].append(p_val)
+                    key = (final_h_id, p_payer.lower(), p_plan.lower(), p_setting.lower())
+                    if key not in existing_keys:
+                        price_record = {
+                            'hospital_id': final_h_id,
+                            'hospital_name': final_h_name,
+                            'payer_name': p_payer,
+                            'plan_name': p_plan,
+                            'setting': p_setting,
+                            'price': p_val
+                        }
+                        procedures_map[current_doc_id]['prices'].append(price_record)
+                        existing_keys.add(key)
+                        if p_payer.lower() not in ('gross', 'gross charge'):
+                            procedures_map[current_doc_id]['price_values'].append(p_val)
 
     except Exception as e:
-        print(f"Error parsing {csv_path}: {e}")
+        print(f"Error parsing {label}: {e}")
     
     return records_processed
 
@@ -510,15 +569,24 @@ def save_to_sqlite(conn, final_procedures):
     cursor.execute("PRAGMA journal_mode = MEMORY;")
 
     procedure_rows = []
-    code_rows = []
-    price_rows = []
     fts_rows = []
     unique_words = set()
+
+    # Pre-collect unique lookup records
+    raw_hospitals = set()
+    raw_payers = set()
+    raw_plans = set()
+    raw_settings = set()
 
     for doc in tqdm(final_procedures, desc="Preparing DB rows"):
         pid = doc['id']
         stats = doc.get('stats', {})
         
+        # Format code fields for storage
+        codes_list = doc.get('codes', [])
+        all_codes_json = json.dumps(codes_list)
+        fts_codes_str = " ".join([f"{c.get('value', '')} {c.get('type', '')}" for c in codes_list]).strip()
+
         # 1. Main Procedure Row
         procedure_rows.append((
             pid,
@@ -536,26 +604,24 @@ def save_to_sqlite(conn, final_procedures):
             stats.get('min'),
             stats.get('max'),
             stats.get('avg'),
-            stats.get('count')
+            stats.get('count'),
+            all_codes_json
         ))
 
-        # 2. Auxiliary Code Rows
-        for code_record in doc.get('codes', []):
-            code_rows.append((pid, code_record.get('value'), code_record.get('type')))
-
-        # 3. Hospital Pricing Rows
+        # Collect lookups
         for price_record in doc.get('prices', []):
-            price_rows.append((
-                pid,
-                price_record.get('hospital_id'),
-                price_record.get('hospital_name'),
-                price_record.get('payer_name'),
-                price_record.get('plan_name'),
-                price_record.get('setting'),
-                price_record.get('price')
-            ))
+            h_id = price_record.get('hospital_id')
+            h_name = price_record.get('hospital_name') or "Unknown Hospital"
+            p_name = price_record.get('payer_name') or "Unknown"
+            pl_name = price_record.get('plan_name') or "Unknown"
+            setting_val = price_record.get('setting') or "Unknown"
+            
+            raw_hospitals.add((h_id, h_name))
+            raw_payers.add(p_name)
+            raw_plans.add((p_name, pl_name))
+            raw_settings.add(setting_val)
 
-        # 4. FTS Virtual Table Row
+        # 3. FTS Virtual Table Row
         fts_rows.append((
             pid,
             doc.get('description'),
@@ -566,10 +632,11 @@ def save_to_sqlite(conn, final_procedures):
             doc.get('rc'),
             doc.get('apc'),
             doc.get('ndc'),
-            doc.get('cdm')
+            doc.get('cdm'),
+            fts_codes_str
         ))
 
-        # 5. Vocabulary Words (for spelling suggestions)
+        # 4. Vocabulary Words (for spelling suggestions)
         words = extract_vocabulary_words(doc.get('description'))
         # Also extract words from the code itself if it has letters
         if doc.get('code'):
@@ -578,33 +645,102 @@ def save_to_sqlite(conn, final_procedures):
         for w in words:
             unique_words.add(w)
 
+    print("Populating lookup tables...")
+    # Populate hospitals
+    cursor.executemany("INSERT OR IGNORE INTO hospitals (hospital_hash, name) VALUES (?, ?)", list(raw_hospitals))
+    cursor.execute("SELECT id, hospital_hash FROM hospitals;")
+    hosp_map = {hash_val: hid for hid, hash_val in cursor.fetchall()}
+
+    # Populate payers
+    cursor.executemany("INSERT OR IGNORE INTO payers (name) VALUES (?)", [(p,) for p in raw_payers])
+    cursor.execute("SELECT id, name FROM payers;")
+    payer_map = {name: pid for pid, name in cursor.fetchall()}
+
+    # Populate plans
+    plan_insert_rows = []
+    for p_name, pl_name in raw_plans:
+        p_id = payer_map.get(p_name)
+        if p_id is not None:
+            plan_insert_rows.append((p_id, pl_name))
+    cursor.executemany("INSERT OR IGNORE INTO plans (payer_id, name) VALUES (?, ?)", plan_insert_rows)
+    cursor.execute("SELECT id, payer_id, name FROM plans;")
+    plan_map = {(payer_id, name): plan_id for plan_id, payer_id, name in cursor.fetchall()}
+
+    # Populate settings
+    cursor.executemany("INSERT OR IGNORE INTO settings (name) VALUES (?)", [(s,) for s in raw_settings])
+    cursor.execute("SELECT id, name FROM settings;")
+    setting_map = {name: sid for sid, name in cursor.fetchall()}
+
+    # Construct mapped price rows
+    price_rows = []
+    for doc in final_procedures:
+        pid = doc['id']
+        for price_record in doc.get('prices', []):
+            h_hash = price_record.get('hospital_id')
+            p_name = price_record.get('payer_name')
+            pl_name = price_record.get('plan_name')
+            setting_val = price_record.get('setting')
+            price_val = price_record.get('price')
+
+            h_int_id = hosp_map.get(h_hash)
+            p_int_id = payer_map.get(p_name)
+            pl_int_id = plan_map.get((p_int_id, pl_name)) if p_int_id is not None else None
+            s_int_id = setting_map.get(setting_val)
+
+            price_rows.append((
+                pid,
+                h_int_id,
+                pl_int_id,
+                s_int_id,
+                price_val
+            ))
+
+    hospital_ids = set()
+    for doc in final_procedures:
+        for price_record in doc.get('prices', []):
+            h_id = price_record.get('hospital_id')
+            if h_id:
+                hospital_ids.add(h_id)
+
     # Database writes in a single unified transaction
     try:
+        if hospital_ids:
+            print(f"Clearing existing prices for {len(hospital_ids)} hospitals to prevent duplication...")
+            placeholders = ",".join(["?"] * len(hospital_ids))
+            cursor.execute(f"SELECT id FROM hospitals WHERE hospital_hash IN ({placeholders})", list(hospital_ids))
+            int_hosp_ids = [r[0] for r in cursor.fetchall()]
+            if int_hosp_ids:
+                del_placeholders = ",".join(["?"] * len(int_hosp_ids))
+                cursor.execute(f"DELETE FROM prices WHERE hospital_id IN ({del_placeholders})", int_hosp_ids)
+
+        pids = [row[0] for row in procedure_rows]
+        if pids:
+            print(f"Clearing existing FTS entries for {len(pids)} procedures...")
+            chunk_size = 900
+            for i in range(0, len(pids), chunk_size):
+                chunk = pids[i:i+chunk_size]
+                placeholders = ",".join(["?"] * len(chunk))
+                cursor.execute(f"DELETE FROM fts_procedures WHERE procedure_id IN ({placeholders})", chunk)
+
         print(f"Inserting {len(procedure_rows)} procedures...")
         cursor.executemany("""
             INSERT OR REPLACE INTO procedures (
                 id, is_standard_group, group_key, description, code, code_type,
-                ms_drg, apr_drg, rc, apc, ndc, cdm, stats_min, stats_max, stats_avg, stats_count
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ms_drg, apr_drg, rc, apc, ndc, cdm, stats_min, stats_max, stats_avg, stats_count, all_codes
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, procedure_rows)
-
-        print(f"Inserting {len(code_rows)} auxiliary code associations...")
-        cursor.executemany("""
-            INSERT INTO procedure_codes (procedure_id, code_value, code_type)
-            VALUES (?, ?, ?)
-        """, code_rows)
 
         print(f"Inserting {len(price_rows)} prices...")
         cursor.executemany("""
-            INSERT INTO prices (procedure_id, hospital_id, hospital_name, payer_name, plan_name, setting, price)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO prices (procedure_id, hospital_id, plan_id, setting_id, price)
+            VALUES (?, ?, ?, ?, ?)
         """, price_rows)
 
         print(f"Populating FTS5 Virtual table...")
         cursor.executemany("""
             INSERT INTO fts_procedures (
-                procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, fts_rows)
 
         # 5. Enrichment of spelling vocabulary (clinical terms & default synonyms)
@@ -720,27 +856,47 @@ def main():
 
             if args.input_file:
                 if os.path.exists(args.input_file):
-                    files_to_process.append(args.input_file)
+                    is_zip = args.input_file.lower().endswith('.zip')
+                    files_to_process.append((args.input_file, is_zip))
                 else:
                     print(f"Input file not found: {args.input_file}")
                     return
             elif os.path.exists(DATA_DIR):
                 for filename in os.listdir(DATA_DIR):
                     if filename.lower().endswith(".csv"):
-                        files_to_process.append(os.path.join(DATA_DIR, filename))
+                        files_to_process.append((os.path.join(DATA_DIR, filename), False))
+                    elif filename.lower().endswith(".zip"):
+                        files_to_process.append((os.path.join(DATA_DIR, filename), True))
             else:
                 print(f"Data directory not found: {DATA_DIR}")
                 return
 
             if not files_to_process:
-                print("No CSV files found to process.")
+                print("No files (.csv or .zip) found to process.")
                 return
 
             total_records = 0
-            for csv_path in files_to_process:
-                count = parse_csv_into_map(csv_path, procedures_map, active_group_tracker, shoppable_codes)
-                print(f"  > File '{os.path.basename(csv_path)}' -> {count} records extracted.")
-                total_records += count
+            for fpath, is_zip in files_to_process:
+                fname = os.path.basename(fpath)
+                if is_zip:
+                    try:
+                        with zipfile.ZipFile(fpath, 'r') as zf:
+                            for name in (n for n in zf.namelist() if n.lower().endswith('.csv')):
+                                with zf.open(name) as raw:
+                                    stream = io.TextIOWrapper(raw, encoding='utf-8', errors='replace', newline='')
+                                    count = parse_csv_into_map(stream, f"{fname} / {name}", procedures_map, active_group_tracker, shoppable_codes)
+                                    print(f"  > File '{fname} / {name}' -> {count} records extracted.")
+                                    total_records += count
+                    except Exception as e:
+                        print(f"Error reading zip {fpath}: {e}")
+                else:
+                    try:
+                        with open(fpath, 'r', encoding='utf-8', errors='replace') as stream:
+                            count = parse_csv_into_map(stream, fname, procedures_map, active_group_tracker, shoppable_codes)
+                            print(f"  > File '{fname}' -> {count} records extracted.")
+                            total_records += count
+                    except Exception as e:
+                        print(f"Error reading {fpath}: {e}")
 
             print(f"Finished parsing. Found {len(procedures_map)} unique procedure group documents.")
 

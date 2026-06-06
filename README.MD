@@ -3,11 +3,14 @@
 This project aims to aggregate, normalize, and analyze machine-readable files (MRF) published by hospitals in compliance with the CMS Hospital Price Transparency final rule. The goal is to make healthcare pricing data more accessible and comparable across different providers.
 The policy is outlined at https://www.cms.gov/priorities/key-initiatives/hospital-price-transparency
 
-## Data Source
-https://hospitalpricingfiles.org/ aggregates the links/files (CSV/JSON) for each hospital in US
+## Data Sources
 
-List of current CPT/HCPCS procedure codes:
-https://www.cms.gov/medicare/regulations-guidance/physician-self-referral/list-cpt-hcpcs-codes
+### Hospital Pricing & Codes
+* **Hospital pricing files**: [hospitalpricingfiles.org](https://hospitalpricingfiles.org/) aggregates the links/files (CSV/JSON) for each hospital in the US.
+* **CPT/HCPCS procedure codes**: [CMS List of CPT/HCPCS Codes](https://www.cms.gov/medicare/regulations-guidance/physician-self-referral/list-cpt-hcpcs-codes) lists current clinical procedure codes.
+
+### Insurance / Payer Data (For Canonization)
+* **HealthCare.gov Plan Finder Data**: [CMS Plan Finder Data](https://www.cms.gov/marketplace/resources/data/healthcaregov-plan-finder-data) provides comprehensive data on Marketplace health and dental plans, including Public Use Files (PUFs) and QHP Landscape files containing benefits, cost-sharing, premiums, and issuer names/IDs. This represents a separate dimension of price transparency data and can serve as a reference registry for mapping/canonizing the messy, non-standardized insurance payer strings found in hospital pricing files.
 
 ## Overview
 Starting January 1, 2021, hospitals operating in the United States are required to make their standard charges public in two ways:

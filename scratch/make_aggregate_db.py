@@ -45,14 +45,6 @@ def main():
     """)
     print(f"  Procedures transferred: {cursor_agg.rowcount}")
     
-    print("Transferring procedure codes...")
-    cursor_agg.execute("""
-        INSERT INTO main.procedure_codes
-        SELECT * FROM full_db.procedure_codes
-        WHERE procedure_id IN (SELECT id FROM main.procedures);
-    """)
-    print(f"  Procedure codes transferred: {cursor_agg.rowcount}")
-    
     print("Skipping transferring prices to keep DB lightweight...")
     print("  Prices table left empty.")
     
@@ -70,8 +62,8 @@ def main():
     
     print("Populating FTS virtual table...")
     cursor_agg.execute("""
-        INSERT INTO main.fts_procedures
-        SELECT procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm
+        INSERT INTO main.fts_procedures (procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes)
+        SELECT procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes
         FROM full_db.fts_procedures;
     """)
     print(f"  FTS entries populated: {cursor_agg.rowcount}")
