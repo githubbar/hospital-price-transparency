@@ -118,26 +118,70 @@ def resolve_active_dbs(cursor, selected_states, force_full=False):
             try:
                 db_alias = f"{state}_db"
                 cursor.execute("PRAGMA database_list")
-                attached = [row[1] for row in cursor.fetchall()]
+                attached_info = cursor.fetchall()
+                attached_map = {row[1]: row[2] for row in attached_info if len(row) > 2 and row[2]}
                 
-                # Detach any existing mapping to prevent conflicts when switching aggregate/full
-                if db_alias in attached:
-                    cursor.execute(f"DETACH DATABASE `{db_alias}`")
+                target_path = os.path.abspath(db_path)
+                current_path = attached_map.get(db_alias)
+                if current_path:
+                    current_path = os.path.abspath(current_path.replace('file:', '').split('?')[0])
                 
-                attach_sql = f"ATTACH DATABASE 'file:{db_path}?mode=ro' AS `{db_alias}`"
-                cursor.execute(attach_sql)
-                print(f"[SQLite Attach] Attached {db_filename} as `{db_alias}`")
+                if current_path == target_path:
+                    # Already attached to the correct database file
+                    pass
+                else:
+                    if db_alias in attached_map:
+                        try:
+                            cursor.execute(f"DETACH DATABASE `{db_alias}`")
+                        except Exception as de:
+                            print(f"[SQLite Attach] Detach failed for {db_alias}: {de}")
+                    
+                    try:
+                        attach_sql = f"ATTACH DATABASE 'file:{db_path}?mode=ro' AS `{db_alias}`"
+                        cursor.execute(attach_sql)
+                        print(f"[SQLite Attach] Attached {db_filename} as `{db_alias}`")
+                    except Exception as ae:
+                        if "already in use" in str(ae) or "already exists" in str(ae):
+                            print(f"[SQLite Attach] {db_alias} is already in use, using existing attachment.")
+                        else:
+                            raise ae
+
+                # Configure PRAGMAs for optimization (128MB cache and 128MB mmap)
+                cursor.execute(f"PRAGMA `{db_alias}`.cache_size = -131072;")
+                cursor.execute(f"PRAGMA `{db_alias}`.mmap_size = 134217728;")
                 
                 if not force_full:
                     full_db_filename = f"{state}_full.sqlite3"
                     full_db_path = os.path.join(db_dir, full_db_filename)
                     if os.path.exists(full_db_path):
                         full_db_alias = f"{state}_full_db"
-                        if full_db_alias in attached:
-                            cursor.execute(f"DETACH DATABASE `{full_db_alias}`")
-                        full_attach_sql = f"ATTACH DATABASE 'file:{full_db_path}?mode=ro' AS `{full_db_alias}`"
-                        cursor.execute(full_attach_sql)
-                        print(f"[SQLite Attach] Attached {full_db_filename} as `{full_db_alias}`")
+                        target_full_path = os.path.abspath(full_db_path)
+                        current_full_path = attached_map.get(full_db_alias)
+                        if current_full_path:
+                            current_full_path = os.path.abspath(current_full_path.replace('file:', '').split('?')[0])
+                        
+                        if current_full_path == target_full_path:
+                            # Already attached to the correct full database file
+                            pass
+                        else:
+                            if full_db_alias in attached_map:
+                                try:
+                                    cursor.execute(f"DETACH DATABASE `{full_db_alias}`")
+                                except Exception as de:
+                                    print(f"[SQLite Attach] Detach failed for {full_db_alias}: {de}")
+                            try:
+                                full_attach_sql = f"ATTACH DATABASE 'file:{full_db_path}?mode=ro' AS `{full_db_alias}`"
+                                cursor.execute(full_attach_sql)
+                                print(f"[SQLite Attach] Attached {full_db_filename} as `{full_db_alias}`")
+                            except Exception as ae:
+                                if "already in use" in str(ae) or "already exists" in str(ae):
+                                    print(f"[SQLite Attach] {full_db_alias} is already in use, using existing attachment.")
+                                else:
+                                    raise ae
+
+                        # Configure PRAGMAs for optimization (128MB cache and 128MB mmap)
+                        cursor.execute(f"PRAGMA `{full_db_alias}`.cache_size = -131072;")
+                        cursor.execute(f"PRAGMA `{full_db_alias}`.mmap_size = 134217728;")
                 
                 active_dbs.append(state)
             except Exception as e:
@@ -208,18 +252,30 @@ def _load_hospitals():
 
 
 
-def _save_filter_token(hospital_ids):
-    """Store selected hospital IDs in cache under a short token. Returns the token."""
+def _save_filter_token(hospital_ids, payer_ids):
+    """Store selected hospital IDs and payer IDs in cache under a short token. Returns the token."""
     token = uuid.uuid4().hex[:16]
-    cache.set(f'filt:{token}', hospital_ids, 30 * 86400)  # 30-day expiry
+    data = {
+        'hospitals': hospital_ids,
+        'payers': payer_ids
+    }
+    cache.set(f'filt:{token}', data, 30 * 86400)  # 30-day expiry
     return token
 
 
 def _load_filter_token(token):
-    """Retrieve hospital IDs for a token. Returns None if expired or invalid."""
+    """Retrieve hospital and payer IDs for a token. Returns (hospitals, payers) or (None, None)."""
     if not token or len(token) != 16:
-        return None
-    return cache.get(f'filt:{token}')
+        return None, None
+    cached = cache.get(f'filt:{token}')
+    if cached is None:
+        return None, None
+    if isinstance(cached, dict):
+        return cached.get('hospitals', []), cached.get('payers', [])
+    if isinstance(cached, list):
+        # Backward compatibility with older tokens that only stored hospital IDs
+        return cached, []
+    return None, None
 
 FIELD_TOOLTIPS = {
     'description': "Description of each item or service provided by the hospital that corresponds to the standard charge the hospital has established.",
@@ -400,7 +456,7 @@ def search(request):
         
         # Statically define counts for production state databases in GCS to avoid 14.4M row scans
         STATIC_STATE_COUNTS = {
-            'in': 9502, # Indiana database total unique grouped procedures
+            'in': 11394, # Indiana database total unique grouped procedures
         }
         
         if db_dir == "/mnt/gcs" and all(s in STATIC_STATE_COUNTS for s in selected_states):
@@ -430,9 +486,68 @@ def search(request):
         print(f"Error loading static payers and plans: {e}")
         payers_list = []
 
-    selected_payers = request.GET.getlist('payer')  # multi-select list; always kept in URL
+    hospitals_list = _load_hospitals()
+    hospital_cities = sorted(set(h['city'] for h in hospitals_list if h['city']))
+
+    # ── Filter state restoration (GET params, token, or cookies) ─────────────────
+    filter_token = request.GET.get('s', '')
+    token_expired = False
+
+    has_get_hospital = 'hospital' in request.GET
+    has_get_payer = 'payer' in request.GET
+
+    if has_get_hospital or has_get_payer:
+        # Flow A: Fresh form submit or JS-disabled submit. Pack both into a token and redirect.
+        h_ids = request.GET.getlist('hospital')
+        p_ids = request.GET.getlist('payer')
+        token = _save_filter_token(h_ids, p_ids)
+        redirect_params = [('q', query), ('s', token)] + [('state', s) for s in selected_states]
+        response = HttpResponseRedirect(f"{request.path}?{_urlencode(redirect_params)}")
+        if h_ids:
+            response.set_cookie('selected_hospitals', ','.join(h_ids), max_age=30*86400, path='/', samesite='Lax')
+        if p_ids:
+            response.set_cookie('selected_payers', ';'.join(p_ids), max_age=30*86400, path='/', samesite='Lax')
+        return response
+
+    elif filter_token:
+        # Flow B: Restore from cache token
+        cached_hospitals, cached_payers = _load_filter_token(filter_token)
+        if cached_hospitals is not None or cached_payers is not None:
+            selected_hospitals = cached_hospitals or []
+            selected_payers = cached_payers or []
+        else:
+            token_expired = True
+            selected_hospitals = []
+            selected_payers = []
+    else:
+        # Flow C: Restore from cookies
+        # Selected hospitals
+        selected_hospitals = []
+        cookie_val_h = request.COOKIES.get('selected_hospitals', '')
+        if cookie_val_h:
+            try:
+                from urllib.parse import unquote
+                decoded_h = unquote(cookie_val_h)
+                if decoded_h:
+                    selected_hospitals = [h.strip() for h in decoded_h.split(',') if h.strip()]
+            except Exception:
+                pass
+
+        # Selected payers
+        selected_payers = []
+        cookie_val_p = request.COOKIES.get('selected_payers', '')
+        if cookie_val_p:
+            try:
+                from urllib.parse import unquote
+                decoded_p = unquote(cookie_val_p)
+                if decoded_p:
+                    selected_payers = [p.strip() for p in decoded_p.split(';') if p.strip()]
+            except Exception:
+                pass
+
+    selected_hospitals_set = set(selected_hospitals)
     selected_payers_set = set(selected_payers)
-    
+
     # Parse selected payer-plans into specific raw tuples (payer_raw, plan_raw)
     selected_payer_plans = []
     for item in selected_payers:
@@ -442,57 +557,24 @@ def search(request):
                 selected_payer_plans.append((parts[0], parts[1]))
             else:
                 selected_payer_plans.append((sub_item, None))
-    hospitals_list = _load_hospitals()
-    hospital_cities = sorted(set(h['city'] for h in hospitals_list if h['city']))
-
-    # ── Hospital filter via shareable token / cookies ─────────────────────────
-    # Flow A – ?hospital=<md5>&... submitted (fresh form submit, e.g. JS disabled): create token, redirect, set cookie.
-    # Flow B – ?s=<token> present: restore hospital IDs from cache, sync cookie.
-    # Flow C – fall back to cookie: read from 'selected_hospitals' cookie.
-    filter_token = request.GET.get('s', '')
-    token_expired = False
-    raw_hospital_ids = request.GET.getlist('hospital')
-
-    if raw_hospital_ids:
-        # Flow A: pack hospitals into a token and redirect to clean URL, also writing the cookie
-        token = _save_filter_token(raw_hospital_ids)
-        redirect_params = [('q', query), ('s', token)] + [('payer', p) for p in selected_payers] + [('state', s) for s in selected_states]
-        response = HttpResponseRedirect(f"{request.path}?{_urlencode(redirect_params)}")
-        response.set_cookie('selected_hospitals', ','.join(raw_hospital_ids), max_age=30*86400, path='/', samesite='Lax')
-        return response
-    elif filter_token:
-        # Flow B: restore from cache
-        cached_ids = _load_filter_token(filter_token)
-        if cached_ids is not None:
-            selected_hospitals = cached_ids
-        else:
-            token_expired = True
-            selected_hospitals = []
-    else:
-        # Flow C: restore from cookie
-        selected_hospitals = []
-        cookie_val = request.COOKIES.get('selected_hospitals', '')
-        if cookie_val:
-            try:
-                from urllib.parse import unquote
-                decoded = unquote(cookie_val)
-                if decoded:
-                    selected_hospitals = [h.strip() for h in decoded.split(',') if h.strip()]
-            except Exception:
-                pass
-
-    selected_hospitals_set = set(selected_hospitals)  # MD5 IDs used for filtering
 
     # Build base query string for pagination (preserves all filters except page)
     _params = request.GET.copy()
     _params.pop('page', None)
     base_query_string = _params.urlencode()
 
+    shared_ms_drgs = set()
+    shared_apr_drgs = set()
+    shared_apcs = set()
+
     if query and not error_message:
         start_time = time.time()
         
+        # Replace hyphens with spaces to prevent FTS5 parsing errors (e.g. "x-ray" -> "x ray")
+        clean_query = query.replace('-', ' ')
+        
         # --- Synonym Query Expansion ---
-        processed_query, placeholder_map = expand_query_synonyms(query)
+        processed_query, placeholder_map = expand_query_synonyms(clean_query)
         
         # --- Spelling Auto-Correction (Typo Tolerance) ---
         corrected_query = processed_query
@@ -550,7 +632,12 @@ def search(request):
                     search_terms.append(t_lower.upper())
                 continue
                 
-            t_clean = re.sub(r'[^\w\*-]', '', t)
+            # Strip all special characters except wildcards
+            t_clean = re.sub(r'[^\w\*]', '', t)
+            # Ensure the asterisk is only a trailing wildcard
+            if '*' in t_clean:
+                t_clean = t_clean.replace('*', '') + '*'
+                
             if t_clean and t_lower not in stopwords:
                 if '__SYN_' in t_clean:
                     search_terms.append(t_clean)
@@ -575,11 +662,51 @@ def search(request):
 
         try:
             with connection.cursor() as cursor:
-                # 1. Resolve active databases by attaching them (Try shoppable first, fallback to full if filters are active)
+                # Always query procedures and FTS from the local RAM-disk aggregate database for speed
                 has_filters = bool(selected_hospitals or selected_payers)
-                active_dbs = resolve_active_dbs(cursor, selected_states, force_full=has_filters)
-                is_currently_full = has_filters
+                active_dbs = resolve_active_dbs(cursor, selected_states, force_full=False)
+                is_currently_full = False
                 
+                # Pre-resolve hospital and plan hashes to integer IDs to prevent slow SQL joins on GCS FUSE
+                resolved_hospital_ids = []
+                resolved_plan_ids = []
+                
+                if has_filters:
+                    h_db = f"{active_dbs[0]}_db" if active_dbs[0] != "main" else "main"
+                    if selected_hospitals:
+                        h_placeholders = ",".join(["%s"] * len(selected_hospitals))
+                        try:
+                            cursor.execute(f"SELECT id FROM {h_db}.hospitals WHERE hospital_hash IN ({h_placeholders})", list(selected_hospitals))
+                            resolved_hospital_ids = [row[0] for row in cursor.fetchall()]
+                        except Exception as he:
+                            print(f"[Resolve Filters] Error resolving hospital hashes: {he}")
+                        if not resolved_hospital_ids:
+                            resolved_hospital_ids = [-1] # Match nothing if filter is selected but no matches found
+                            
+                    if selected_payer_plans:
+                        sub_conditions = []
+                        plan_params = []
+                        for p_raw, pl_raw in selected_payer_plans:
+                            if pl_raw is not None:
+                                sub_conditions.append("(pay.name = %s AND pl.name = %s)")
+                                plan_params.extend([p_raw, pl_raw])
+                            else:
+                                sub_conditions.append("(pay.name = %s)")
+                                plan_params.extend([p_raw])
+                                
+                        try:
+                            cursor.execute(f"""
+                                SELECT pl.id 
+                                FROM {h_db}.plans pl 
+                                JOIN {h_db}.payers pay ON pl.payer_id = pay.id 
+                                WHERE {' OR '.join(sub_conditions)}
+                            """, plan_params)
+                            resolved_plan_ids = [row[0] for row in cursor.fetchall()]
+                        except Exception as pe:
+                            print(f"[Resolve Filters] Error resolving plan IDs: {pe}")
+                        if not resolved_plan_ids:
+                            resolved_plan_ids = [-1] # Match nothing if filter is selected but no matches found
+
                 # 2. Count total matching records across all active databases
                 def _build_count_query(dbs, is_full=False):
                     parts = []
@@ -590,25 +717,9 @@ def search(request):
                         db_where_conditions = ["fts_procedures MATCH %s"]
                         db_params = [sqlite_query]
                         
-                        if selected_hospitals:
-                            h_placeholders = ",".join(["%s"] * len(selected_hospitals))
-                            db_where_conditions.append(
-                                f"EXISTS (SELECT 1 FROM {price_db_prefix}prices p JOIN {price_db_prefix}hospitals h ON p.hospital_id = h.id WHERE p.procedure_id = {db_prefix}fts_procedures.procedure_id AND h.hospital_hash IN ({h_placeholders}))"
-                            )
-                            db_params.extend(selected_hospitals)
-                            
-                        if selected_payer_plans:
-                            sub_conditions = []
-                            for p_raw, pl_raw in selected_payer_plans:
-                                if pl_raw is not None:
-                                    sub_conditions.append(f"(pay.name = %s AND pl.name = %s)")
-                                    db_params.extend([p_raw, pl_raw])
-                                else:
-                                    sub_conditions.append(f"(pay.name = %s)")
-                                    db_params.extend([p_raw])
-                            db_where_conditions.append(
-                                f"EXISTS (SELECT 1 FROM {price_db_prefix}prices p JOIN {price_db_prefix}plans pl ON p.plan_id = pl.id JOIN {price_db_prefix}payers pay ON pl.payer_id = pay.id WHERE p.procedure_id = {db_prefix}fts_procedures.procedure_id AND ({' OR '.join(sub_conditions)}))"
-                            )
+                        # No EXISTS check is required during FTS search since all shoppable procedures are matching catalog items,
+                        # and detailed filtering is handled dynamically on-demand inside the AJAX accordion views.
+                        pass
                             
                         db_where_clause = " WHERE " + " AND ".join(db_where_conditions)
                         parts.append(f"SELECT DISTINCT procedure_id FROM {db_prefix}fts_procedures {db_where_clause}")
@@ -626,6 +737,36 @@ def search(request):
                     print(f"[Hybrid Fallback] 0 hits found in shoppable database for '{query}'. Re-querying full database...")
                     active_dbs = resolve_active_dbs(cursor, selected_states, force_full=True)
                     is_currently_full = True
+                    # Re-resolve hospital & plan IDs for the newly attached full database if needed
+                    h_db = f"{active_dbs[0]}_db" if active_dbs[0] != "main" else "main"
+                    if selected_hospitals:
+                        h_placeholders = ",".join(["%s"] * len(selected_hospitals))
+                        try:
+                            cursor.execute(f"SELECT id FROM {h_db}.hospitals WHERE hospital_hash IN ({h_placeholders})", list(selected_hospitals))
+                            resolved_hospital_ids = [row[0] for row in cursor.fetchall()]
+                        except: pass
+                        if not resolved_hospital_ids: resolved_hospital_ids = [-1]
+                    if selected_payer_plans:
+                        sub_conditions = []
+                        plan_params = []
+                        for p_raw, pl_raw in selected_payer_plans:
+                            if pl_raw is not None:
+                                sub_conditions.append("(pay.name = %s AND pl.name = %s)")
+                                plan_params.extend([p_raw, pl_raw])
+                            else:
+                                sub_conditions.append("(pay.name = %s)")
+                                plan_params.extend([p_raw])
+                        try:
+                            cursor.execute(f"""
+                                SELECT pl.id 
+                                FROM {h_db}.plans pl 
+                                JOIN {h_db}.payers pay ON pl.payer_id = pay.id 
+                                WHERE {' OR '.join(sub_conditions)}
+                            """, plan_params)
+                            resolved_plan_ids = [row[0] for row in cursor.fetchall()]
+                        except: pass
+                        if not resolved_plan_ids: resolved_plan_ids = [-1]
+
                     combined_count_sql, count_params = _build_count_query(active_dbs, is_full=True)
                     cursor.execute(combined_count_sql, count_params)
                     total_hits = cursor.fetchone()[0]
@@ -633,6 +774,10 @@ def search(request):
                 results_count = total_hits
 
                 # 3. Query matching procedures (paginated) ranked by FTS5 BM25 relevance score
+                limit = 100
+                offset = (page_number - 1) * items_per_page
+                limit = max(100, offset + items_per_page * 2) # Ensure we cover enough items for current page
+
                 results_parts = []
                 results_params = []
                 for db in active_dbs:
@@ -642,25 +787,9 @@ def search(request):
                     db_where_conditions = ["fts_procedures MATCH %s"]
                     db_params = [sqlite_query]
                     
-                    if selected_hospitals:
-                        h_placeholders = ",".join(["%s"] * len(selected_hospitals))
-                        db_where_conditions.append(
-                            f"EXISTS (SELECT 1 FROM {price_db_prefix}prices p JOIN {price_db_prefix}hospitals h ON p.hospital_id = h.id WHERE p.procedure_id = {db_prefix}fts_procedures.procedure_id AND h.hospital_hash IN ({h_placeholders}))"
-                        )
-                        db_params.extend(selected_hospitals)
-                        
-                    if selected_payer_plans:
-                        sub_conditions = []
-                        for p_raw, pl_raw in selected_payer_plans:
-                            if pl_raw is not None:
-                                sub_conditions.append(f"(pay.name = %s AND pl.name = %s)")
-                                db_params.extend([p_raw, pl_raw])
-                            else:
-                                sub_conditions.append(f"(pay.name = %s)")
-                                db_params.extend([p_raw])
-                        db_where_conditions.append(
-                            f"EXISTS (SELECT 1 FROM {price_db_prefix}prices p JOIN {price_db_prefix}plans pl ON p.plan_id = pl.id JOIN {price_db_prefix}payers pay ON pl.payer_id = pay.id WHERE p.procedure_id = {db_prefix}fts_procedures.procedure_id AND ({' OR '.join(sub_conditions)}))"
-                        )
+                    # No EXISTS check is required during FTS search since all shoppable procedures are matching catalog items,
+                    # and detailed filtering is handled dynamically on-demand inside the AJAX accordion views.
+                    pass
                         
                     db_where_clause = " WHERE " + " AND ".join(db_where_conditions)
                     
@@ -683,7 +812,9 @@ def search(request):
                         {' UNION ALL '.join(results_parts)}
                     )
                     ORDER BY rank ASC
+                    LIMIT %s OFFSET %s
                 """
+                results_params.extend([limit, offset])
                 cursor.execute(combined_results_sql, results_params)
                 proc_rows = cursor.fetchall()
                 
@@ -697,7 +828,8 @@ def search(request):
                     setting_queries = []
                     setting_params = []
                     for db in active_dbs:
-                        p_prefix = f"{db}_db." if (db == "main" or is_currently_full) else f"{db}_full_db."
+                        # Always query settings from local RAM-disk aggregate database to prevent slow GCS FUSE lookups
+                        p_prefix = f"{db}_db."
                         setting_queries.append(f"""
                             SELECT DISTINCT p.procedure_id, s.name 
                             FROM {p_prefix}prices p
@@ -717,6 +849,38 @@ def search(request):
                             if setting_clean and 'unknown' not in setting_clean:
                                 settings_by_proc.setdefault(pid, set()).add(setting_clean)
 
+                    # Batch resolve sharing flags for ms_drg, apr_drg, and apc to prevent N+1 queries in the loop
+                    ms_drgs = list(set(row[4].strip() for row in proc_rows if row[4] and row[4].strip()))
+                    apr_drgs = list(set(row[5].strip() for row in proc_rows if row[5] and row[5].strip()))
+                    apcs = list(set(row[7].strip() for row in proc_rows if row[7] and row[7].strip()))
+                    
+                    if active_dbs:
+                        db = active_dbs[0]
+                        db_prefix = f"{db}_db." if db != "main" else ""
+                        
+                        if ms_drgs:
+                            placeholders = ",".join(["%s"] * len(ms_drgs))
+                            try:
+                                cursor.execute(f"SELECT ms_drg FROM {db_prefix}procedures WHERE ms_drg IN ({placeholders}) GROUP BY ms_drg HAVING COUNT(DISTINCT code) > 1", ms_drgs)
+                                shared_ms_drgs = set(r[0] for r in cursor.fetchall())
+                            except Exception as e:
+                                print(f"Error batch-fetching MS-DRG sharing: {e}")
+                                
+                        if apr_drgs:
+                            placeholders = ",".join(["%s"] * len(apr_drgs))
+                            try:
+                                cursor.execute(f"SELECT apr_drg FROM {db_prefix}procedures WHERE apr_drg IN ({placeholders}) GROUP BY apr_drg HAVING COUNT(DISTINCT code) > 1", apr_drgs)
+                                shared_apr_drgs = set(r[0] for r in cursor.fetchall())
+                            except Exception as e:
+                                print(f"Error batch-fetching APR-DRG sharing: {e}")
+                                
+                        if apcs:
+                            placeholders = ",".join(["%s"] * len(apcs))
+                            try:
+                                cursor.execute(f"SELECT apc FROM {db_prefix}procedures WHERE apc IN ({placeholders}) GROUP BY apc HAVING COUNT(DISTINCT code) > 1", apcs)
+                                shared_apcs = set(r[0] for r in cursor.fetchall())
+                            except Exception as e:
+                                print(f"Error batch-fetching APC sharing: {e}")
 
                     # Construct hit structures
                     for row in proc_rows:
@@ -730,16 +894,25 @@ def search(request):
                             except Exception:
                                 pass
                         
+                        # Check share flags against precomputed sets
+                        ms_drg_val = (row[4] or '').strip()
+                        apr_drg_val = (row[5] or '').strip()
+                        apc_val = (row[7] or '').strip()
+                        
+                        ms_drg_val = ms_drg_val if ms_drg_val in shared_ms_drgs else ""
+                        apr_drg_val = apr_drg_val if apr_drg_val in shared_apr_drgs else ""
+                        apc_val = apc_val if apc_val in shared_apcs else ""
+                        
                         hits.append({
                             '_source': {
                                 'id': pid,
                                 'description': row[1],
                                 'code': row[2],
                                 'code_type': row[3],
-                                'ms_drg': row[4],
-                                'apr_drg': row[5],
+                                'ms_drg': ms_drg_val,
+                                'apr_drg': apr_drg_val,
                                 'rc': row[6],
-                                'apc': row[7],
+                                'apc': apc_val,
                                 'ndc': row[8],
                                 'cdm': row[9],
                                 'stats': {
@@ -776,29 +949,11 @@ def search(request):
                 
                 stats = source.get('stats', {})
                 
-                # Check if there are actually other procedures sharing the same group key
-                ms_drg_val = (source.get('ms_drg') or '').strip()
-                apr_drg_val = (source.get('apr_drg') or '').strip()
-                apc_val = (source.get('apc') or '').strip()
+                ms_drg_val = source.get('ms_drg', '')
+                apr_drg_val = source.get('apr_drg', '')
+                apc_val = source.get('apc', '')
                 source_db = source.get('source_db', 'main')
-                db_prefix = f"{source_db}_db." if source_db != "main" else ""
-
-                with connection.cursor() as sub_cursor:
-                    if ms_drg_val:
-                        sub_cursor.execute(f"SELECT 1 FROM {db_prefix}procedures WHERE ms_drg = %s AND code != %s LIMIT 1", [ms_drg_val, code])
-                        if not sub_cursor.fetchone():
-                            ms_drg_val = ""
-
-                    if apr_drg_val:
-                        sub_cursor.execute(f"SELECT 1 FROM {db_prefix}procedures WHERE apr_drg = %s AND code != %s LIMIT 1", [apr_drg_val, code])
-                        if not sub_cursor.fetchone():
-                            apr_drg_val = ""
-
-                    if apc_val:
-                        sub_cursor.execute(f"SELECT 1 FROM {db_prefix}procedures WHERE apc = %s AND code != %s LIMIT 1", [apc_val, code])
-                        if not sub_cursor.fetchone():
-                            apc_val = ""
-
+                
                 variant_data = {
                     'code': (code or '').strip(),
                     'code_type': (code_type or '').strip(),
@@ -812,6 +967,7 @@ def search(request):
                     'procedure_ids': [source.get('id')],
                     'descriptions': [desc],
                 }
+
                 
                 # Group by code (uppercased); fall back to normalized description if no code
                 group_key = code.strip().upper() if code and code.strip() else _normalize_desc(desc)
@@ -966,8 +1122,11 @@ def search(request):
     }
     
     response = render(request, 'prices/search.html', context)
-    if filter_token and not token_expired and selected_hospitals:
-        response.set_cookie('selected_hospitals', ','.join(selected_hospitals), max_age=30*86400, path='/', samesite='Lax')
+    if filter_token and not token_expired:
+        if selected_hospitals:
+            response.set_cookie('selected_hospitals', ','.join(selected_hospitals), max_age=30*86400, path='/', samesite='Lax')
+        if selected_payers:
+            response.set_cookie('selected_payers', ';'.join(selected_payers), max_age=30*86400, path='/', samesite='Lax')
     return response
 
 
@@ -1138,8 +1297,42 @@ def prices_details(request):
         return HttpResponse("<div class='alert alert-warning'>No procedures selected.</div>")
         
     proc_ids = [pid.strip() for pid in proc_ids_str.split(',') if pid.strip()]
-    selected_payers = [p.strip() for p in selected_payers_str.split(',') if p.strip()]
-    selected_hospitals = set([h.strip() for h in selected_hospitals_str.split(',') if h.strip()])
+
+    # Extract selected payers, falling back to cookie if empty
+    if not selected_payers_str:
+        cookie_val_p = request.COOKIES.get('selected_payers', '')
+        if cookie_val_p:
+            try:
+                from urllib.parse import unquote
+                decoded_p = unquote(cookie_val_p)
+                if decoded_p:
+                    selected_payers = [p.strip() for p in decoded_p.split(';') if p.strip()]
+                else:
+                    selected_payers = []
+            except Exception:
+                selected_payers = []
+        else:
+            selected_payers = []
+    else:
+        selected_payers = [p.strip() for p in selected_payers_str.split(',') if p.strip()]
+
+    # Extract selected hospitals, falling back to cookie if empty
+    if not selected_hospitals_str:
+        cookie_val_h = request.COOKIES.get('selected_hospitals', '')
+        if cookie_val_h:
+            try:
+                from urllib.parse import unquote
+                decoded_h = unquote(cookie_val_h)
+                if decoded_h:
+                    selected_hospitals = set([h.strip() for h in decoded_h.split(',') if h.strip()])
+                else:
+                    selected_hospitals = set()
+            except Exception:
+                selected_hospitals = set()
+        else:
+            selected_hospitals = set()
+    else:
+        selected_hospitals = set([h.strip() for h in selected_hospitals_str.split(',') if h.strip()])
     
     selected_payer_plans = set()
     for item in selected_payers:

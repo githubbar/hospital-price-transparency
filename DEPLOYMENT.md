@@ -137,6 +137,35 @@ gcloud run deploy hospital-price-search `
 > **Supercharged Deployments:**
 > When using GCS volume mounts, you can add `*.sqlite3` to your `.gcloudignore` and `.dockerignore` files. This keeps your container image size under **50 MB**, dropping your `gcloud run deploy` command duration from several minutes to **less than 15 seconds**!
 
+### 4. Optimize GCS FUSE Performance with Rapid Cache
+
+Since SQLite performs multiple small random reads over the network via Cloud Storage FUSE, FUSE network latency can impact search performance. You can **supercharge query speeds** by enabling Google Cloud **Rapid Cache** (formerly Anywhere Cache) on your GCS bucket. 
+
+Rapid Cache caches bucket contents inside specific Google Cloud zones close to your Cloud Run instances.
+
+#### Step A — Verify Permissions
+Ensure you have the **Storage Admin** (`roles/storage.admin`) IAM role on the bucket, or a custom role with:
+* `storage.anywhereCaches.create`
+* `storage.anywhereCaches.update`
+
+#### Step B — Enable Rapid Cache (7-day TTL and Ingest-on-Write)
+Run the following `gcloud` CLI command to create cache instances in your deployment zones (e.g., `us-central1-a` and `us-central1-b`):
+
+```powershell
+gcloud storage buckets anywhere-caches create gs://YOUR_GCS_BUCKET_NAME us-central1-a us-central1-b --ttl=7d --enable-ingest-on-write
+```
+
+*   `--ttl=7d`: Caches the database files for the maximum duration (7 days), which is ideal since the price databases are static and rarely change.
+*   `--enable-ingest-on-write`: Automatically pre-warms the cache when database files are uploaded or updated.
+
+#### Step C — Verify Cache Status
+Check the status of your cache instances using:
+```powershell
+gcloud storage buckets anywhere-caches list gs://YOUR_GCS_BUCKET_NAME
+```
+
+Once the cache is active, GCS FUSE reads will be served directly from GCP's high-speed memory cache in those zones, eliminating network latency bottlenecks.
+
 ---
 
 ## Updating Environment Variables

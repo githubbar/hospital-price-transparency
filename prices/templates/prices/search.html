@@ -274,6 +274,22 @@
         .payer-group-card:hover {
             background-color: #fafafa;
         }
+        
+        /* Apply Filters Prompt */
+        .apply-filters-prompt {
+            z-index: 1050;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            border-radius: 12px !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+        }
+        .apply-filters-prompt.show {
+            transform: translateY(0) !important;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body>
@@ -645,9 +661,7 @@
 
                                 <div class="price-table-placeholder"
                                      data-procedure-ids="{{ variant.procedure_ids|join:',' }}"
-                                     data-state="{{ selected_states|join:',' }}"
-                                     data-payers="{% for p in selected_payers %}{{ p }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                     data-hospitals="{% for h in selected_hospitals %}{{ h }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                     data-state="{{ selected_states|join:',' }}">
                                     <div class="text-center py-4">
                                         <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
                                         <span class="text-muted small ms-2">Loading pricing details...</span>
@@ -773,14 +787,10 @@
                 
                 const ids = placeholder.getAttribute('data-procedure-ids');
                 const state = placeholder.getAttribute('data-state');
-                const payers = placeholder.getAttribute('data-payers');
-                const hospitals = placeholder.getAttribute('data-hospitals');
                 
                 const params = new URLSearchParams({
                     ids: ids || '',
-                    state: state || 'in',
-                    payers: payers || '',
-                    hospitals: hospitals || ''
+                    state: state || 'in'
                 });
                 
                 fetch(`/prices/?${params.toString()}`)
@@ -867,7 +877,7 @@
                     child.checked = parent.checked;
                 });
                 updatePayerCounts();
-                autoSubmitIfHasQuery();
+                window.showApplyPrompt();
             });
         });
 
@@ -877,9 +887,16 @@
                 const groupName = child.getAttribute('data-group');
                 syncParentState(groupName);
                 updatePayerCounts();
-                autoSubmitIfHasQuery();
+                window.showApplyPrompt();
             });
         });
+
+        function updatePayerCookie() {
+            const checkedValues = Array.from(document.querySelectorAll('input[name="payer"]:checked')).map(cb => cb.value);
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000));
+            document.cookie = "selected_payers=" + encodeURIComponent(checkedValues.join(';')) + "; expires=" + expires.toUTCString() + "; path=/; SameSite=Lax";
+        }
 
         function updatePayerCounts() {
             const checked = [...planChecks].filter(cb => cb.checked).length;
@@ -894,6 +911,7 @@
                 mb.textContent = tot; 
                 mb.style.display = tot ? '' : 'none';
             }
+            updatePayerCookie();
         }
 
         // Live Search Filtering
@@ -965,7 +983,7 @@
                 });
                 updatePayerCounts();
                 if (statusEl) statusEl.textContent = '';
-                autoSubmitIfHasQuery();
+                window.showApplyPrompt();
             });
         }
 
@@ -1017,7 +1035,7 @@
             updateCounts();
             if (statusEl) statusEl.textContent =
                 `${nearby.size} hospital${nearby.size !== 1 ? 's' : ''} within ${radius} mi${label ? ' of ' + label : ''}`;
-            autoSubmitIfHasQuery();
+            window.showApplyPrompt();
         }
 
         function updateHospitalCookie() {
@@ -1088,7 +1106,7 @@
 
         document.querySelectorAll('input[name="hospital"]').forEach(cb => cb.addEventListener('change', () => {
             updateCounts();
-            autoSubmitIfHasQuery();
+            window.showApplyPrompt();
         }));
 
         if (clearBtn) {
@@ -1101,7 +1119,7 @@
                 items.forEach(el => el.style.display = '');
                 document.querySelectorAll('input[name="hospital"]').forEach(cb => cb.checked = false);
                 updateCounts();
-                autoSubmitIfHasQuery();
+                window.showApplyPrompt();
             });
         }
 
@@ -1112,7 +1130,7 @@
                 items.forEach(el => el.style.display = '');
                 showAllLink.style.display = 'none';
                 if (statusEl) statusEl.textContent = '';
-                autoSubmitIfHasQuery();
+                window.showApplyPrompt();
             });
         }
 
@@ -1417,8 +1435,11 @@
 
         // Bind form submission
         searchForm.addEventListener('submit', function () {
-            // Strip the 'name' attribute from hospital checkboxes so they are not sent in the GET request
+            // Strip the 'name' attribute from hospital and payer checkboxes so they are not sent in the GET request
             document.querySelectorAll('input[name="hospital"]').forEach(cb => {
+                cb.removeAttribute('name');
+            });
+            document.querySelectorAll('input[name="payer"]').forEach(cb => {
                 cb.removeAttribute('name');
             });
             showLoading();
@@ -1441,8 +1462,59 @@
         window.addEventListener('pageshow', function (event) {
             hideLoading();
         });
+
+        // ── Apply Filters Prompt Logic ──
+        window.showApplyPrompt = function() {
+            const searchInput = document.querySelector('#search-form .search-input');
+            if (!searchInput || !searchInput.value.trim()) {
+                return;
+            }
+            const promptEl = document.getElementById('apply-filters-prompt');
+            if (promptEl) {
+                promptEl.style.setProperty('display', 'flex', 'important');
+                promptEl.offsetHeight; // force reflow
+                promptEl.classList.add('show');
+            }
+        };
+
+        window.hideApplyPrompt = function() {
+            const promptEl = document.getElementById('apply-filters-prompt');
+            if (promptEl) {
+                promptEl.classList.remove('show');
+                setTimeout(() => {
+                    if (!promptEl.classList.contains('show')) {
+                        promptEl.style.setProperty('display', 'none', 'important');
+                    }
+                }, 400);
+            }
+        };
+
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('#apply-filters-btn');
+            if (btn) {
+                if (searchForm) {
+                    const submitBtn = searchForm.querySelector('.search-btn');
+                    if (submitBtn) {
+                        submitBtn.click();
+                    } else {
+                        searchForm.submit();
+                    }
+                }
+            }
+        });
     })();
 </script>
+
+<!-- ── Apply Filters Prompt ── -->
+<div id="apply-filters-prompt" class="apply-filters-prompt position-fixed bottom-0 end-0 m-4 p-3 d-flex align-items-center gap-3" style="display: none !important; transform: translateY(100px); opacity: 0;">
+    <div>
+        <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;">Filters Changed</h6>
+        <small class="text-muted" style="font-size: 0.78rem;">Apply changes to update search results</small>
+    </div>
+    <button type="button" id="apply-filters-btn" class="btn btn-primary btn-sm px-3 fw-semibold" style="font-size: 0.8rem;">
+        <i class="bi bi-arrow-repeat me-1"></i>Update Search
+    </button>
+</div>
 
 {% if query %}
 <script>
