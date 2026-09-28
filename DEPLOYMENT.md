@@ -72,6 +72,9 @@ Once deployment completes, the `gcloud` CLI will output your public **Service UR
 
 Because you have configured `--min-instances 0`, Cloud Run shuts down all container instances when there is no incoming traffic to eliminate costs. When a new user visits the site, Cloud Run must spin up a new container instance. This is a **Cold Start**.
 
+### Keep-Warm Ping
+To avoid cold starts at near-zero cost, a Cloud Scheduler job (`keep-warm`) requests `/health` every 5 minutes so an instance stays alive. Idle instances aren't billed with `--min-instances 0`, and the pings fit well inside the free tier. Set it up once with `.\setup-keepwarm.ps1` (after deploying, since it needs the `/health` route).
+
 ### How Cold Starts Work with a Large Database File
 
 Contrary to typical virtual machine boot times, Cloud Run cold starts are highly optimized:
