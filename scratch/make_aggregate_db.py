@@ -4,9 +4,11 @@ import csv
 import time
 
 def main():
+    import sys
     start_time = time.time()
-    full_db_path = 'in_full.sqlite3'
-    aggregate_db_path = 'in_aggregate.sqlite3'
+    # Optional: python make_aggregate_db.py [FULL_DB] [AGGREGATE_DB]
+    full_db_path = sys.argv[1] if len(sys.argv) > 1 else 'in_full.sqlite3'
+    aggregate_db_path = sys.argv[2] if len(sys.argv) > 2 else 'in_aggregate.sqlite3'
     
     print(f"Creating highly-optimized aggregate database from {full_db_path}...")
     
@@ -62,8 +64,8 @@ def main():
     
     print("Populating FTS virtual table...")
     cursor_agg.execute("""
-        INSERT INTO main.fts_procedures (procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes)
-        SELECT procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes
+        INSERT INTO main.fts_procedures (procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes, search_terms)
+        SELECT procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes, search_terms
         FROM full_db.fts_procedures;
     """)
     print(f"  FTS entries populated: {cursor_agg.rowcount}")

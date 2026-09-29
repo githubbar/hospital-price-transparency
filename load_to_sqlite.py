@@ -38,6 +38,15 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = str(settings.DATABASES['default']['NAME'])
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 REFERENCE_DIR = os.path.join(BASE_DIR, 'reference')
+# Standard CMS column names, matched case-insensitively
+CMS_FIXED_COLUMNS = {
+    'description', 'code', 'code_type', 'setting', 'modifiers', 'payer_name', 'plan_name',
+    'standard_charge|negotiated_dollar', 'standard_charge|gross', 'standard_charge|discounted_cash',
+}
+# Code types not stored in procedures.all_codes / FTS (chargemaster, local and drug codes)
+UNSEARCHED_CODE_TYPES = {'CDM', 'LOCAL', 'NDC'}
+# Documents per batch when loading from a cache (~1,300 prices each on average -> a few GB of RAM)
+CACHE_BATCH_DOCS = 2000
 
 print(f"Configuration:")
 print(f"  DB_PATH: {DB_PATH}")
@@ -145,6 +154,7 @@ def init_db(conn, clean=False):
         ndc,
         cdm,
         all_codes,
+        search_terms,
         tokenize = 'porter'
     );
     """)
@@ -261,7 +271,8 @@ def parse_csv_into_map(stream, label, procedures_map, active_group_tracker, shop
                 s_code = s_row['code'].strip()
                 s_type = s_row['code_type'].strip().upper()
                 s_desc = s_row['description'].strip()
-                if s_desc:
+                # Placeholder "Unknown" descriptions would match every row lacking a description
+                if s_desc and s_desc.lower() != 'unknown':
                     shoppable_descriptions[s_desc.lower()] = (s_code, s_type)
                 if s_code and s_type and s_desc:
                     standard_code_descriptions[(s_code, s_type)] = s_desc
@@ -321,6 +332,11 @@ def parse_csv_into_map(stream, label, procedures_map, active_group_tracker, shop
                 print(f"  [Meta] Detected Hospital Name: {Hospital_Name_From_Meta}")
 
             header_map = {h.strip(): i for i, h in enumerate(headers)}
+            # Some hospitals capitalize the standard CMS columns (IU Health: Payer_Name, Description).
+            # Alias only those fixed names; per-payer wide columns keep their original spelling.
+            for h, i in list(header_map.items()):
+                if h.lower() in CMS_FIXED_COLUMNS or re.fullmatch(r'code\|\d+(\|type)?', h.lower()):
+                    header_map.setdefault(h.lower(), i)
             
             col_desc = header_map.get('description')
             col_code = header_map.get('code|1') or header_map.get('code')
@@ -559,8 +575,39 @@ def parse_csv_into_map(stream, label, procedures_map, active_group_tracker, shop
     return records_processed
 
 
-def save_to_sqlite(conn, final_procedures):
-    """Inserts processed procedures, codes, prices, FTS, and vocabulary words into SQLite."""
+def clear_hospital_prices(cursor, hospital_hashes):
+    """Delete existing prices for these hospitals so a reload doesn't duplicate them."""
+    if not hospital_hashes:
+        return
+    print(f"Clearing existing prices for {len(hospital_hashes)} hospitals to prevent duplication...")
+    placeholders = ",".join(["?"] * len(hospital_hashes))
+    cursor.execute(f"SELECT id FROM hospitals WHERE hospital_hash IN ({placeholders})", list(hospital_hashes))
+    int_hosp_ids = [r[0] for r in cursor.fetchall()]
+    if int_hosp_ids:
+        del_placeholders = ",".join(["?"] * len(int_hosp_ids))
+        cursor.execute(f"DELETE FROM prices WHERE hospital_id IN ({del_placeholders})", int_hosp_ids)
+
+
+def iter_cache_batches(cache_path, batch_size):
+    """Yield lists of documents from a gzip NDJSON cache, batch_size documents at a time."""
+    batch = []
+    with gzip.open(cache_path, 'rt', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                batch.append(json.loads(line))
+                if len(batch) >= batch_size:
+                    yield batch
+                    batch = []
+    if batch:
+        yield batch
+
+
+def save_to_sqlite(conn, final_procedures, clear_existing_prices=True):
+    """Inserts processed procedures, codes, prices, FTS, and vocabulary words into SQLite.
+
+    clear_existing_prices: delete these hospitals' existing prices first. Batched loads pass
+    False and clear once up front, or later batches would delete earlier batches' rows."""
     print("Beginning SQLite bulk inserts...")
     cursor = conn.cursor()
     
@@ -583,7 +630,10 @@ def save_to_sqlite(conn, final_procedures):
         stats = doc.get('stats', {})
         
         # Format code fields for storage
-        codes_list = doc.get('codes', [])
+        # Hospital-internal / drug codes are left out of the searchable code list: a merged
+        # procedure can carry tens of thousands of them, which bloats the search DB for no user value
+        codes_list = [c for c in doc.get('codes', [])
+                      if (c.get('type') or '').strip().upper() not in UNSEARCHED_CODE_TYPES]
         all_codes_json = json.dumps(codes_list)
         fts_codes_str = " ".join([f"{c.get('value', '')} {c.get('type', '')}" for c in codes_list]).strip()
 
@@ -633,11 +683,14 @@ def save_to_sqlite(conn, final_procedures):
             doc.get('apc'),
             doc.get('ndc'),
             doc.get('cdm'),
-            fts_codes_str
+            fts_codes_str,
+            doc.get('search_terms', '')  # words from every hospital's description of this procedure
         ))
 
         # 4. Vocabulary Words (for spelling suggestions)
         words = extract_vocabulary_words(doc.get('description'))
+        if doc.get('search_terms'):
+            words.extend(extract_vocabulary_words(doc['search_terms']))
         # Also extract words from the code itself if it has letters
         if doc.get('code'):
             words.extend(extract_vocabulary_words(doc.get('code')))
@@ -696,22 +749,16 @@ def save_to_sqlite(conn, final_procedures):
             ))
 
     hospital_ids = set()
-    for doc in final_procedures:
-        for price_record in doc.get('prices', []):
-            h_id = price_record.get('hospital_id')
-            if h_id:
-                hospital_ids.add(h_id)
+    if clear_existing_prices:
+        for doc in final_procedures:
+            for price_record in doc.get('prices', []):
+                h_id = price_record.get('hospital_id')
+                if h_id:
+                    hospital_ids.add(h_id)
 
     # Database writes in a single unified transaction
     try:
-        if hospital_ids:
-            print(f"Clearing existing prices for {len(hospital_ids)} hospitals to prevent duplication...")
-            placeholders = ",".join(["?"] * len(hospital_ids))
-            cursor.execute(f"SELECT id FROM hospitals WHERE hospital_hash IN ({placeholders})", list(hospital_ids))
-            int_hosp_ids = [r[0] for r in cursor.fetchall()]
-            if int_hosp_ids:
-                del_placeholders = ",".join(["?"] * len(int_hosp_ids))
-                cursor.execute(f"DELETE FROM prices WHERE hospital_id IN ({del_placeholders})", int_hosp_ids)
+        clear_hospital_prices(cursor, hospital_ids)
 
         pids = [row[0] for row in procedure_rows]
         if pids:
@@ -739,8 +786,8 @@ def save_to_sqlite(conn, final_procedures):
         print(f"Populating FTS5 Virtual table...")
         cursor.executemany("""
             INSERT INTO fts_procedures (
-                procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                procedure_id, description, code, code_type, ms_drg, apr_drg, rc, apc, ndc, cdm, all_codes, search_terms
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, fts_rows)
 
         # 5. Enrichment of spelling vocabulary (clinical terms & default synonyms)
@@ -826,22 +873,31 @@ def main():
             if not os.path.exists(cache_path):
                 print(f"ERROR: Cached file not found: {cache_path}")
                 return
-            print(f"Loading from cache: {cache_path} ...")
-            with gzip.open(cache_path, 'rt', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if line:
-                        doc = json.loads(line)
-                        final_procedures.append(doc)
-            print(f"Loaded {len(final_procedures)} documents from cache.")
-            
-            # Payer normalizations
-            for doc in final_procedures:
-                for price in doc.get('prices', []):
-                    if 'payer_name' in price:
-                        price['payer_name'] = normalize_payer_name(price['payer_name'])
-                    if 'plan_name' in price:
-                        price['plan_name'] = normalize_payer_name(price['plan_name'])
+            # Load in batches so RAM stays bounded: a full cache holds tens of millions of prices,
+            # far more than fit in memory as Python objects at once.
+            print(f"Loading from cache in batches of {CACHE_BATCH_DOCS} documents: {cache_path} ...")
+            if not args.clean:
+                # Incremental load: replace these hospitals' old prices once, before any batch lands
+                hospital_hashes = set()
+                with gzip.open(cache_path, 'rt', encoding='utf-8') as f:
+                    for line in f:
+                        hospital_hashes.update(re.findall(r'"hospital_id":\s*"([^"]+)"', line))
+                clear_hospital_prices(conn.cursor(), hospital_hashes)
+                conn.commit()
+
+            total_docs = 0
+            for batch in iter_cache_batches(cache_path, CACHE_BATCH_DOCS):
+                # Payer normalizations
+                for doc in batch:
+                    for price in doc.get('prices', []):
+                        if 'payer_name' in price:
+                            price['payer_name'] = normalize_payer_name(price['payer_name'])
+                        if 'plan_name' in price:
+                            price['plan_name'] = normalize_payer_name(price['plan_name'])
+                save_to_sqlite(conn, batch, clear_existing_prices=False)
+                total_docs += len(batch)
+                print(f"  {total_docs} documents loaded so far")
+            print(f"Loaded {total_docs} documents from cache.")
         else:
             procedures_map = {}
             active_group_tracker = {}
@@ -911,10 +967,10 @@ def main():
                     }
                 final_procedures.append(data)
 
-        # 3. Write data to SQLite
+        # 3. Write data to SQLite (the cache path already wrote its batches above)
         if final_procedures:
             save_to_sqlite(conn, final_procedures)
-        else:
+        elif not args.cached_file:
             print("No records available to save to SQLite.")
 
     finally:

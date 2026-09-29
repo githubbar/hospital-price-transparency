@@ -456,7 +456,7 @@ def search(request):
         
         # Statically define counts for production state databases in GCS to avoid 14.4M row scans
         STATIC_STATE_COUNTS = {
-            'in': 11394, # Indiana database total unique grouped procedures
+            'in': 4065, # Indiana database total procedures (one per code), Sept 2026 build
         }
         
         if db_dir == "/mnt/gcs" and all(s in STATIC_STATE_COUNTS for s in selected_states):
@@ -936,6 +936,18 @@ def search(request):
                 """Lowercase, strip punctuation/extra whitespace for fuzzy grouping."""
                 return _re.sub(r'\s+', ' ', _re.sub(r'[^\w\s]', '', d.lower())).strip()
 
+            _ACRONYMS = {'MRI', 'MRA', 'CT', 'PET', 'EKG', 'ECG', 'EEG', 'EMG', 'IV', 'ER', 'ED', 'OB', 'ICU',
+                         'CBC', 'HIV', 'ACL', 'ENT', 'DX', 'TB', 'UA', 'US'}
+
+            def _display_title(d):
+                """Keep properly-cased names (e.g. 'MRI scan of leg joint'); title-case only ALL-CAPS or
+                all-lowercase hospital text, keeping common medical acronyms upper-case."""
+                if not (d.isupper() or d.islower()):
+                    return d
+                return _re.sub(r"[A-Za-z][A-Za-z']*",
+                               lambda m: m.group(0).upper() if m.group(0).upper() in _ACRONYMS else m.group(0).capitalize(),
+                               d)
+
             matches_by_code = OrderedDict()
 
             for hit in hits:
@@ -982,11 +994,11 @@ def search(request):
                     matches_by_code[group_key]['_raw_descriptions'].append(desc)
                 matches_by_code[group_key]['variants'].append(variant_data)
 
-            # Set canonical title-cased description for each group (most common wins)
+            # Set canonical description for each group (most common wins)
             for group in matches_by_code.values():
                 raw = group.pop('_raw_descriptions')
                 canonical = Counter(raw).most_common(1)[0][0]
-                group['description'] = canonical.title()
+                group['description'] = _display_title(canonical)
 
             grouped_results = list(matches_by_code.values())
 
