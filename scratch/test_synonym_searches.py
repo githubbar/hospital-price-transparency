@@ -129,6 +129,19 @@ def main():
     run_fts_query_with_spellcheck("c section") # new synonym
     run_fts_query_with_spellcheck("cesarean") # new synonym
 
+    # Test newly added synonyms based on last week's search logs
+    run_fts_query_with_spellcheck("targeted genomic")
+    run_fts_query_with_spellcheck("respiratory exercise")
+    run_fts_query_with_spellcheck("pulmonary stress test")
+    run_fts_query_with_spellcheck("venous ultrasound")
+    run_fts_query_with_spellcheck("echocardiogram")
+    run_fts_query_with_spellcheck("stress echo")
+    run_fts_query_with_spellcheck("treadmill")
+    run_fts_query_with_spellcheck("holter")
+    run_fts_query_with_spellcheck("tetanus shot")
+    run_fts_query_with_spellcheck("tetnus shot")
+    run_fts_query_with_spellcheck("appendectomy")
+
     # Test clinical exemptions and custom vocabulary additions
     run_fts_query_with_spellcheck("acl") # Should not correct to 'facil'
     run_fts_query_with_spellcheck("chest radiography") # Should not correct to 'chest angiography'
