@@ -1,0 +1,53 @@
+canonical_payer,category,parent_org,naic_group_code,default_product_line,strip_words,notes
+Cash / Self-Pay,self_pay,,,Self-Pay,cash;self pay;self-pay,
+Health Sharing Ministries,self_pay,,,Self-Pay,,"Medi-Share, Christian Care Ministry, Trinity etc.; not insurance, usually billed near self-pay rates"
+Amish / Plain Community,self_pay,,,Self-Pay,,Amish Aid and Plain Church groups (self-pay community funds)
+Aetna,insurer,CVS Health,,,aetna,"Includes Aetna Better Health (Medicaid), Meritain (Aetna-owned TPA)"
+Anthem Blue Cross Blue Shield,insurer,Elevance Health,,,anthem;elevance;bcbs;blue cross;blue shield;bc;bx,"Anthem is the Blue Cross licensee for Indiana; generic BCBS and BlueCard lines land here. Includes HealthLink/Unicare brands"
+Blue Cross Blue Shield of Illinois,insurer,Health Care Service Corporation,,,bcbsil;bcbs;blue cross;blue shield;illinois;ill;bx,Separate rates are listed for BCBSIL by NW Indiana hospitals
+Blue Cross Blue Shield (Other States),insurer,Blue Cross Blue Shield Association,,,blue cross;blue shield;bcbs,"Named out-of-state Blue plans (Highmark, Horizon, CareFirst, Regence, ...)"
+CareSource,insurer,CareSource,,,caresource;care source,
+Centene (MHS / Ambetter / Wellcare),insurer,Centene,,,mhs;managed health services;centene,"MHS is Centene's Indiana Medicaid plan; Ambetter (Marketplace), Allwell/Wellcare (Medicare), Meridian, Buckeye"
+Cigna,insurer,The Cigna Group,,,cigna,
+Humana,insurer,Humana,,,humana,"Includes ChoiceCare network and Healthy Horizons (Medicaid); Humana Military is under TRICARE"
+MDwise,insurer,MDwise,,,mdwise;md wise,Indiana Medicaid managed care plan (also Marketplace and Medicare Advantage)
+Molina Healthcare,insurer,Molina Healthcare,,,molina,Includes Passport by Molina (Kentucky)
+UnitedHealthcare,insurer,UnitedHealth Group,,,unitedhealthcare;united healthcare;united health care;uhc;united,"Includes UMR, Golden Rule, All Savers, AARP/Secure Horizons, WellMed, Optum (non-VA)"
+Physicians Health Plan (PHP),insurer,,,,physicians health plan;php,Physicians Health Plan of Northern Indiana
+IU Health Plans,insurer,Indiana University Health,,,iu health;indiana university health,
+Medical Mutual of Ohio,insurer,Medical Mutual of Ohio,,,medical mutual,
+Priority Health,insurer,Corewell Health,,,priority health,
+Medicare Advantage (Other Plans),insurer,,,Medicare Advantage,,"Smaller Medicare Advantage carriers: Devoted, Zing, Provider Partners, CommuniCare, MyTruAdvantage, Ascension Complete, Medigold, ..."
+Medicare (Traditional),government,Centers for Medicare & Medicaid Services,,Medicare (Traditional),medicare,Original Medicare Parts A/B
+Medicaid (State Program),government,State Medicaid agencies,,Medicaid,medicaid,"State fee-for-service Medicaid and unspecified Medicaid/HIP lines (Indiana, Kentucky, Illinois, Michigan)"
+TRICARE,government,Defense Health Agency,,TRICARE,tricare,"TRICARE, CHAMPUS, Humana Military"
+Veterans Affairs (VA),government,Department of Veterans Affairs,,VA,va;veterans,"VA Community Care Network (Optum/TriWest), CHAMPVA"
+Workers' Compensation,government,,,Workers' Comp,workers comp;work comp,"Workers' comp, auto and liability payers, incl. CorVel, One Call, Align networks"
+Public Programs & Correctional Health,government,,,Other Government,,"Departments of correction, jails, sheriffs, county programs, grants (Ryan White, BCCP), correctional health vendors"
+Advantage Health Solutions,network,,,,advantage health solutions;advantage health,
+Community Health Alliance,network,,,,community health alliance,
+Community Health Direct,network,,,,community health direct,
+Encore Health Network,network,,,,encore;encircle,
+First Health / Coventry,network,CVS Health,,,first health;coventry,Aetna-owned rental network
+Cofinity (PPOM),network,CVS Health,,,cofinity;ppom,Aetna-owned rental network
+Goshen Preferred Network,network,,,,goshen preferred network,
+HealthLink,network,Elevance Health,,,healthlink,Anthem-owned network
+Indiana Health Network (IHN),network,,,,indiana health network;ihn,
+Lutheran Health Network,network,Lutheran Health Network,,,lutheran,Includes Lutheran Preferred and Three Rivers Preferred
+MultiPlan (PHCS / Claritev),network,Claritev,,,multiplan;phcs;claritev,"Includes Beech Street, Viant, Private Healthcare Systems"
+Parkview Health Plans (Signature Care),network,Parkview Health,,,parkview;signature care,
+Patoka Valley Health Care Cooperative,network,,,,patoka valley,
+Prime Health Services,network,,,,prime health services;prime health,
+Sagamore Health Network,network,,,,sagamore,
+SIHO Insurance Services,network,,,,siho,Southeastern Indiana Health Organization
+Suburban Health Organization,network,,,,suburban health organization;suburban;sho,
+Allied Benefit Systems,tpa,,,,allied benefit systems,
+AmeriBen,tpa,,,,ameriben,
+Auxiant,tpa,,,,auxiant,
+HealthScope Benefits,tpa,,,,healthscope,
+Key Benefit Administrators,tpa,,,,key benefit administrators;key benefit administrator;key benefit,
+Luminare Health,tpa,Health Care Service Corporation,,,luminare health,Formerly Trustmark Health Benefits
+Unified Group Services,tpa,,,,unified group services,
+WebTPA,tpa,,,,webtpa;web tpa,
+Commercial (Unspecified),generic,,,Commercial,,"Generic commercial, managed care or reference-based-pricing rates with no named payer"
+Medicare Advantage (Unspecified),generic,,,Medicare Advantage,,Medicare replacement / managed Medicare rates with no named carrier

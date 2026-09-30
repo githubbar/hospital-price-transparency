@@ -23,6 +23,7 @@ scratch/
 .installed.cfg
 *.egg
 *.csv
+!reference/payers/*.csv
 *.zip
 *.json
 *.xlsx

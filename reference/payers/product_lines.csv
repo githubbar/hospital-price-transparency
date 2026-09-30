@@ -1,0 +1,11 @@
+pattern,product_line,notes
+\b(cash|self ?pay|uninsured)\b,Self-Pay,
+\bworkers? comp|\bwork comp\b|^wc\b|\bauto\b|\bliability\b,Workers' Comp,
+\btricare\b|\bchampus\b|\bhumana military\b,TRICARE,
+\bvaccn\b|\bva ccn\b|\bveterans\b|\bchampva\b|\btriwest\b|\bvapc\d*\b|^(node )?va$,VA,"Bare ""va"" is avoided: ""BLUE CROSS - VA"" means Virginia"
+\bsupplement(al)?\b|\bmedigap\b,Medicare Supplement,
+\bmedicare\b|\bmcr\b|\bmc replacement\b|\bmmai\b|\bmmp\b|\bd ?snp\b|\bdual (eligib\w*|medicare|dg[dg])\b|\bil dual\b|\baarp\b|\bsecure horizons\b|\bcare improvement plus\b|\ballwell\b|\bwellmed\b|\bgold (plus|choice)\b|\boak street\b|\bzing\b|\bdevoted\b|\bmy ?tru ?advantage\b|\bmy true advantage\b|\btoday ?s option\b|\bmedigold\b|\bcommunicare\b|\bascension complete\b,Medicare Advantage,Checked before Medicaid so dual-eligible plans land here
+\bexchange\b|\bexch\b|\bexh\b|\bmarketplace\b|\bmrktplace\b|\bmktpl\b|\bmkt\b|\bambetter\b|\bjust ?(4|for) ?me\b|\bpathway( x)?\b|\bpathways? essentials\b|\bpath (essentials|x)\b|^anthem path\b|\bix[fp]\d\b|\bindiv\b|\bon off\b|\bindividual\b,Marketplace (ACA),"Anthem ""Pathway"" (singular) is its exchange network; ""Pathways for Aging"" is Medicaid"
+\bmedicaid\b|\bmcaid\b|\b(in )?mcd\b|\bmdc\b|^medi\b|\bmedi cal\b|\bhip\b|\bhealthy indiana\b|\bhoosier (healthwise|care|alliance)\b|\bhhw\b|\bhcc\b|\bcare ?connect\b|\bpathways (for|in)\b|\bhealthy horizons\b|\bhealthy blue\b|\bbetter health\b|\bpresumptive\b|\bpassport\b|\bcaretaker\b|\bblue cross complete\b,Medicaid,
+\bmd ?wise\b|^mhs\b|\bmanaged health services\b|\bmolina\b,Medicaid,Medicaid-first plans when no other product is named
+\b(ppo|hmo|pos|epo|oap|qpos|open access|commercial|comm|traditional|trad|indemnity|hdhp|choice plus|options|core|navigate|charter|group|employees?|employer|self funded|tpa|network|managed care|ntwrk|narrow|select|preferred|plus)\b,Commercial,

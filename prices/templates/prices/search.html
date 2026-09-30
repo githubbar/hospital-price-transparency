@@ -387,13 +387,17 @@
                     <div class="filter-checklist" id="payer-checklist" style="max-height: 380px;">
                         {% for group in payers_list %}
                         {% with group_idx=forloop.counter %}
+                        {% ifchanged group.category_label %}{% if group.category_label %}
+                        <div class="payer-category-label text-uppercase text-muted fw-semibold mt-2 mb-1" style="font-size: 0.68rem; letter-spacing: 0.04em;">{{ group.category_label }}</div>
+                        {% endif %}{% endifchanged %}
                         <div class="payer-group-container border-bottom border-light pb-1 mb-1">
                             <!-- Parent Row -->
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="form-check flex-grow-1 mb-0">
                                     <input class="form-check-input parent-payer-check" type="checkbox"
                                            id="parent_payer_{{ group_idx }}"
-                                           data-target-group="group-{{ group_idx }}">
+                                           data-target-group="group-{{ group_idx }}"
+                                           data-parent-name="{{ group.parent_name }}">
                                     <label class="form-check-label fw-semibold" style="font-size: 0.82rem; cursor: pointer;" for="parent_payer_{{ group_idx }}">
                                         {{ group.parent_name }}
                                     </label>
@@ -413,13 +417,15 @@
                                 {% for plan in group.plans %}
                                 <div class="form-check payer-check-item">
                                     <input class="form-check-input plan-check" type="checkbox"
-                                           name="payer" value="{{ plan.combined_raw }}"
+                                           name="payer" value="{{ plan.key }}"
                                            id="plan_{{ group_idx }}_{{ forloop.counter }}"
                                            data-group="group-{{ group_idx }}"
+                                           data-plan-key="{{ plan.key }}"
                                            form="search-form"
-                                           {% if plan.combined_raw in selected_payers %}checked{% endif %}>
+                                           {% if plan.key in selected_payers %}checked{% endif %}>
                                     <label class="form-check-label text-muted" style="font-size: 0.78rem;" for="plan_{{ group_idx }}_{{ forloop.counter }}">
                                         {{ plan.display }}
+                                        {% if plan.product_line and plan.product_line != 'All / Unspecified' and group.category != 'government' and group.category != 'self_pay' %}<span class="text-secondary" style="font-size: 0.7rem;">· {{ plan.product_line }}</span>{% endif %}
                                     </label>
                                 </div>
                                 {% endfor %}
@@ -891,11 +897,23 @@
             });
         });
 
+        // Store compact references (whole group name or short plan key) rather than raw
+        // plan values — raw values easily exceed the ~4 KB cookie limit and get dropped.
         function updatePayerCookie() {
-            const checkedValues = Array.from(document.querySelectorAll('input[name="payer"]:checked')).map(cb => cb.value);
+            const tokens = [];
+            parentChecks.forEach(parent => {
+                const groupName = parent.getAttribute('data-target-group');
+                const children = [...document.querySelectorAll(`.plan-check[data-group="${groupName}"]`)];
+                const checked = children.filter(cb => cb.checked);
+                if (children.length && checked.length === children.length) {
+                    tokens.push('g:' + parent.getAttribute('data-parent-name'));
+                } else {
+                    checked.forEach(cb => tokens.push('p:' + cb.getAttribute('data-plan-key')));
+                }
+            });
             const expires = new Date();
             expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000));
-            document.cookie = "selected_payers=" + encodeURIComponent(checkedValues.join(';')) + "; expires=" + expires.toUTCString() + "; path=/; SameSite=Lax";
+            document.cookie = "selected_payers=" + encodeURIComponent(tokens.join(';')) + "; expires=" + expires.toUTCString() + "; path=/; SameSite=Lax";
         }
 
         function updatePayerCounts() {
@@ -912,6 +930,18 @@
                 mb.style.display = tot ? '' : 'none';
             }
             updatePayerCookie();
+        }
+
+        // Hide a category heading when none of the insurer groups under it are visible
+        function syncCategoryLabels() {
+            document.querySelectorAll('.payer-category-label').forEach(label => {
+                let el = label.nextElementSibling, anyVisible = false;
+                while (el && !el.classList.contains('payer-category-label')) {
+                    if (el.style.display !== 'none') anyVisible = true;
+                    el = el.nextElementSibling;
+                }
+                label.style.display = anyVisible ? '' : 'none';
+            });
         }
 
         // Live Search Filtering
@@ -955,6 +985,8 @@
                     }
                 });
                 
+                syncCategoryLabels();
+
                 // Show how many visible parents are left
                 const visibleParents = [...payerGroups].filter(el => el.style.display !== 'none').length;
                 const totalParents = payerGroups.length;
@@ -981,6 +1013,7 @@
                     const coll = bootstrap.Collapse.getInstance(plansList);
                     if (coll) coll.hide();
                 });
+                syncCategoryLabels();
                 updatePayerCounts();
                 if (statusEl) statusEl.textContent = '';
                 window.showApplyPrompt();

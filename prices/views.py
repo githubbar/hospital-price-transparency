@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET
 from django.core.cache import cache
 from django.db import connection
 import difflib
-from urllib.parse import urlencode as _urlencode
+from urllib.parse import urlencode as _urlencode, quote as _quote, unquote as _unquote
 import csv
 import hashlib
 import json
@@ -15,6 +15,7 @@ import re
 import time
 import uuid
 import requests
+from prices.payer_normalization import plan_key
 from prices.synonyms import expand_query_synonyms, inject_synonyms_into_fts
 
 
@@ -277,6 +278,111 @@ def _load_filter_token(token):
         return cached, []
     return None, None
 
+
+# ── Compact payer cookie encoding ────────────────────────────────────────────
+# Each sidebar plan is identified by a short stable key (see
+# payer_normalization.plan_key); that key is the checkbox value and what selected
+# payer lists hold. Its raw (payer, plan) pairs live in static_payers_and_plans.json
+# as a JSON list because raw names can contain ',' and '|'.
+#
+# Browsers silently drop cookies over ~4 KB, so the cookie stores
+# 'g:<parent_name>' for a fully selected group and 'p:<plan_key>' for
+# individually selected plans.
+_payers_index_cache = None
+
+
+def _plan_key(combined_raw):
+    """Key for a legacy combined 'payer|plan,...' string (old tokens, cookies and links)."""
+    return hashlib.md5(combined_raw.encode('utf-8')).hexdigest()[:10]
+
+
+def _load_payers_index():
+    """Load static payers list plus lookup maps.
+
+    Returns (payers_list, group_map, key_map): group_map maps parent_name to its
+    plan keys, key_map maps plan key to its list of raw (payer, plan) tuples.
+    """
+    global _payers_index_cache
+    if _payers_index_cache is not None:
+        return _payers_index_cache
+    try:
+        json_path = os.path.join(settings.BASE_DIR, 'prices', 'static_payers_and_plans.json')
+        with open(json_path, 'r', encoding='utf-8') as f:
+            payers_list = json.load(f)
+    except Exception as e:
+        print(f"Error loading static payers and plans: {e}")
+        return [], {}, {}
+    group_map, key_map = {}, {}
+    for group in payers_list:
+        keys = []
+        for plan in group.get('plans', []):
+            pairs = [tuple(pair) for pair in plan.get('raw_pairs', [])]
+            plan['key'] = plan.get('key') or plan_key(pairs)
+            key_map[plan['key']] = pairs
+            keys.append(plan['key'])
+        group_map[group.get('parent_name', '')] = keys
+    _payers_index_cache = (payers_list, group_map, key_map)
+    return _payers_index_cache
+
+
+def _normalize_payer_selection(values):
+    """Map selected payer values to known plan keys, dropping unknown ones.
+
+    Accepts plan keys, or legacy combined 'payer|plan,...' strings still held in old
+    filter tokens, cookies and bookmarked links (matched by their hash, not parsed).
+    """
+    _, _, key_map = _load_payers_index()
+    result = []
+    for value in values:
+        if value in key_map:
+            result.append(value)
+        elif _plan_key(value) in key_map:
+            result.append(_plan_key(value))
+    return result
+
+
+def _selected_payer_pairs(plan_keys):
+    """Raw (payer, plan) pairs for the given plan keys; plan None matches any plan of that payer."""
+    _, _, key_map = _load_payers_index()
+    return [pair for key in plan_keys for pair in key_map.get(key, [])]
+
+
+def _encode_payer_cookie(selected_payers):
+    """Compact a list of plan keys into the cookie format."""
+    _, group_map, _ = _load_payers_index()
+    selected = set(_normalize_payer_selection(selected_payers))
+    tokens = []
+    for parent_name, keys in group_map.items():
+        if keys and all(k in selected for k in keys):
+            tokens.append(f'g:{parent_name}')
+        else:
+            tokens.extend(f'p:{k}' for k in keys if k in selected)
+    return _quote(';'.join(tokens), safe='')
+
+
+def _decode_payer_cookie(cookie_val):
+    """Expand a payer cookie (compact or legacy raw format) into plan keys."""
+    if not cookie_val:
+        return []
+    try:
+        decoded = _unquote(cookie_val)
+    except Exception:
+        return []
+    _, group_map, key_map = _load_payers_index()
+    result = []
+    for item in decoded.split(';'):
+        item = item.strip()
+        if not item:
+            continue
+        if item.startswith('g:'):
+            result.extend(group_map.get(item[2:], []))
+        elif item.startswith('p:'):
+            if item[2:] in key_map:
+                result.append(item[2:])
+        else:
+            result.extend(_normalize_payer_selection([item]))  # legacy cookie: raw value
+    return result
+
 FIELD_TOOLTIPS = {
     'description': "Description of each item or service provided by the hospital that corresponds to the standard charge the hospital has established.",
     'code_1': "Any code(s) used by the hospital for purposes of billing or accounting for the item or service.",
@@ -478,13 +584,7 @@ def search(request):
                 print(f"Error fetching total records: {e}")
 
     # Fetch unique Payers and Plans for the dropdown (pre-computed statically to avoid 14.4M row scans in serverless)
-    try:
-        json_path = os.path.join(settings.BASE_DIR, 'prices', 'static_payers_and_plans.json')
-        with open(json_path, 'r', encoding='utf-8') as f:
-            payers_list = json.load(f)
-    except Exception as e:
-        print(f"Error loading static payers and plans: {e}")
-        payers_list = []
+    payers_list = _load_payers_index()[0]
 
     hospitals_list = _load_hospitals()
     hospital_cities = sorted(set(h['city'] for h in hospitals_list if h['city']))
@@ -506,7 +606,7 @@ def search(request):
         if h_ids:
             response.set_cookie('selected_hospitals', ','.join(h_ids), max_age=30*86400, path='/', samesite='Lax')
         if p_ids:
-            response.set_cookie('selected_payers', ';'.join(p_ids), max_age=30*86400, path='/', samesite='Lax')
+            response.set_cookie('selected_payers', _encode_payer_cookie(p_ids), max_age=30*86400, path='/', samesite='Lax')
         return response
 
     elif filter_token:
@@ -534,29 +634,14 @@ def search(request):
                 pass
 
         # Selected payers
-        selected_payers = []
-        cookie_val_p = request.COOKIES.get('selected_payers', '')
-        if cookie_val_p:
-            try:
-                from urllib.parse import unquote
-                decoded_p = unquote(cookie_val_p)
-                if decoded_p:
-                    selected_payers = [p.strip() for p in decoded_p.split(';') if p.strip()]
-            except Exception:
-                pass
+        selected_payers = _decode_payer_cookie(request.COOKIES.get('selected_payers', ''))
 
+    selected_payers = _normalize_payer_selection(selected_payers)
     selected_hospitals_set = set(selected_hospitals)
     selected_payers_set = set(selected_payers)
 
-    # Parse selected payer-plans into specific raw tuples (payer_raw, plan_raw)
-    selected_payer_plans = []
-    for item in selected_payers:
-        for sub_item in item.split(','):
-            if '|' in sub_item:
-                parts = sub_item.split('|', 1)
-                selected_payer_plans.append((parts[0], parts[1]))
-            else:
-                selected_payer_plans.append((sub_item, None))
+    # Resolve selected plan keys into specific raw tuples (payer_raw, plan_raw)
+    selected_payer_plans = _selected_payer_pairs(selected_payers)
 
     # Build base query string for pagination (preserves all filters except page)
     _params = request.GET.copy()
@@ -1138,7 +1223,7 @@ def search(request):
         if selected_hospitals:
             response.set_cookie('selected_hospitals', ','.join(selected_hospitals), max_age=30*86400, path='/', samesite='Lax')
         if selected_payers:
-            response.set_cookie('selected_payers', ';'.join(selected_payers), max_age=30*86400, path='/', samesite='Lax')
+            response.set_cookie('selected_payers', _encode_payer_cookie(selected_payers), max_age=30*86400, path='/', samesite='Lax')
     return response
 
 
@@ -1263,30 +1348,14 @@ def _get_payer_plan_mapping():
         return _payer_plan_mapping_cache
         
     mapping = {}
-    try:
-        from django.conf import settings
-        import json
-        json_path = os.path.join(settings.BASE_DIR, 'prices', 'static_payers_and_plans.json')
-        if os.path.exists(json_path):
-            with open(json_path, 'r', encoding='utf-8') as f:
-                payers_list = json.load(f)
-                
-            for group in payers_list:
-                parent_name = group.get('parent_name', 'Other / Local Insurers')
-                for plan in group.get('plans', []):
-                    display = plan.get('display', 'Standard / All Plans')
-                    combined_raw = plan.get('combined_raw', '')
-                    for pair_str in combined_raw.split(','):
-                        if '|' in pair_str:
-                            p_raw, pl_raw = pair_str.split('|', 1)
-                        else:
-                            p_raw, pl_raw = pair_str, ''
-                        
-                        key = (p_raw.strip().lower(), pl_raw.strip().lower())
-                        mapping[key] = (parent_name, display)
-    except Exception as e:
-        print(f"Error building reverse mapping: {e}")
-        
+    for group in _load_payers_index()[0]:
+        parent_name = group.get('parent_name', 'Other / Local Insurers')
+        for plan in group.get('plans', []):
+            display = plan.get('display', 'Standard / All Plans')
+            for p_raw, pl_raw in plan.get('raw_pairs', []):
+                key = ((p_raw or '').strip().lower(), (pl_raw or '').strip().lower())
+                mapping[key] = (parent_name, display)
+
     _payer_plan_mapping_cache = mapping
     return mapping
 
@@ -1312,19 +1381,7 @@ def prices_details(request):
 
     # Extract selected payers, falling back to cookie if empty
     if not selected_payers_str:
-        cookie_val_p = request.COOKIES.get('selected_payers', '')
-        if cookie_val_p:
-            try:
-                from urllib.parse import unquote
-                decoded_p = unquote(cookie_val_p)
-                if decoded_p:
-                    selected_payers = [p.strip() for p in decoded_p.split(';') if p.strip()]
-                else:
-                    selected_payers = []
-            except Exception:
-                selected_payers = []
-        else:
-            selected_payers = []
+        selected_payers = _decode_payer_cookie(request.COOKIES.get('selected_payers', ''))
     else:
         selected_payers = [p.strip() for p in selected_payers_str.split(',') if p.strip()]
 
@@ -1346,14 +1403,10 @@ def prices_details(request):
     else:
         selected_hospitals = set([h.strip() for h in selected_hospitals_str.split(',') if h.strip()])
     
-    selected_payer_plans = set()
-    for item in selected_payers:
-        for sub_item in item.split(','):
-            if '|' in sub_item:
-                parts = sub_item.split('|', 1)
-                selected_payer_plans.add((parts[0].lower(), parts[1].lower()))
-            else:
-                selected_payer_plans.add((sub_item.lower(), None))
+    selected_payer_plans = {
+        ((p_raw or '').strip().lower(), pl_raw.strip().lower() if pl_raw is not None else None)
+        for p_raw, pl_raw in _selected_payer_pairs(_normalize_payer_selection(selected_payers))
+    }
     
     try:
         with connection.cursor() as cursor:
