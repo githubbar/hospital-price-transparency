@@ -90,6 +90,7 @@ https://visiblecharges.com
 | `extract_shoppable.py` | Pre-filter all CSVs to shoppable codes and save as `data/shoppable_cache.json.gz` |
 | `extract_expensive_codes.py` | Scan all CSVs for the top-N% most expensive CPT/HCPCS codes and append them to `reference/shoppable_codes.csv` |
 | `download_indiana.py` | Download Indiana hospital standard charge files from the hospitalpricingfiles.org API into `data/` |
+| `json_to_csv.py` | Convert a CMS price transparency JSON file (v2/v3) to the CMS tall CSV layout; `--refresh` does this automatically |
 | `analyze_csv.py` | Inspect and summarize a hospital pricing CSV |
 | `inspect_db.py` | Inspect the SQLite database |
 | `create_db.py` | Create/migrate the SQLite database |
@@ -110,7 +111,20 @@ Scans all Indiana hospital CSVs, calculates mean negotiated prices per CPT/HCPCS
 ```bash
 python download_indiana.py [--refresh-manifest] [--limit N] [--dry-run]
 ```
-Downloads Indiana hospital standard charge files from the visiblecharges API into `data/`. Resume-safe (skips already-downloaded files). Prefers ZIP over CSV when both are available.
+Downloads Indiana hospital standard charge files from the hospitalpricingfiles.org API into `data/`. Resume-safe (skips already-downloaded files). Prefers ZIP over CSV when both are available.
+
+**Routine updates (no browser needed):**
+```bash
+python download_indiana.py --refresh --dry-run   # preview: sources, notes, new hospitals
+python download_indiana.py --refresh             # download only files that changed
+```
+`--refresh` reads each hospital's CMS-mandated `/cms-hpt.txt` to find its current price file, falling back to the last URL that worked, and re-downloads only files whose server copy changed. It also compares our list against the CMS hospital registry and reports hospitals we don't track yet. Everything it decided is written to `data/refresh_report.json` — check its `note` fields and `new_in_cms_registry`.
+
+**Refreshing the hospital list itself** (new hospitals, moved links `--refresh` couldn't find) needs the API, which only works with a session that passed the site's Cloudflare check. Open hospitalpricingfiles.org in Chrome, pass the check, then DevTools → Network → click Indiana → copy the `ptsessionid` request header from the `facility/search` call:
+```bash
+python download_indiana.py --refresh --session-id <ptsessionid>
+```
+(or set `HPT_SESSION_ID`). If the session is expired the API returns an empty list; the script stops without touching the manifest.
 
 ---
 
