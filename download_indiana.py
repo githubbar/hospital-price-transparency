@@ -54,9 +54,15 @@ REFERENCE_DIR = BASE_DIR / "reference"
 MANIFEST_PATH = REFERENCE_DIR / "indiana_hospitals.json"
 LOG_PATH = DATA_DIR / "download_log.json"
 
+USER_AGENT = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
+# Some sites (e.g. Oaklawn, Porter-Starke) 403 any browser UA sent from urllib (it doesn't look
+# like a real browser) but accept an honest client name; open_url() retries 403s with this.
+FALLBACK_USER_AGENT = "HospitalPriceRefresh/1.0"
+
 API_URL = "https://pts.patientrightsadvocatefiles.org/facility/search?search=&searchstate=IN"
 API_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "User-Agent": USER_AGENT,
     "Accept": "application/json",
     "Origin": "https://hospitalpricingfiles.org",
     "Referer": "https://hospitalpricingfiles.org/",
@@ -77,11 +83,49 @@ REFRESH_REPORT_PATH = DATA_DIR / "refresh_report.json"
 FORMAT_PRIORITY = ["zip", "csv", "json", "xlsx"]
 
 DOWNLOAD_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "User-Agent": USER_AGENT,
     "Accept": "*/*",
 }
 
+# Hand-checked price-file URLs (manifest hospital name -> URL) for hospitals whose cms-hpt.txt
+# is missing, stale or unreadable. --refresh tries these first and falls back to the last known
+# URL. Remove an entry once the hospital's cms-hpt.txt points at a working file again.
+URL_OVERRIDES = {
+    # cms-hpt.txt redirects to a JS app; file URL comes from its machine-readable-files API (2026-10)
+    "REID HOSPITAL": "https://rhblobmobileapp.blob.core.windows.net/hospital-price-index/"
+                     "350892672_reid-health_standardcharges-864a2273e04b4eb7818c40dfab066123.csv",
+    # cms-hpt.txt entry is named "Physicians Medical Center LLC", so it isn't matched automatically
+    "PMC REGIONAL HOSPITAL": "https://clariti-health.com/csp/clariti/machinereadable/v2/"
+                             "205071967_Physicians-Medical-Center-LLC_standardcharges.csv",
+    # Old link was an .xlsx; price page now has a CSV
+    "MISSION BEHAVIORAL HEALTH": "https://www.mbhcares.com/getmedia/d7051a21-546f-4305-8234-02e82ef59667/"
+                                 "MissionBehavioralHealth_MRF.csv",
+    # Rebranded as Brentwood Behavioral Health (Deaconess); old domain redirects to the home page
+    "BRENTWOOD SPRINGS": "https://www.brentwoodbehavioralhealth.com/getContentAsset/"
+                         "6c9ab142-90e0-4c3a-9234-dfdcacf43c05/141d77fc-2e06-49eb-b14c-2ff58f5ce730/"
+                         "brentwood_standardcharges.csv",
+    # cms-hpt.txt URL is missing the /2026/08/ upload folder and 404s
+    "NW INDIANA ER & HOSPITAL": "https://nwindianaer.com/wp-content/uploads/2026/08/"
+                                "831287043_northwest-indiana-hospital-llc_standardcharges.csv",
+    # Last known URL was missing the /2026/06/ upload folder
+    "MARGARET MARY HEALTH": "https://www.mmhealth.org/wp-content/uploads/2026/06/"
+                            "356067049_Margaret-Mary-Health_standardcharges-2.csv",
+}
+
 CHUNK_SIZE = 1024 * 512  # 512 KB chunks
+
+
+def open_url(url: str, timeout: float, method: str | None = None):
+    """urlopen with DOWNLOAD_HEADERS, retrying once with FALLBACK_USER_AGENT on HTTP 403."""
+    try:
+        return urllib.request.urlopen(
+            urllib.request.Request(url, headers=DOWNLOAD_HEADERS, method=method), timeout=timeout)
+    except urllib.error.HTTPError as e:
+        if e.code != 403:
+            raise
+        headers = dict(DOWNLOAD_HEADERS, **{"User-Agent": FALLBACK_USER_AGENT})
+        return urllib.request.urlopen(
+            urllib.request.Request(url, headers=headers, method=method), timeout=timeout)
 
 
 def fetch_manifest() -> list:
@@ -169,8 +213,7 @@ def download_file(url: str, dest: Path, hospital_name: str) -> dict:
     }
 
     try:
-        req = urllib.request.Request(url, headers=DOWNLOAD_HEADERS)
-        with urllib.request.urlopen(req, timeout=120) as r:
+        with open_url(url, timeout=120) as r:
             total = int(r.headers.get("Content-Length", 0))
             # Kept so --refresh can skip files the server says haven't changed
             result["etag"] = r.headers.get("ETag")
@@ -447,8 +490,7 @@ def hpt_hosts(site_url: str) -> list:
 
 def fetch_hpt(host: str) -> str | None:
     try:
-        req = urllib.request.Request(f"https://{host}/cms-hpt.txt", headers=DOWNLOAD_HEADERS)
-        with urllib.request.urlopen(req, timeout=HPT_TIMEOUT) as r:
+        with open_url(f"https://{host}/cms-hpt.txt", timeout=HPT_TIMEOUT) as r:
             text = r.read(1024 * 1024).decode("utf-8", "replace")
     except Exception:
         return None
@@ -578,12 +620,20 @@ def server_unchanged(url: str, entry: dict) -> bool:
     if not entry or entry.get("url") != url or not (entry.get("etag") or entry.get("last_modified")):
         return False
     try:
-        req = urllib.request.Request(url, headers=DOWNLOAD_HEADERS, method="HEAD")
-        with urllib.request.urlopen(req, timeout=30) as r:
+        with open_url(url, timeout=30, method="HEAD") as r:
             etag, lm = r.headers.get("ETag"), r.headers.get("Last-Modified")
             length = int(r.headers.get("Content-Length") or 0)
     except Exception:
-        return False
+        # Some servers (e.g. Ascension) 404 a HEAD but serve the GET; read just the headers.
+        try:
+            req = urllib.request.Request(url, headers=dict(DOWNLOAD_HEADERS, Range="bytes=0-0"))
+            with urllib.request.urlopen(req, timeout=30) as r:
+                etag, lm = r.headers.get("ETag"), r.headers.get("Last-Modified")
+                total = (r.headers.get("Content-Range") or "").rpartition("/")[2]
+                length = int(total) if r.status == 206 and total.isdigit() else \
+                    int(r.headers.get("Content-Length") or 0) if r.status == 200 else 0
+        except Exception:
+            return False
     if entry.get("etag") and etag:
         return etag == entry["etag"]
     return bool(lm) and lm == entry.get("last_modified") and (not length or length == entry.get("bytes"))
@@ -655,6 +705,9 @@ def refresh(dry_run: bool = False, limit: int | None = None, use_api: bool = Fal
                 item["note"] = f"cms-hpt.txt file has a different EIN ({new_ein} vs {old_ein}); not switching automatically"
             else:
                 item["url"], item["source"] = hpt_url, "cms-hpt.txt (new url)"
+        if name in URL_OVERRIDES:
+            item["url"], item["source"] = URL_OVERRIDES[name], "manual override"
+            item["note"] = None
         if "url" not in item:
             item["url"] = known_url
             item["source"] = "cms-hpt.txt" if entry and hpt_url == known_url else "last known url"
