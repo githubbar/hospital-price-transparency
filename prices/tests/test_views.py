@@ -44,6 +44,13 @@ class SearchViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('text/html', response['Content-Type'])
 
+    def test_implant_share_loaded(self):
+        # Device-intensive procedures carry the CMS implant share; ordinary ones don't
+        from prices.views import _get_implant_share
+        shares = _get_implant_share()
+        self.assertAlmostEqual(shares['27447'], 43.46)
+        self.assertNotIn('75571', shares)
+
     def test_related_procedures_view(self):
         # Testrelated procedures AJAX endpoint
         url = reverse('related_procedures')

@@ -1360,6 +1360,28 @@ def _get_payer_plan_mapping():
     return mapping
 
 
+_implant_share_cache = None
+
+def _get_implant_share():
+    """CPT code -> CMS device offset for device-intensive procedures (reference/implant_share.csv,
+    built from the CY 2026 OPPS Addendum P): the share of the Medicare rate that is the implant."""
+    global _implant_share_cache
+    if _implant_share_cache is not None:
+        return _implant_share_cache
+
+    shares = {}
+    path = os.path.join(settings.BASE_DIR, 'reference', 'implant_share.csv')
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            for row in csv.DictReader(f):
+                shares[row['code'].strip().upper()] = float(row['implant_share_pct'])
+    except (OSError, KeyError, ValueError) as e:
+        print(f"Could not load implant shares from {path}: {e}")
+
+    _implant_share_cache = shares
+    return shares
+
+
 @require_GET
 def prices_details(request):
     """
@@ -1438,15 +1460,18 @@ def prices_details(request):
             
             # Fetch stats for each procedure ID to determine price_hue correctly
             stats_sql = f"""
-                SELECT id, stats_min, stats_max, stats_avg, stats_count
+                SELECT id, stats_min, stats_max, stats_avg, stats_count, code
                 FROM {db_prefix}procedures
                 WHERE id IN ({price_placeholders})
             """
             cursor.execute(stats_sql, proc_ids)
             stats_fetched = cursor.fetchall()
             stats_by_proc = {}
+            implant_shares = _get_implant_share()
+            implant_share = None
             for row in stats_fetched:
-                pid, s_min, s_max, s_avg, s_count = row
+                pid, s_min, s_max, s_avg, s_count, p_code = row
+                implant_share = implant_share or implant_shares.get((p_code or '').strip().upper())
                 stats_by_proc[pid] = {
                     'min': s_min,
                     'max': s_max,
@@ -1640,6 +1665,7 @@ def prices_details(request):
                 'payers': consolidated_payers,
                 'distribution_svg': distribution_svg,
                 'unique_id': unique_id,
+                'implant_share': implant_share,
             }
             return render(request, 'prices/price_table.html', context)
             
