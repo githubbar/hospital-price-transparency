@@ -23,6 +23,8 @@ import zipfile
 import io
 from tqdm import tqdm
 
+from extract_shoppable import cash_only_prices
+
 # Raise CSV field size limits for oversized hospital sheets
 csv.field_size_limit(min(sys.maxsize, 2 ** 31 - 1))
 
@@ -482,6 +484,7 @@ def parse_csv_into_map(stream, label, procedures_map, active_group_tracker, shop
                     
                     if not is_shoppable:
                         continue
+                row_prices = cash_only_prices(description, row_prices, label)
 
                 records_processed += 1
 
