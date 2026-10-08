@@ -562,7 +562,7 @@ def search(request):
         
         # Statically define counts for production state databases in GCS to avoid 14.4M row scans
         STATIC_STATE_COUNTS = {
-            'in': 4065, # Indiana database total procedures (one per code), Sept 2026 build
+            'in': 4134, # Indiana database total procedures (one per code), Oct 2026 build
         }
         
         if db_dir == "/mnt/gcs" and all(s in STATIC_STATE_COUNTS for s in selected_states):
