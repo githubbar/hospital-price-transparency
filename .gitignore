@@ -24,6 +24,7 @@ scratch/
 *.egg
 *.csv
 !reference/payers/*.csv
+!reference/implant_share.csv
 *.zip
 *.json
 *.xlsx

@@ -7,6 +7,12 @@
 </div>
 {% endif %}
 
+{% if implant_share %}
+<div class="px-3 py-2 bg-white border-bottom border-light text-muted small" style="cursor: help;" data-bs-toggle="tooltip" title="Medicare's 2026 estimate of how much of this procedure's cost is the implanted device. Many plans include the implant in the procedure price; others bill it separately. Treat it as a rough guide.">
+    <i class="bi bi-cpu me-1"></i> About {{ implant_share|floatformat:0 }}% of this procedure's cost is typically the implant (Medicare estimate)
+</div>
+{% endif %}
+
 <div class="payer-accordion animate-fade-in" id="payerAccordion-{{ unique_id }}">
     {% for payer in payers %}
     {% with payer_idx=forloop.counter %}
