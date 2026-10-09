@@ -131,16 +131,17 @@ def load_shoppable_codes(csv_path=None):
     return codes
 
 
-# Lines a hospital marks as cash-only, e.g. IU Health's "SCREEN HEART CALCIUM CASH ONLY"
-CASH_ONLY_RE = re.compile(r'\b(cash|self[\s-]*pay)[\s-]*only\b', re.IGNORECASE)
+# Flat-price cash lines: IU Health's "SCREEN HEART CALCIUM CASH ONLY", Franciscan's
+# "CT Promo Heart Screening"
+CASH_ONLY_RE = re.compile(r'\b(cash|self[\s-]*pay)[\s-]*only\b|\bpromo(tional)?\b', re.IGNORECASE)
 cash_only_rows = Counter()
 
 
 def cash_only_prices(description, row_prices, label=''):
-    """For a cash-only line, the flat gross charge is the cash price. Some files still run it
-    through the general self-pay discount and list payer rates (IU Health: $49 scan shown as
-    $12.06 cash), so keep only the gross charge, as both Cash and Gross. Rows with no gross
-    charge are left as published."""
+    """For a cash-only or promotional line, the flat gross charge is the cash price. Some files
+    still run it through the general self-pay discount and list payer rates (IU Health: $49
+    scan shown as $12.06 cash), so keep only the gross charge, as both Cash and Gross. Rows
+    with no gross charge are left as published."""
     if not CASH_ONLY_RE.search(description or ''):
         return row_prices
     gross = [p for p in row_prices if p[1] == 'Gross']
@@ -386,7 +387,7 @@ def parse_csv_into_map(stream, label, procedures_map, active_group_tracker, shop
                 
                 if not is_shoppable:
                     continue
-                row_prices = cash_only_prices(description, row_prices, final_h_name)
+                row_prices = cash_only_prices(description, row_prices, f"{final_h_name} | {description.strip()[:50]}")
 
                 records_processed += 1
 
