@@ -1,4 +1,6 @@
 # These are supported funding model platforms
 
 github: [githubbar]
-custom: https://www.paypal.com/donate/?hosted_button_id=Y7NER94EV2SWU
+custom:
+  - https://buy.stripe.com/00wdR84ej6sAf0Mf8IeEo00
+  - https://www.paypal.com/donate/?hosted_button_id=Y7NER94EV2SWU
