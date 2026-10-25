@@ -1,0 +1,1378 @@
+{
+  "allergy skin test": [
+    "95004",
+    "95024",
+    "\"percutaneous allergy skin\"",
+    "\"percut allergy skin\""
+  ],
+  "allergy skin tests": [
+    "95004",
+    "95024",
+    "\"percutaneous allergy skin\"",
+    "\"percut allergy skin\""
+  ],
+  "allergy shot": [
+    "95115",
+    "95117",
+    "\"immunotherapy injection\"",
+    "\"allergen injection\""
+  ],
+  "allergy shots": [
+    "95115",
+    "95117",
+    "\"immunotherapy injection\"",
+    "\"allergen injection\""
+  ],
+  "scratch test": [
+    "95004",
+    "95024",
+    "\"percutaneous allergy skin\"",
+    "\"percut allergy skin\""
+  ],
+  "scratch tests": [
+    "95004",
+    "95024",
+    "\"percutaneous allergy skin\"",
+    "\"percut allergy skin\""
+  ],
+  "allergy test": [
+    "95004",
+    "95024",
+    "95044",
+    "\"allergy skin test\"",
+    "\"allergy patch test\""
+  ],
+  "allergy tests": [
+    "95004",
+    "95024",
+    "95044",
+    "\"allergy skin test\"",
+    "\"allergy patch test\""
+  ],
+  "allergy testing": [
+    "95004",
+    "95024",
+    "95044",
+    "\"allergy skin test\"",
+    "\"allergy patch test\""
+  ],
+  "ct scan": [
+    "\"computed tomography\"",
+    "\"ct scan\""
+  ],
+  "ct scans": [
+    "\"computed tomography\"",
+    "\"ct scan\""
+  ],
+  "cat scan": [
+    "\"computed tomography\"",
+    "\"cat scan\""
+  ],
+  "cat scans": [
+    "\"computed tomography\"",
+    "\"cat scan\""
+  ],
+  "mri": [
+    "\"magnetic resonance imaging\"",
+    "\"magnetic resonance\""
+  ],
+  "mris": [
+    "\"magnetic resonance imaging\"",
+    "\"magnetic resonance\""
+  ],
+  "x-ray": [
+    "\"radiologic examination\"",
+    "xray",
+    "x-ray"
+  ],
+  "x-rays": [
+    "\"radiologic examination\"",
+    "xray",
+    "x-ray"
+  ],
+  "xray": [
+    "\"radiologic examination\"",
+    "xray",
+    "x-ray"
+  ],
+  "xrays": [
+    "\"radiologic examination\"",
+    "xray",
+    "x-ray"
+  ],
+  "ultrasound": [
+    "ultrasound",
+    "echography",
+    "sonogram"
+  ],
+  "ultrasounds": [
+    "ultrasound",
+    "echography",
+    "sonogram"
+  ],
+  "sonogram": [
+    "ultrasound",
+    "echography",
+    "sonogram"
+  ],
+  "sonograms": [
+    "ultrasound",
+    "echography",
+    "sonogram"
+  ],
+  "ekg": [
+    "\"electrocardiogram\"",
+    "ecg",
+    "ekg"
+  ],
+  "ekgs": [
+    "\"electrocardiogram\"",
+    "ecg",
+    "ekg"
+  ],
+  "ecg": [
+    "\"electrocardiogram\"",
+    "ecg",
+    "ekg"
+  ],
+  "ecgs": [
+    "\"electrocardiogram\"",
+    "ecg",
+    "ekg"
+  ],
+  "eeg": [
+    "\"electroencephalogram\"",
+    "eeg"
+  ],
+  "eegs": [
+    "\"electroencephalogram\"",
+    "eeg"
+  ],
+  "colonoscopy": [
+    "\"screening colonoscopy\"",
+    "\"colonoscopy flexible\"",
+    "colonoscopy"
+  ],
+  "colonoscopies": [
+    "\"screening colonoscopy\"",
+    "\"colonoscopy flexible\"",
+    "colonoscopy"
+  ],
+  "mammogram": [
+    "\"mammography\"",
+    "mammogram"
+  ],
+  "mammograms": [
+    "\"mammography\"",
+    "mammogram"
+  ],
+  "blood test": [
+    "\"blood draw\"",
+    "venipuncture",
+    "\"basic metabolic\"",
+    "\"comprehensive metabolic\""
+  ],
+  "blood tests": [
+    "\"blood draw\"",
+    "venipuncture",
+    "\"basic metabolic\"",
+    "\"comprehensive metabolic\""
+  ],
+  "lab work": [
+    "\"blood draw\"",
+    "venipuncture",
+    "\"basic metabolic\"",
+    "\"comprehensive metabolic\""
+  ],
+  "labs": [
+    "\"blood draw\"",
+    "venipuncture",
+    "\"basic metabolic\"",
+    "\"comprehensive metabolic\""
+  ],
+  "physical": [
+    "\"preventive medicine\"",
+    "\"annual exam\"",
+    "\"annual physical\""
+  ],
+  "physicals": [
+    "\"preventive medicine\"",
+    "\"annual exam\"",
+    "\"annual physical\""
+  ],
+  "checkup": [
+    "\"preventive medicine\"",
+    "\"annual exam\"",
+    "checkup"
+  ],
+  "checkups": [
+    "\"preventive medicine\"",
+    "\"annual exam\"",
+    "checkup"
+  ],
+  "er visit": [
+    "\"emergency department\"",
+    "\"emergency room\"",
+    "\"er visit\""
+  ],
+  "er visits": [
+    "\"emergency department\"",
+    "\"emergency room\"",
+    "\"er visit\""
+  ],
+  "emergency room": [
+    "\"emergency department\"",
+    "\"emergency room\""
+  ],
+  "emergency rooms": [
+    "\"emergency department\"",
+    "\"emergency room\""
+  ],
+  "delivery": [
+    "\"vaginal delivery\"",
+    "\"cesarean delivery\"",
+    "\"obstetrical care\""
+  ],
+  "deliveries": [
+    "\"vaginal delivery\"",
+    "\"cesarean delivery\"",
+    "\"obstetrical care\""
+  ],
+  "birth": [
+    "\"vaginal delivery\"",
+    "\"cesarean delivery\"",
+    "\"obstetrical care\""
+  ],
+  "births": [
+    "\"vaginal delivery\"",
+    "\"cesarean delivery\"",
+    "\"obstetrical care\""
+  ],
+  "childbirth": [
+    "\"vaginal delivery\"",
+    "\"cesarean delivery\"",
+    "\"obstetrical care\""
+  ],
+  "c-section": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "c-sections": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "allergy vials shot": [
+    "95115",
+    "95117",
+    "95165",
+    "\"immunotherapy injection\"",
+    "\"allergen injection\"",
+    "\"antigen therapy\""
+  ],
+  "allergy vials": [
+    "95165",
+    "\"antigen therapy\"",
+    "\"allergy antigen\""
+  ],
+  "allergy vial": [
+    "95165",
+    "\"antigen therapy\"",
+    "\"allergy antigen\""
+  ],
+  "c secion": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "cesarian section": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "sleep apnea": [
+    "95810",
+    "95811",
+    "\"sleep study\"",
+    "\"polysom\""
+  ],
+  "tubal": [
+    "58670",
+    "58671",
+    "\"tubal ligation\"",
+    "\"tubal block\"",
+    "\"tubal cautery\""
+  ],
+  "tubal ligation": [
+    "58670",
+    "58671",
+    "\"tubal ligation\"",
+    "\"tubal block\"",
+    "\"tubal cautery\""
+  ],
+  "tubal block": [
+    "58670",
+    "58671",
+    "\"tubal ligation\"",
+    "\"tubal block\"",
+    "\"tubal cautery\""
+  ],
+  "penile implant": [
+    "54405",
+    "C1813",
+    "\"penile pump\"",
+    "\"penile prosthesis\"",
+    "\"penis pros\""
+  ],
+  "ankle tendon repair": [
+    "27658",
+    "27659",
+    "27695",
+    "27696",
+    "\"ankle ligament\"",
+    "\"leg tendon\""
+  ],
+  "ankle repair": [
+    "27658",
+    "27659",
+    "27695",
+    "27696",
+    "\"ankle ligament\"",
+    "\"leg tendon\""
+  ],
+  "peroneus brevis": [
+    "27658",
+    "27659",
+    "27695",
+    "27696",
+    "\"leg tendon\""
+  ],
+  "peroneus tendon": [
+    "27658",
+    "27659",
+    "27695",
+    "27696",
+    "\"leg tendon\""
+  ],
+  "knee replacement": [
+    "27447",
+    "\"knee replacement\"",
+    "\"knee arthroplasty\""
+  ],
+  "knee replacements": [
+    "27447",
+    "\"knee replacement\"",
+    "\"knee arthroplasty\""
+  ],
+  "acl": [
+    "29888",
+    "\"anterior cruciate\"",
+    "\"knee ligament\""
+  ],
+  "radiography": [
+    "\"radiologic examination\"",
+    "xray",
+    "\"x-ray\"",
+    "71045",
+    "71046"
+  ],
+  "c section": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "c sections": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "cesarean": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "cesareans": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "cesarean section": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "cesarean sections": [
+    "\"cesarean delivery\"",
+    "\"c-section\"",
+    "cesarean"
+  ],
+  "targeted genomic": [
+    "81450",
+    "81445",
+    "\"targeted genomic\""
+  ],
+  "targeted genomic sequencing": [
+    "81450",
+    "81445",
+    "\"targeted genomic\""
+  ],
+  "targeted genomic sequence": [
+    "81450",
+    "81445",
+    "\"targeted genomic\""
+  ],
+  "respiratory exercise": [
+    "G0237",
+    "\"respiratory exercise\""
+  ],
+  "respiratory exercises": [
+    "G0237",
+    "\"respiratory exercise\""
+  ],
+  "pulmonary stress test": [
+    "94621",
+    "94617",
+    "94618",
+    "\"pulm stress\"",
+    "\"pulmonary stress\""
+  ],
+  "pulmonary stress tests": [
+    "94621",
+    "94617",
+    "94618",
+    "\"pulm stress\"",
+    "\"pulmonary stress\""
+  ],
+  "pulmonary stress test complex": [
+    "94621",
+    "94617",
+    "94618",
+    "\"pulm stress\"",
+    "\"pulmonary stress\""
+  ],
+  "venous ultrasound": [
+    "93970",
+    "93971",
+    "\"venous duplex\"",
+    "\"duplex scan\""
+  ],
+  "venous duplex": [
+    "93970",
+    "93971",
+    "\"venous duplex\"",
+    "\"duplex scan\""
+  ],
+  "venous duplex ultrasound": [
+    "93970",
+    "93971",
+    "\"venous duplex\"",
+    "\"duplex scan\""
+  ],
+  "venous ultrasounds": [
+    "93970",
+    "93971",
+    "\"venous duplex\"",
+    "\"duplex scan\""
+  ],
+  "duplex ultrasound": [
+    "93970",
+    "93971",
+    "\"venous duplex\"",
+    "\"duplex scan\""
+  ],
+  "duplex ultrasounds": [
+    "93970",
+    "93971",
+    "\"venous duplex\"",
+    "\"duplex scan\""
+  ],
+  "echocardiogram": [
+    "93306",
+    "\"echocardiography\"",
+    "\"echo complete\""
+  ],
+  "echocardiography": [
+    "93306",
+    "\"echocardiography\"",
+    "\"echo complete\""
+  ],
+  "echocardiograms": [
+    "93306",
+    "\"echocardiography\"",
+    "\"echo complete\""
+  ],
+  "stress echo": [
+    "93306",
+    "78452",
+    "\"stress echo\"",
+    "\"echocardiography\""
+  ],
+  "stress echocardiogram": [
+    "93306",
+    "78452",
+    "\"stress echo\"",
+    "\"echocardiography\""
+  ],
+  "stress echocardiography": [
+    "93306",
+    "78452",
+    "\"stress echo\"",
+    "\"echocardiography\""
+  ],
+  "stress echocardiograms": [
+    "93306",
+    "78452",
+    "\"stress echo\"",
+    "\"echocardiography\""
+  ],
+  "stress echos": [
+    "93306",
+    "78452",
+    "\"stress echo\"",
+    "\"echocardiography\""
+  ],
+  "treadmill": [
+    "94618",
+    "78452",
+    "\"stress test\"",
+    "\"cardiac stress\""
+  ],
+  "treadmill stress test": [
+    "94618",
+    "78452",
+    "\"stress test\"",
+    "\"cardiac stress\""
+  ],
+  "holter": [
+    "33285",
+    "C1764",
+    "\"cardiac monitor\"",
+    "\"rhythm monitor\""
+  ],
+  "holter monitor": [
+    "33285",
+    "C1764",
+    "\"cardiac monitor\"",
+    "\"rhythm monitor\""
+  ],
+  "holter monitors": [
+    "33285",
+    "C1764",
+    "\"cardiac monitor\"",
+    "\"rhythm monitor\""
+  ],
+  "tetanus shot": [
+    "\"vaccine\"",
+    "\"immunization\""
+  ],
+  "tetnus shot": [
+    "\"vaccine\"",
+    "\"immunization\""
+  ],
+  "appendectomy": [
+    "\"appendix\"",
+    "\"laparoscopy appendix\"",
+    "44979"
+  ],
+  "calcium score": [
+    "75571",
+    "\"calc score\"",
+    "\"coronary calc\"",
+    "\"heart calcium\"",
+    "\"cardiac score\""
+  ],
+  "calcium scoring": [
+    "75571",
+    "\"calc score\"",
+    "\"coronary calc\"",
+    "\"heart calcium\"",
+    "\"cardiac score\""
+  ],
+  "coronary calcium": [
+    "75571",
+    "\"calc score\"",
+    "\"coronary calc\"",
+    "\"heart calcium\"",
+    "\"cardiac score\""
+  ],
+  "cac": [
+    "75571",
+    "\"calc score\"",
+    "\"coronary calc\"",
+    "\"heart calcium\"",
+    "\"cardiac score\""
+  ],
+  "cac score": [
+    "75571",
+    "\"calc score\"",
+    "\"coronary calc\"",
+    "\"heart calcium\"",
+    "\"cardiac score\""
+  ],
+  "heart scan": [
+    "75571",
+    "\"calc score\"",
+    "\"coronary calc\"",
+    "\"heart calcium\"",
+    "\"cardiac score\""
+  ],
+  "cardiac calcium score": [
+    "75571",
+    "\"calc score\"",
+    "\"coronary calc\"",
+    "\"heart calcium\"",
+    "\"cardiac score\""
+  ],
+  "heart calcium scan": [
+    "75571",
+    "\"calc score\"",
+    "\"coronary calc\"",
+    "\"heart calcium\"",
+    "\"cardiac score\""
+  ],
+  "body composition analysis": [
+    "77080",
+    "0358T",
+    "\"bioelectrical impedance\""
+  ],
+  "body composition scan": [
+    "77080",
+    "0358T",
+    "\"bioelectrical impedance\""
+  ],
+  "body composition test": [
+    "77080",
+    "0358T",
+    "\"bioelectrical impedance\""
+  ],
+  "body composition": [
+    "77080",
+    "0358T",
+    "\"bioelectrical impedance\""
+  ],
+  "body comp": [
+    "77080",
+    "0358T",
+    "\"bioelectrical impedance\""
+  ],
+  "physical therapy": [
+    "97110",
+    "97161",
+    "97162",
+    "97140",
+    "97112",
+    "97530"
+  ],
+  "pt evaluation": [
+    "97161",
+    "97162"
+  ],
+  "occupational therapy": [
+    "97165",
+    "97166"
+  ],
+  "speech therapy": [
+    "92507"
+  ],
+  "hip replacement": [
+    "27130"
+  ],
+  "hip replacements": [
+    "27130"
+  ],
+  "vaginal delivery": [
+    "59400"
+  ],
+  "natural birth": [
+    "59400"
+  ],
+  "vasectomy": [
+    "55250"
+  ],
+  "office visit": [
+    "99203",
+    "99204",
+    "99205",
+    "99212",
+    "99213",
+    "99214",
+    "99215"
+  ],
+  "office visits": [
+    "99203",
+    "99204",
+    "99205",
+    "99212",
+    "99213",
+    "99214",
+    "99215"
+  ],
+  "doctor visit": [
+    "99203",
+    "99204",
+    "99205",
+    "99212",
+    "99213",
+    "99214",
+    "99215"
+  ],
+  "doctor visits": [
+    "99203",
+    "99204",
+    "99205",
+    "99212",
+    "99213",
+    "99214",
+    "99215"
+  ],
+  "doctor's visit": [
+    "99203",
+    "99204",
+    "99205",
+    "99212",
+    "99213",
+    "99214",
+    "99215"
+  ],
+  "doctor's visits": [
+    "99203",
+    "99204",
+    "99205",
+    "99212",
+    "99213",
+    "99214",
+    "99215"
+  ],
+  "new patient visit": [
+    "99203",
+    "99204",
+    "99205"
+  ],
+  "new patient visits": [
+    "99203",
+    "99204",
+    "99205"
+  ],
+  "cholesterol test": [
+    "80061"
+  ],
+  "cholesterol tests": [
+    "80061"
+  ],
+  "cholesterol check": [
+    "80061"
+  ],
+  "cholesterol checks": [
+    "80061"
+  ],
+  "lipid panel": [
+    "80061"
+  ],
+  "lipid panels": [
+    "80061"
+  ],
+  "a1c": [
+    "83036"
+  ],
+  "hemoglobin a1c": [
+    "83036"
+  ],
+  "diabetes test": [
+    "83036",
+    "82947"
+  ],
+  "diabetes tests": [
+    "83036",
+    "82947"
+  ],
+  "metabolic panel": [
+    "80048",
+    "80053"
+  ],
+  "metabolic panels": [
+    "80048",
+    "80053"
+  ],
+  "cmp": [
+    "80053"
+  ],
+  "bmp": [
+    "80048"
+  ],
+  "cbc": [
+    "85025",
+    "85027"
+  ],
+  "complete blood count": [
+    "85025",
+    "85027"
+  ],
+  "thyroid test": [
+    "84443",
+    "84439"
+  ],
+  "thyroid tests": [
+    "84443",
+    "84439"
+  ],
+  "tsh": [
+    "84443"
+  ],
+  "urinalysis": [
+    "81001",
+    "81002",
+    "81003"
+  ],
+  "urine test": [
+    "81001",
+    "81002",
+    "81003"
+  ],
+  "urine tests": [
+    "81001",
+    "81002",
+    "81003"
+  ],
+  "strep test": [
+    "\"strep\""
+  ],
+  "strep tests": [
+    "\"strep\""
+  ],
+  "flu test": [
+    "87804"
+  ],
+  "flu tests": [
+    "87804"
+  ],
+  "covid test": [
+    "87635"
+  ],
+  "covid tests": [
+    "87635"
+  ],
+  "pregnancy test": [
+    "81025"
+  ],
+  "pregnancy tests": [
+    "81025"
+  ],
+  "psa test": [
+    "84153",
+    "84154"
+  ],
+  "psa tests": [
+    "84153",
+    "84154"
+  ],
+  "vitamin d test": [
+    "82306"
+  ],
+  "vitamin d tests": [
+    "82306"
+  ],
+  "upper endoscopy": [
+    "43235",
+    "43239"
+  ],
+  "cataract surgery": [
+    "66984"
+  ],
+  "cataract surgeries": [
+    "66984"
+  ],
+  "gallbladder removal": [
+    "47562"
+  ],
+  "gallbladder surgery": [
+    "47562"
+  ],
+  "gallbladder surgeries": [
+    "47562"
+  ],
+  "hernia repair": [
+    "49505",
+    "49650",
+    "49595"
+  ],
+  "hernia repairs": [
+    "49505",
+    "49650",
+    "49595"
+  ],
+  "hernia surgery": [
+    "49505",
+    "49650",
+    "49595"
+  ],
+  "hernia surgeries": [
+    "49505",
+    "49650",
+    "49595"
+  ],
+  "tonsillectomy": [
+    "42820"
+  ],
+  "tonsils removed": [
+    "42820"
+  ],
+  "tonsil removal": [
+    "42820"
+  ],
+  "ear tubes": [
+    "69436"
+  ],
+  "bone density": [
+    "77080"
+  ],
+  "bone density scan": [
+    "77080"
+  ],
+  "bone density scans": [
+    "77080"
+  ],
+  "bone density test": [
+    "77080"
+  ],
+  "bone density tests": [
+    "77080"
+  ],
+  "dexa scan": [
+    "77080"
+  ],
+  "dexa scans": [
+    "77080"
+  ],
+  "dxa scan": [
+    "77080"
+  ],
+  "dxa scans": [
+    "77080"
+  ],
+  "knee scope": [
+    "29881",
+    "29880"
+  ],
+  "knee arthroscopy": [
+    "29881",
+    "29880"
+  ],
+  "meniscus repair": [
+    "29881",
+    "29880",
+    "29882"
+  ],
+  "meniscus repairs": [
+    "29881",
+    "29880",
+    "29882"
+  ],
+  "torn meniscus": [
+    "29881",
+    "29880",
+    "29882"
+  ],
+  "meniscus surgery": [
+    "29881",
+    "29880",
+    "29882"
+  ],
+  "meniscus surgeries": [
+    "29881",
+    "29880",
+    "29882"
+  ],
+  "shoulder arthroscopy": [
+    "29827",
+    "29826",
+    "29824"
+  ],
+  "rotator cuff repair": [
+    "29827",
+    "23412"
+  ],
+  "rotator cuff repairs": [
+    "29827",
+    "23412"
+  ],
+  "rotator cuff surgery": [
+    "29827",
+    "23412"
+  ],
+  "rotator cuff surgeries": [
+    "29827",
+    "23412"
+  ],
+  "spinal fusion": [
+    "22551",
+    "22612",
+    "22630",
+    "22633"
+  ],
+  "back surgery": [
+    "22551",
+    "22612",
+    "22630",
+    "63030",
+    "63047"
+  ],
+  "back surgeries": [
+    "22551",
+    "22612",
+    "22630",
+    "63030",
+    "63047"
+  ],
+  "epidural injection": [
+    "62323",
+    "62321",
+    "64483"
+  ],
+  "epidural injections": [
+    "62323",
+    "62321",
+    "64483"
+  ],
+  "steroid injection": [
+    "20610",
+    "62323",
+    "64483"
+  ],
+  "steroid injections": [
+    "20610",
+    "62323",
+    "64483"
+  ],
+  "cortisone shot": [
+    "20610",
+    "20611"
+  ],
+  "cortisone shots": [
+    "20610",
+    "20611"
+  ],
+  "cortisone injection": [
+    "20610",
+    "20611"
+  ],
+  "cortisone injections": [
+    "20610",
+    "20611"
+  ],
+  "joint injection": [
+    "20610",
+    "20611"
+  ],
+  "joint injections": [
+    "20610",
+    "20611"
+  ],
+  "prostate biopsy": [
+    "55700"
+  ],
+  "prostate biopsies": [
+    "55700"
+  ],
+  "breast biopsy": [
+    "19081"
+  ],
+  "breast biopsies": [
+    "19081"
+  ],
+  "heart cath": [
+    "93452",
+    "93458"
+  ],
+  "cardiac cath": [
+    "93452",
+    "93458"
+  ],
+  "heart catheterization": [
+    "93452",
+    "93458"
+  ],
+  "pet scan": [
+    "78815",
+    "78816"
+  ],
+  "pet scans": [
+    "78815",
+    "78816"
+  ],
+  "sleep study": [
+    "95810"
+  ],
+  "sleep studies": [
+    "95810"
+  ],
+  "chest x-ray": [
+    "71046",
+    "71045"
+  ],
+  "chest x-rays": [
+    "71046",
+    "71045"
+  ],
+  "chest xray": [
+    "71046",
+    "71045"
+  ],
+  "chest xrays": [
+    "71046",
+    "71045"
+  ],
+  "flu shot": [
+    "90662"
+  ],
+  "flu shots": [
+    "90662"
+  ],
+  "flu vaccine": [
+    "90662"
+  ],
+  "flu vaccines": [
+    "90662"
+  ],
+  "rsv vaccine": [
+    "90677"
+  ],
+  "rsv vaccines": [
+    "90677"
+  ],
+  "rsv shot": [
+    "90677"
+  ],
+  "rsv shots": [
+    "90677"
+  ],
+  "skin biopsy": [
+    "11102"
+  ],
+  "skin biopsies": [
+    "11102"
+  ],
+  "wart removal": [
+    "17110"
+  ],
+  "hearing test": [
+    "92557"
+  ],
+  "hearing tests": [
+    "92557"
+  ],
+  "eye exam": [
+    "92004",
+    "92014",
+    "92012"
+  ],
+  "eye exams": [
+    "92004",
+    "92014",
+    "92012"
+  ],
+  "kidney stone": [
+    "50590",
+    "52356"
+  ],
+  "kidney stones": [
+    "50590",
+    "52356"
+  ],
+  "pregnancy ultrasound": [
+    "76805"
+  ],
+  "pregnancy ultrasounds": [
+    "76805"
+  ],
+  "anatomy scan": [
+    "76805"
+  ],
+  "anatomy scans": [
+    "76805"
+  ],
+  "ob ultrasound": [
+    "76805"
+  ],
+  "ob ultrasounds": [
+    "76805"
+  ],
+  "pelvic ultrasound": [
+    "76830"
+  ],
+  "pelvic ultrasounds": [
+    "76830"
+  ],
+  "transvaginal ultrasound": [
+    "76830"
+  ],
+  "transvaginal ultrasounds": [
+    "76830"
+  ],
+  "abdominal ultrasound": [
+    "76700",
+    "76705"
+  ],
+  "abdominal ultrasounds": [
+    "76700",
+    "76705"
+  ],
+  "thyroid ultrasound": [
+    "76536"
+  ],
+  "thyroid ultrasounds": [
+    "76536"
+  ],
+  "3d mammogram": [
+    "77063"
+  ],
+  "3d mammograms": [
+    "77063"
+  ],
+  "screening mammogram": [
+    "77067",
+    "77063"
+  ],
+  "screening mammograms": [
+    "77067",
+    "77063"
+  ],
+  "diagnostic mammogram": [
+    "77065",
+    "77066"
+  ],
+  "diagnostic mammograms": [
+    "77065",
+    "77066"
+  ],
+  "colon cancer screening": [
+    "45378"
+  ],
+  "physical exam": [
+    "99385",
+    "99386"
+  ],
+  "physical exams": [
+    "99385",
+    "99386"
+  ],
+  "annual physical": [
+    "99385",
+    "99386"
+  ],
+  "annual physicals": [
+    "99385",
+    "99386"
+  ],
+  "therapy session": [
+    "90834",
+    "90837",
+    "90832"
+  ],
+  "therapy sessions": [
+    "90834",
+    "90837",
+    "90832"
+  ],
+  "counseling session": [
+    "90834",
+    "90837",
+    "90832"
+  ],
+  "counseling sessions": [
+    "90834",
+    "90837",
+    "90832"
+  ],
+  "talk therapy": [
+    "90834",
+    "90837",
+    "90832"
+  ],
+  "vein ablation": [
+    "36475",
+    "36478"
+  ],
+  "varicose veins": [
+    "36475",
+    "36478"
+  ],
+  "varicose vein": [
+    "36475",
+    "36478"
+  ],
+  "bunion surgery": [
+    "28296",
+    "28292"
+  ],
+  "bunion surgeries": [
+    "28296",
+    "28292"
+  ],
+  "bunion": [
+    "28296",
+    "28292"
+  ],
+  "bunions": [
+    "28296",
+    "28292"
+  ],
+  "trigger finger": [
+    "26055"
+  ],
+  "acid reflux surgery": [
+    "43280"
+  ],
+  "acid reflux surgeries": [
+    "43280"
+  ],
+  "bariatric surgery": [
+    "43644"
+  ],
+  "bariatric surgeries": [
+    "43644"
+  ],
+  "weight loss surgery": [
+    "43644"
+  ],
+  "weight loss surgeries": [
+    "43644"
+  ],
+  "septoplasty": [
+    "30520"
+  ],
+  "deviated septum": [
+    "30520"
+  ],
+  "sinus surgery": [
+    "31256"
+  ],
+  "sinus surgeries": [
+    "31256"
+  ],
+  "ankle fracture": [
+    "27786",
+    "27792",
+    "27814"
+  ],
+  "ankle fractures": [
+    "27786",
+    "27792",
+    "27814"
+  ],
+  "broken ankle": [
+    "27786",
+    "27792",
+    "27814"
+  ],
+  "broken arm": [
+    "25600",
+    "25605",
+    "24500"
+  ],
+  "broken wrist": [
+    "25600",
+    "25605",
+    "25607"
+  ]
+}

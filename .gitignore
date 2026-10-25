@@ -27,6 +27,7 @@ scratch/
 !reference/implant_share.csv
 *.zip
 *.json
+!reference/default_synonyms.json
 *.xlsx
 *.sqlite3
 *.gz
