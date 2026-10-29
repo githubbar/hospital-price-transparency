@@ -764,7 +764,9 @@
         var hospitals = JSON.parse(el.getAttribute('data-hospitals') || '[]');
         var html = hospitals.map(function(h) {
           return '<span style="color:#90caf9;font-weight:600">' + h.name + '</span>' +
-                 '&nbsp;<span style=\"color:#00e676;font-weight:700\">$' + h.price + '</span>';
+                 (h.unusual
+                   ? '&nbsp;<span style=\"color:#ffca28;font-weight:700\">$' + h.price + ' &#9888; unusually ' + h.unusual + '</span>'
+                   : '&nbsp;<span style=\"color:#00e676;font-weight:700\">$' + h.price + '</span>');
         }).join('<br>');
         new bootstrap.Tooltip(el, {
           html: true,

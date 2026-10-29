@@ -40,6 +40,8 @@ from collections import Counter
 csv.field_size_limit(min(sys.maxsize, 2 ** 31 - 1))
 from tqdm import tqdm
 
+from prices.outliers import robust_stats
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 REFERENCE_DIR = os.path.join(BASE_DIR, 'reference')
@@ -552,12 +554,7 @@ def main():
             for h_id, h_name, payer, plan, setting, price in data['prices']
         ]
         if values:
-            data['stats'] = {
-                'min': min(values),
-                'max': max(values),
-                'avg': round(sum(values) / len(values), 2),
-                'count': len(values)
-            }
+            data['stats'] = robust_stats(values)  # min/max/avg leave out unusual prices
         return data
 
     # Save as gzip-compressed NDJSON (one JSON object per line).

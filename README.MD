@@ -61,6 +61,12 @@ python extract_hospital_sources.py
 ```
 It writes `reference/hospital_sources.json`, keyed by the same hospital hash as the database, so it doesn't require a database rebuild.
 
+### Unusual prices
+Prices far outside what other hospitals list for a procedure (more than 5× below its 5th percentile or above its 95th, see `prices/outliers.py`) are flagged in the price table and left out of ranges, averages and min/max. New database builds compute min/max/avg this way. To update an existing database without rebuilding it:
+```bash
+python recompute_stats.py in_full.sqlite3 in_aggregate.sqlite3
+```
+
 
 ## Deployment
     see DEPLOYMENT.md
@@ -96,6 +102,7 @@ https://visiblecharges.com
 | `load_to_sqlite.py` | Index hospital pricing CSVs into SQLite (supports `--shoppable-only` and `--cached-file`) |
 | `extract_shoppable.py` | Pre-filter all CSVs to shoppable codes and save as `data/shoppable_cache.json.gz` |
 | `extract_hospital_sources.py` | Write `reference/hospital_sources.json`: each hospital's price file URL and `last_updated_on` date, shown under price tables |
+| `recompute_stats.py` | Recompute procedure min/max/avg in existing databases, leaving out unusual prices |
 | `extract_expensive_codes.py` | Scan all CSVs for the top-N% most expensive CPT/HCPCS codes and append them to `reference/shoppable_codes.csv` |
 | `download_indiana.py` | Download Indiana hospital standard charge files from the hospitalpricingfiles.org API into `data/` |
 | `json_to_csv.py` | Convert a CMS price transparency JSON file (v2/v3) to the CMS tall CSV layout; `--refresh` does this automatically |

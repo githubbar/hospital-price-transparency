@@ -30,6 +30,7 @@
                 <div>
                     <span class="fw-bold text-dark fs-6" style="font-size: 0.92rem !important;">{{ payer.payer_name }}</span>
                     <span class="badge bg-light text-muted border ms-2" style="font-size: 0.72rem;">{{ payer.plans|length }} Plan{{ payer.plans|pluralize }}</span>
+                    {% if payer.unusual_count %}<i class="bi bi-exclamation-triangle-fill text-warning ms-1" style="font-size: 0.75rem;" title="{{ payer.unusual_count }} unusual price{{ payer.unusual_count|pluralize }} left out of this range"></i>{% endif %}
                 </div>
             </div>
             
@@ -67,7 +68,7 @@
                                 <td>
                                     <div class="small text-muted" style="font-size: 0.78rem;">
                                         {% if plan.hospitals|length > 1 %}
-                                            <span class="hosp-tip" style="cursor:help; text-decoration: underline dotted;" data-bs-placement="right" data-hospitals='[{% for h in plan.hospitals %}{"name":"{{ h.name|escapejs }}","price":"{{ h.price|floatformat:2 }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
+                                            <span class="hosp-tip" style="cursor:help; text-decoration: underline dotted;" data-bs-placement="right" data-hospitals='[{% for h in plan.hospitals %}{"name":"{{ h.name|escapejs }}","price":"{{ h.price|floatformat:2 }}","unusual":"{{ h.unusual|default:'' }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
                                                 {{ plan.hospital_display }}
                                             </span>
                                         {% else %}
@@ -80,6 +81,10 @@
                                         ${{ plan.price_min|floatformat:0 }} - ${{ plan.price_max|floatformat:0 }}
                                     {% else %}
                                         ${{ plan.price_min|floatformat:2 }}
+                                    {% endif %}
+                                    {% if plan.unusual %}
+                                    <i class="bi bi-exclamation-triangle-fill text-warning ms-1" style="cursor: help;" data-bs-toggle="tooltip"
+                                       title="{% if plan.all_unusual %}This price is{% else %}Left out of this range:{% endif %} {% for u in plan.unusual %}${{ u.price|floatformat:2 }} at {{ u.name }} (unusually {{ u.unusual }}){% if not forloop.last %}; {% endif %}{% endfor %}. {% if plan.all_unusual %}It is{% else %}They are{% endif %} far outside what other hospitals list for this procedure: usually a data error, or for a low price, only part of the fee. Confirm with the hospital."></i>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -106,6 +111,12 @@
         <a href="#" class="link-secondary" data-bs-toggle="collapse" data-bs-target="#sources-{{ unique_id }}"
            aria-expanded="false" aria-controls="sources-{{ unique_id }}">Show sources</a>
     </div>
+    {% if unusual_count %}
+    <div class="mt-1" style="cursor: help;" data-bs-toggle="tooltip"
+         title="Prices more than 5 times below the lowest 5% or above the highest 5% of what hospitals list for this procedure. These are usually data errors or partial fees. Hover the warning icons to see them.">
+        <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>{{ unusual_count }} unusual price{{ unusual_count|pluralize }} left out of the ranges above
+    </div>
+    {% endif %}
     <div class="collapse" id="sources-{{ unique_id }}">
         <div class="mt-2" style="max-height: 280px; overflow-y: auto;">
         <table class="table table-sm table-borderless mb-0" style="font-size: 0.76rem;">

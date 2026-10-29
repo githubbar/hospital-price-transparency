@@ -15,6 +15,7 @@ import re
 import time
 import uuid
 import requests
+from prices.outliers import price_fences, robust_stats, unusual
 from prices.payer_normalization import plan_key
 from prices.synonyms import expand_query_synonyms, inject_synonyms_into_fts
 
@@ -1544,6 +1545,18 @@ def prices_details(request):
                     'price': price
                 })
                 
+            # Spot prices far outside what other hospitals list for the same procedure (likely data errors),
+            # judged against every hospital and insurer, not just the ones selected
+            values_by_proc = {}
+            for item in raw_items:
+                if (item.get('payer_name') or '').lower() not in ('gross', 'gross charge', 'negotiated dollar'):
+                    values_by_proc.setdefault(item['procedure_id'], []).append(float(item.get('price') or 0))
+            fences_by_proc = {pid: price_fences(vals) for pid, vals in values_by_proc.items()}
+            for pid, vals in values_by_proc.items():
+                robust = robust_stats(vals)
+                if robust and pid in stats_by_proc:
+                    stats_by_proc[pid].update(min=robust['min'], max=robust['max'])
+
             # Prepare items with hue
             items = []
             for item in raw_items:
@@ -1583,10 +1596,11 @@ def prices_details(request):
                 
                 hue = 120
                 if local_max > local_min:
-                    ratio = (val - local_min) / (local_max - local_min)
+                    ratio = min(max((val - local_min) / (local_max - local_min), 0), 1)
                     hue = int(120 - (ratio * 120))
-                
+
                 items.append({
+                    'unusual': unusual(val, fences_by_proc.get(pid)),
                     'payer_name': p_name,
                     'plan_name': item.get('plan_name') or 'Unknown',
                     'hospital_id': h_id,
@@ -1639,16 +1653,19 @@ def prices_details(request):
                 payer_all_prices = []
                 
                 for pl_name, rows in plans_dict.items():
-                    prices = [r['standard_charge_negotiated_dollar'] for r in rows if r.get('standard_charge_negotiated_dollar') is not None]
-                    if not prices:
+                    rows = [r for r in rows if r.get('standard_charge_negotiated_dollar') is not None]
+                    if not rows:
                         continue
+                    # Ranges and averages leave out unusual prices, unless the plan has nothing else
+                    usual_rows = [r for r in rows if not r['unusual']] or rows
+                    prices = [r['standard_charge_negotiated_dollar'] for r in usual_rows]
                     all_price_values.extend(prices)
                     payer_all_prices.extend(prices)
-                    
+
                     c_min = min(prices)
                     c_max = max(prices)
                     c_avg = sum(prices) / len(prices)
-                    
+
                     hosps = sorted(list(set([r['hospital_name'] or r['hospital_id'] for r in rows])))
                     hosp_display = ", ".join(hosps) if len(hosps) <= 2 else f"{len(hosps)} Hospitals"
 
@@ -1656,10 +1673,16 @@ def prices_details(request):
                     for r in rows:
                         h = r['hospital_name'] or r['hospital_id']
                         if h not in hosp_prices:
-                            hosp_prices[h] = r['standard_charge_negotiated_dollar']
-                    hosp_list = [{'name': h, 'price': p} for h, p in sorted(hosp_prices.items())]
+                            hosp_prices[h] = (r['standard_charge_negotiated_dollar'], r['unusual'])
+                    hosp_list = [{'name': h, 'price': p, 'unusual': u} for h, (p, u) in sorted(hosp_prices.items())]
+                    # The same price is often listed once per setting (inpatient/outpatient); show it once
+                    unusual_set = {(r['standard_charge_negotiated_dollar'], r['hospital_name'] or r['hospital_id'], r['unusual'])
+                                   for r in rows if r['unusual']}
+                    unusual_list = [{'price': p, 'name': n, 'unusual': u} for p, n, u in sorted(unusual_set)]
 
                     payer_plans.append({
+                        'unusual': unusual_list,
+                        'all_unusual': len(usual_rows) == len(rows) and bool(unusual_list),
                         'plan_name': pl_name,
                         'hospital_display': hosp_display,
                         'hospitals': hosp_list,
@@ -1692,6 +1715,7 @@ def prices_details(request):
                         p_hue = int(120 - (ratio * 120))
                 
                 consolidated_payers.append({
+                    'unusual_count': sum(len(pl['unusual']) for pl in payer_plans),
                     'payer_name': p_name,
                     'plans': payer_plans,
                     'price_min': p_min,
@@ -1719,6 +1743,7 @@ def prices_details(request):
                 'unique_id': unique_id,
                 'implant_share': implant_share,
                 'sources': _price_sources({item['hospital_id'] for item in items}),
+                'unusual_count': sum(len(plan['unusual']) for payer in consolidated_payers for plan in payer['plans']),
             }
             return render(request, 'prices/price_table.html', context)
             

@@ -23,6 +23,8 @@ import zipfile
 import io
 from tqdm import tqdm
 
+from prices.outliers import robust_stats
+
 from extract_shoppable import cash_only_prices
 
 # Raise CSV field size limits for oversized hospital sheets
@@ -962,12 +964,7 @@ def main():
             for pid, data in procedures_map.items():
                 values = data.pop('price_values')
                 if values:
-                    data['stats'] = {
-                        'min': min(values),
-                        'max': max(values),
-                        'avg': round(sum(values) / len(values), 2),
-                        'count': len(values)
-                    }
+                    data['stats'] = robust_stats(values)  # min/max/avg leave out unusual prices
                 final_procedures.append(data)
 
         # 3. Write data to SQLite (the cache path already wrote its batches above)
