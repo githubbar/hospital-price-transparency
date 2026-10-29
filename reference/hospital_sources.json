@@ -1,0 +1,1842 @@
+{
+ "0298309305373d11fab13886f2f79d04": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 381676783,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/352112529_st-vincent-clay-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Clay Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/brazil-ascension-st-vincent-clay"
+ },
+ "052dd064cd66cdcd8a53b18edc020a90": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 8049038,
+  "file_url": "https://ernesthealth.com/pricing/2026/833605899_rehabilitation-hospital-of-northern-indiana_standard-charges.json",
+  "last_updated_on": "2026-08-10",
+  "last_updated_raw": "2026-08-10",
+  "name": "Rehabilitation Hospital Of Northern Indiana",
+  "page_url": "https://rhni.ernesthealth.com/price-transparency/",
+  "website": "https://rhni.ernesthealth.com/portfolio-item/rehabilitation-hospital-of-northern-indiana/"
+ },
+ "085d09d5fe0418e70b472c4de4cc0c29": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 599888436,
+  "file_url": "https://www.nwhealthporter.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/208473972_northwest-health-porter_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Porter Hospital Llc",
+  "page_url": "https://www.nwhealthporter.com/pricing-information",
+  "website": "https://www.nwhealthporter.com/"
+ },
+ "08ba9b964fc7604e5b18de6c10ed1eee": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 203177741,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/350869066_st-vincent-hospital-and-health-care-center-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Hospital And Health Care Center, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/avon-ascension-st-vincent-avon-emergency"
+ },
+ "08e2639b11bf81d762e5c232f55e417d": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 102912216,
+  "file_url": "https://resources.selectmedical.com/pricing-transparency/critical-illness-recovery/16-1647691_Regency_Hospital_of_NW_Indiana_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Regency Hospital Of Northwest Indiana",
+  "page_url": "https://www.regencyhospital.com/patients-and-caregivers/admissions/price-transparency",
+  "website": "https://www.regencyhospital.com/locations-and-tours/in/east-chicago/northwest-indiana/"
+ },
+ "0908893d6e8b2191afa68c62245ecdce": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 132652714,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbPMHWINAMACIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-07-07",
+  "last_updated_raw": "2026-07-07",
+  "name": "Pulaski Memorial Hospital",
+  "page_url": "https://www.pmhnet.com/patients/financial/price-transparency",
+  "website": "https://www.pmhnet.com/"
+ },
+ "0f655f66c222b551dac410e996e452bb": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 13307,
+  "file_url": "https://newvistahealth.com/wp-content/uploads/2026/07/MRF-Ethan-Crossing-of-Indianapolis-Health-and-Wellness-updated-new.csv",
+  "last_updated_on": "2026-07-22",
+  "last_updated_raw": "2026-07-22",
+  "name": "Ethan Crossing Of Indianapolis",
+  "page_url": "https://newvistahealth.com/price-transparency/",
+  "website": "https://newvistahealth.com/location/indianapolis/"
+ },
+ "0fc74890a8d51e816955afe9e97873f1": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 16092464,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/351835133_franciscan-health-dyer_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Dyer",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-dyer"
+ },
+ "10aa09be2320a5c529c98e291b6f006b": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1985885,
+  "file_url": "https://www.orthoindy.com/wp-content/uploads/470933538_INDIANA-ORTHOPAEDIC-HOSPITAL-LLC_standardcharges.csv",
+  "last_updated_on": "2026-06-10",
+  "last_updated_raw": "6/10/2026",
+  "name": "Indiana Orthopaedic Hospital Llc",
+  "page_url": "https://www.orthoindy.com/price-transparency",
+  "website": "https://www.orthoindy.com/locations/northwest-hospital?service=hospital"
+ },
+ "110ba87473d64636374b52138f9f593b": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 58081540,
+  "file_url": "https://www.powershealth.org/-/media/Files/PriceTransparency/351738708_St-Catherine-Hospital_standardcharges.zip",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "St Catherine Hospital Inc D/B/A St Catherine Hospital Inc",
+  "page_url": "https://www.powershealth.org/patients-and-visitors/patient-resources/standard-charges",
+  "website": "https://www.powershealth.org/locations/s/st-catherine-hospital"
+ },
+ "1217938dac4ccaede4b259eba0027a22": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2283661372,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Community_Hospital_South.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Community Hospital South, Inc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-hospital-south"
+ },
+ "12aeead9f267560d996d2e0c47cec567": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 365603073,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/351841606_st-vincent-jennings-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Jennings Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/north-vernon-ascension-st-vincent-jennings"
+ },
+ "149c3cf18ca6bf83bc280d2783563e5d": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 46368511,
+  "file_url": "https://monroehospital.com/wp-content/uploads/2026/04/472105584_MonroeHospital_standardcharges.JSON",
+  "last_updated_on": "2026-03-17",
+  "last_updated_raw": "2026-03-17",
+  "name": "Monroe Hospital",
+  "page_url": "https://monroehospital.com/financial-assistance",
+  "website": "https://monroehospital.com/"
+ },
+ "186d2b555592f8e5969d8a5b37cf74fe": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 157468306,
+  "file_url": "https://www.gshvin.org/clientfiles/getfile/356001532_GoodSamaritan_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Good Samaritan Hosptial",
+  "page_url": "https://www.gshvin.org/patients-visitors/insurance-billing-and-payment/standard-hospital-charges/",
+  "website": "https://www.gshvin.org/"
+ },
+ "1959afadea210c60190a34f3dea7ac86": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 64127357,
+  "file_url": "https://cdn.iuhealth.org/resources/352090919_indiana-university-health-paoli-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Paoli Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-paoli-hospital"
+ },
+ "1b335cd4159185f032c6fb2e95239af7": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 53047362,
+  "file_url": "https://www.greenecountyhospital.com/_files/ugd/ef7254_551aec06831a4af791a0577e4880589a.csv?dn=356001492_greene-county-general-hospital_standardcharges.csv",
+  "last_updated_on": "2026-06-05",
+  "last_updated_raw": "6/5/2026",
+  "name": "Greene County General Hospital",
+  "page_url": "https://www.greenecountyhospital.com/price-transparency",
+  "website": "https://www.greenecountyhospital.com/"
+ },
+ "1b8a9879c1fd5a86686895100172e9b7": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 20718110,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/202401676_parkview-lagrange-hospital_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Lagrange Hospital",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/locations/parkview-lagrange-hospital"
+ },
+ "1dafd4e26eaded0908a81910805f9603": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 97935720,
+  "file_url": "https://resources.selectmedical.com/pricing-transparency/critical-illness-recovery/16-1647691_Regency_Hospital_of_Porter_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Regency Hospital Of Northwest Indiana (Porter County)",
+  "page_url": "https://www.regencyhospital.com/patients-and-caregivers/admissions/price-transparency",
+  "website": "https://www.regencyhospital.com/locations-and-tours/in/portage/porter/"
+ },
+ "1ef903b42d383a0dce13b516f800d85c": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 31427005,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/351064295_parkview-dekalb-hospital_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Dekalb Hospital",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/locations/parkview-dekalb-hospital"
+ },
+ "2071609ac033c7a0043379c46fdbe10c": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 25406525,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/352103153_st-vincent-randolph-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Randolph Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/winchester-ascension-st-vincent-randolph"
+ },
+ "20bc6216c865d15c2d282ff8973a91ac": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 5293,
+  "file_url": "https://www.neuropsychiatrichospitals.net/price-transparency/842021041_medical-behavioral-hospital-of-indianapolis_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Medical Behavioral Hospital Of Indianapolis, Llc",
+  "page_url": "https://www.neuropsychiatrichospitals.net/price-transparency",
+  "website": "https://www.neuropsychiatrichospitals.net/"
+ },
+ "211e14340e51f0755d1542fd2d13a250": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 207397887,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/351991390_naab-road-surgery-center-llc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "Naab Road Surgery Center",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://www.naabroadsurgery.com/"
+ },
+ "218f7c96c35f5ab374773a2711219351": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 83125022,
+  "file_url": "https://ddec1-0-en-ctp.trendmicro.com/wis/clicktime/v1/query?url=https%3a%2f%2fapps.para%2dhcfs.com%2fPTT%2fFinalLinks%2fReports.aspx%3fdbName%3ddbSJMHFFRANKLININ%26type%3dCDMWithoutLabel%26fileType%3dCSV&umid=f34144ed-5069-4e1c-a213-bd21c1fb6177&rct=1766437261&auth=a4954d50f00a82ee9b493536e341931a1e6f5e90-d0f8df7014522d22d6a9ee4fe04d2bea6a25a036",
+  "last_updated_on": "2026-05-05",
+  "last_updated_raw": "2026-05-05",
+  "name": "Johnson Memorial Hospital",
+  "page_url": "https://ddec1-0-en-ctp.trendmicro.com/wis/clicktime/v1/query?url=https%3a%2f%2fapps.para%2dhcfs.com%2fPTT%2fFinalLinks%2fJohnson%5fV3.aspx&umid=f34144ed-5069-4e1c-a213-bd21c1fb6177&rct=1766437261&auth=a4954d50f00a82ee9b493536e341931a1e6f5e90-cfe08c41c43a042c635174de03372bf14375d123",
+  "website": "https://johnsonmemorial.org/"
+ },
+ "22923fef6742c82d7daa0b7581208e02": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 1201595837,
+  "file_url": "https://www.lutheranhospital.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/351963748_lutheran-hospital_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Iom Health System Lp",
+  "page_url": "https://www.lutheranhospital.com/pricing-information",
+  "website": "https://www.lutheranhospital.com/"
+ },
+ "249610e01ac13916df5d3c8be0f46c88": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 84999003,
+  "file_url": "https://www.rhirehab.com/media/2612/2026-rhi-machine_readable-file.csv",
+  "last_updated_on": "2025-12-11",
+  "last_updated_raw": "12/11/25",
+  "name": "Rehabilitation Hospital Of Indiana, Inc",
+  "page_url": "https://www.rhirehab.com/becoming-our-patient/billing-financial-assistance/price-transparency/",
+  "website": "https://www.rhirehab.com/"
+ },
+ "27ac2bacd3efca65cc2202f6eefcfd66": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 65132018,
+  "file_url": "https://cdn.iuhealth.org/resources/350867958_indiana-university-health-ball-memorial-hospital-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Ball Memorial Hospital Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-ball-memorial-hospital"
+ },
+ "29d3d5a7fe7f5731e22563a70d7ddf9b": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 204851925,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/320014795_carmel-ambulatory-surgery-center-llc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "Carmel Ambsurg",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://carmelambulatory.com/"
+ },
+ "2b781b49abbaf00b726cfd5a22dd8cc3": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 64899469,
+  "file_url": "https://cdn.iuhealth.org/resources/263162145_indiana-university-health-arnett-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Arnett Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-arnett-hospital"
+ },
+ "2cba3f81e0c4d11b76ee7ef6e5831ebe": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 93432921,
+  "file_url": "https://sthpiprd.blob.core.windows.net/machine-readable-files/9953/823120904_cobalt-rehabilitation-hospital-louisville-llc_standardcharges.csv",
+  "last_updated_on": "2026-08-06",
+  "last_updated_raw": "2026-08-06",
+  "name": "Cobalt Rehabilitation Hospital Louisville Llc",
+  "page_url": "https://search.hospitalpriceindex.com/hpi2/machineReadable/PAMHealthRehabilitationHospitalofGreaterIndiana/9953",
+  "website": "https://pamhealth.com/hospitals/pam-health-rehabilitation-hospital-of-greater-indiana-north/"
+ },
+ "2d8fa1db1f71707803b32e8cce658dc7": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 16660622,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/350913537_franciscan-health-mooresville_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Mooresville",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-mooresville"
+ },
+ "309674399b04e1fb1f58a438041fcc4a": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 7173659,
+  "file_url": "https://ernesthealth.com/pricing/2026/853796841_bloomington-regional-rehabilitation-hospital_standard-charges.json",
+  "last_updated_on": "2026-08-10",
+  "last_updated_raw": "2026-08-10",
+  "name": "Bloomington Regional Rehabilitation Hospital",
+  "page_url": "https://brrh.ernesthealth.com/price-transparency/",
+  "website": "https://brrh.ernesthealth.com/"
+ },
+ "316fcd2e5e90f724ff75d950ff6a53d7": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1992584,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/350876394_franciscan-health-michigan-city-laporte_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Michigan City Laporte",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-michigan-city-la-porte"
+ },
+ "31fd53769bf7879ede6039222a6d1a20": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 58393859,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbWithamHospital&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-03-31",
+  "last_updated_raw": "2026-03-31",
+  "name": "Witham Memorial Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Witham_V2.aspx",
+  "website": "https://www.witham.org/"
+ },
+ "3238129ca34b730ea88de7a114b0951c": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 30931778,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/351970706_parkview-huntington-hospital_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Huntington Hospital",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/locations/parkview-huntington-hospital"
+ },
+ "35c0c04d7e5005e045fccecfef62acb9": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 265379454,
+  "file_url": "https://sthpiprd.blob.core.windows.net/machine-readable-files/12036/350985964_little-company-of-mary-hospital-of-indiana-inc_standardcharges.csv",
+  "last_updated_on": "2026-02-13",
+  "last_updated_raw": "2026-02-13",
+  "name": "Little Company Of Mary Hospital Of Indiana Inc",
+  "page_url": "https://search.hospitalpriceindex.com/hpi2/machineReadable/deaconessmemorialhospitalandhealthcenter/12036",
+  "website": "https://www.deaconess.com/indiana/deaconess-memorial-medical-center"
+ },
+ "35c5334819606ba2e54618b43d2dea17": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 3748741452,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/CHN_JMH_Ventures_Imaging.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Chn Jmh Ventures Llc Stones Crossing Imaging Services",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/stones-crossing-imaging-center"
+ },
+ "35d21f5702f2a3c774cce96765fc912e": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 63121149,
+  "file_url": "https://cdn.iuhealth.org/resources/273532963_indiana-university-health-white-memorial-hospital-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health White Memorial Hospital Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-white-memorial-hospital"
+ },
+ "378d31071506992125330b774f2e8c9c": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 20553,
+  "file_url": "https://www.harshacenter.com/s/261091197_harsha-behavioral-center_standardcharges-t8tx.csv",
+  "last_updated_on": "2026-07-01",
+  "last_updated_raw": "7/1/2026",
+  "name": "Harsha Behavioral Center",
+  "page_url": "https://www.harshacenter.com/price-transparency",
+  "website": "https://www.harshacenter.com/"
+ },
+ "383804688c43d9b1bb209de2917924ff": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 17901294,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/352074283_franciscan-health-crown-point_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Crown Point",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-crown-point"
+ },
+ "393b449fc95576c6e121e98554900363": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 38546829,
+  "file_url": "https://union.health/Upload/Docs/StandardCharge/350876396_union-hospital-clinton_standardcharges.csv",
+  "last_updated_on": "2026-07-08",
+  "last_updated_raw": "7/8/2026",
+  "name": "Union Hospital Clinton",
+  "page_url": "https://union.health/",
+  "website": "https://www.union.health/find-a-location/union-hospital-clinton"
+ },
+ "3aea07d4acfd9bb04016e87f6e8d3e4a": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 5263,
+  "file_url": "https://www.neuropsychiatrichospitals.net/price-transparency/452471121_doctors-behavioral-hospital,-llc_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Doctors Behavioral Hospital, Llc",
+  "page_url": "https://www.neuropsychiatrichospitals.net/price-transparency",
+  "website": "https://www.neuropsychiatrichospitals.net/find-a-location/"
+ },
+ "3ca03d7d943553bc702df23534fd9c3d": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 7345657,
+  "file_url": "https://www.hendricks.org/upload/docs/Billing/351361243_hendricks-regional-health_standardcharges.csv",
+  "last_updated_on": "2026-05-20",
+  "last_updated_raw": "5/20/2026",
+  "name": "Hendricks Regional Health",
+  "page_url": "https://www.hendricks.org/about/pricing",
+  "website": "https://www.hendricks.org/brownsburg"
+ },
+ "3d60bc017b3ec0819f6ec50bc133d4b6": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 65268836,
+  "file_url": "https://cdn.iuhealth.org/resources/351720796_indiana-university-health-bloomington-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Bloomington Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-bloomington-hospital"
+ },
+ "3ddc99c6a892944ef48c821047334ba6": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 67299191,
+  "file_url": "https://cdn.iuhealth.org/resources/351932442_indiana-university-health-north-hospital-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health North Hospital Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-north-hospital"
+ },
+ "3e2a28c2f5a7bb18ee6c7c640107746e": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 1151988353,
+  "file_url": "https://www.lutherandowntownhospital.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/510382045_lutheran-downtown-hospital_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "St Joseph Health System, Llc",
+  "page_url": "https://www.lutherandowntownhospital.com/pricing-information",
+  "website": "https://www.lutherandowntownhospital.com/"
+ },
+ "43875100290bf6283efad2035d00adf7": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 7984605,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/352056396_franciscan-health-lafayette_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Lafayette",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-lafayette"
+ },
+ "4496d5fa01d241fa51a94a15082d783f": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 107374,
+  "file_url": "https://www.hamiltoncenter.org/351140758_hamilton-center-inc-_standardcharges/",
+  "last_updated_on": "2026-02-09",
+  "last_updated_raw": "2/9/2026",
+  "name": "Hamilton Center Inc",
+  "page_url": "https://www.hamiltoncenter.org/price-transparency/",
+  "website": "https://www.hamiltoncenter.org/"
+ },
+ "455d51e40417412e0dfdfc6bebfc78b0": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 50234754,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/454243702_st-vincent-fishers-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Fishers Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/fishers-ascension-st-vincent-fishers"
+ },
+ "48c072748fa4619b6712bb2cec6b05f4": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2421244711,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Community_Surgery_Center_Plus.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Scp Indianapolis, Llc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-surgery-center-plus"
+ },
+ "4a8205f0cc09ab946550e5aa94f7093a": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 85876554,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbAMHDECATURIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-08-14",
+  "last_updated_raw": "2026-08-14",
+  "name": "Adams County Memorial Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/AdamsMemorial.aspx",
+  "website": "https://adamshospital.org/"
+ },
+ "4a9b1a40735ce620f718e6aea4d8f5c1": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 114607122,
+  "file_url": "https://www.dropbox.com/scl/fi/o2rm6e68gmssfvbu6m6ay/350877574_Elkhart-General-Hospital_standardcharges.csv?rlkey=q4n32hy0ct1wi5rs6ikidhd5k&st=v00lg33y&dl=1&v=2",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "2026-01-01",
+  "name": "Elkhart General Hospital",
+  "page_url": "https://www.beaconhealthsystem.org/hospital-chargemaster/",
+  "website": "https://locations.beaconhealthsystem.org/in/elkhart/elkhart-general-hospital"
+ },
+ "4cf4b7ca917ede1a01c6bd51a87bf835": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 49985952,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbDCMHGREENSBURGIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-09-02",
+  "last_updated_raw": "2026-09-02",
+  "name": "Decatur County Memorial Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/DecaturMemorial_V2.aspx",
+  "website": "https://www.dcmh.net/"
+ },
+ "50ebca6979f9fa83d4536cfe95c796aa": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 457504581,
+  "file_url": "https://rhblobmobileapp.blob.core.windows.net/hospital-price-index/350892672_reid-health_standardcharges-864a2273e04b4eb7818c40dfab066123.csv",
+  "last_updated_on": "2026-10-01",
+  "last_updated_raw": "10/01/2026",
+  "name": "Reid Health",
+  "page_url": "https://search.hospitalpriceindex.com/hpi2/machineReadable/reidhospital/7847",
+  "website": "https://reidhealth.org/"
+ },
+ "515139fcf133b6ce2f5bd1237a56a2ac": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 23785606,
+  "file_url": "https://www.eskenazihealth.edu/356005697_eskenazihealth_standardcharges.csv",
+  "last_updated_on": "2026-03-01",
+  "last_updated_raw": "3/1/2026",
+  "name": "Eskenazi Health",
+  "page_url": "https://www.eskenazihealth.edu/about/pricing-information",
+  "website": "https://www.eskenazihealth.edu/locations/eskenazi-hospital"
+ },
+ "5271a98718915df653fc2de029e8edaf": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1554590,
+  "file_url": "https://www.communityrehabhospitalwest.com/docs/irfcommunityrehabilitationhospitalwestlibraries/mar2026/845110509_community-rehabilitation-hospital-west_standardcharges.csv.zip",
+  "last_updated_on": "2026-03-16",
+  "last_updated_raw": "2026-03-16",
+  "name": "Community Rehabilitation Hospital West",
+  "page_url": "https://www.communityrehabhospitalwest.com/patient-experience/financial-assistance",
+  "website": "https://www.communityrehabhospitalwest.com/"
+ },
+ "52b6d257c1c2c5612ed400525f996836": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2793551939,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Community_Hospital_North.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Community Health Network, Inc Dba Community Hospital North",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-hospital-north"
+ },
+ "54b85834516aa5c796996b17196a9b79": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 60194411,
+  "file_url": "https://tq-consumer-static-prd.turquoise.health/consumer-downloads/machine-readable-files/350211370_cameron-memorial-community-hospital_standardcharges.csv",
+  "last_updated_on": "2026-02-18",
+  "last_updated_raw": "2026-02-18",
+  "name": "Cameron Memorial Community Hospital",
+  "page_url": "https://pricetransparency.healthcare/cameron-health/charges/",
+  "website": "https://www.cameronmch.com/location/cameron-hospital/"
+ },
+ "564e88072d55aa4ac1dfc5dd26bfcb08": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 58375775,
+  "file_url": "https://cdn.iuhealth.org/resources/815174295_indiana-university-health-frankfort-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Frankfort Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-frankfort-hospital"
+ },
+ "56776013c87273455b9251b7da289efe": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 351542533,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/351712001_st-vincent-seton-specialty-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Seton Specialty Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/indianapolis-ascension-st-vincent-seton"
+ },
+ "575b0f82ceadc75182d4043707904153": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 25744991,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/350876389_st-vincent-madison-county-health-system-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Madison County Health System, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/elwood-ascension-st-vincent-mercy"
+ },
+ "5825b587351c11774c69be629efd9238": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 23599222,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/270847538_st-vincent-salem-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Salem Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/salem-ascension-st-vincent-salem"
+ },
+ "5a149a876e7146d5035973bdc8823d61": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 102194926,
+  "file_url": "https://www.beaconhealthsystem.org/wp-content/uploads/2026/03/350868132_Memorial-Hospital-of-South-Bend_standardcharges.csv?v=2",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "2026-01-01",
+  "name": "Memorial Hospital Of South Bend",
+  "page_url": "https://www.beaconhealthsystem.org/hospital-chargemaster",
+  "website": "https://locations.beaconhealthsystem.org/in/south-bend/memorial-hospital"
+ },
+ "5cb8c3a35e53dc66b3a0ba9b66ab546e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2335631016,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/North_Campus_Surgery_Center.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "North Campus Surgery Center Llc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-surgery-center-north"
+ },
+ "60cf68cd79051a4e2f1ce1ceb8340abb": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2742617,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/473825106_franciscan-health-rensselaer_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Health Rensselaer, Inc",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-rensselaer"
+ },
+ "63ca9d3c0c137caaa937e5fc6a21e7fc": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 847178208,
+  "file_url": "https://www.theduponthospital.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/621801445_dupont-hospital_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Dupont Hospital Llc",
+  "page_url": "https://www.theduponthospital.com/pricing-information",
+  "website": "https://www.theduponthospital.com/"
+ },
+ "653b23e8b95e37c11a7816d276382fd7": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 67279606,
+  "file_url": "https://union.health/Upload/Docs/StandardCharge/350876396_union-hospital-terre-haute_standardcharges.csv",
+  "last_updated_on": "2026-08-05",
+  "last_updated_raw": "8/05/2026",
+  "name": "Union Hospital Terre Haute",
+  "page_url": "https://www.union.health/standard-charge-listing",
+  "website": "https://www.union.health/"
+ },
+ "6737d3833b6817a5fd7742192bf10bdd": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 24842972,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbSCCHSullivanIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-06-10",
+  "last_updated_raw": "2026-06-10",
+  "name": "Sullivan County Community Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Sullivan.aspx",
+  "website": "https://scch.health/"
+ },
+ "68ed140c299fbb207abd1b736cc450ef": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 9354435,
+  "file_url": "https://hospitalpricedisclosure.com/download.aspx?pi=LevcgRwseIKoGnFQ*__*tkqzQ*-*",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Kindred Hospital Indianapolis North",
+  "page_url": "https://hospitalpricedisclosure.com/default.aspx?pi=LevcgRwseIKoGnFQ*__*tkqzQ*-*",
+  "website": "https://www.kindredhospitals.com/locations/indiana/indianapolis-north"
+ },
+ "6e30c1818e86573e0a5a184e08d72f3c": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 450549030,
+  "file_url": "https://www.nwhealthstarke.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/272691760_northwest-health-starke_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Knox Hospital Company Llc",
+  "page_url": "https://www.nwhealthstarke.com/pricing-information",
+  "website": "https://www.nwhealthstarke.com/"
+ },
+ "6e3bfbf1d80b07e173528db3658def06": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 1718818,
+  "file_url": "https://hospitalpricedisclosure.com/download.aspx?pi=Y7CFVOkRijEf*_*CtQ8OxDvw*-*",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Indianapolis Rehabilitation Hospital, Llc",
+  "page_url": "https://www.indianapolis-rehabhospital.com/price-transparency",
+  "website": "https://www.indianapolis-rehabhospital.com/"
+ },
+ "6ee7a1f85b6a0905e73ce59b4e31a80e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 300643021,
+  "file_url": "https://sthpiprd.blob.core.windows.net/machine-readable-files/12740/474000401-1134186315_norton-healthcare-indiana-inc_standardcharges.csv",
+  "last_updated_on": "2026-06-03",
+  "last_updated_raw": "2026-06-03",
+  "name": "Norton Healthcare Indiana Inc",
+  "page_url": "https://search.hospitalpriceindex.com/hpi2/machineReadable/NortonClarkHospital/12740",
+  "website": "https://nortonhealthcare.com/location/LOC0000191946/"
+ },
+ "6fca7da0816e8cf8aaa53e8fdc45774f": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 67279600,
+  "file_url": "https://union.health/Upload/Docs/StandardCharge/350876396_union-hospital-regional_standardcharges.csv",
+  "last_updated_on": "2026-07-29",
+  "last_updated_raw": "7/29/2026",
+  "name": "Union Hospital Regional",
+  "page_url": "https://union.health/",
+  "website": "https://www.union.health/unionhospitalregional/"
+ },
+ "709fdcdff30247590074724108462eeb": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1048492419,
+  "file_url": "https://www.theorthohospital.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/261483076_the-orthopedic-hospital_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Lutheran Musculoskeletal Center Llc",
+  "page_url": "https://www.theorthohospital.com/pricing-information",
+  "website": "https://www.theorthohospital.com/"
+ },
+ "70cc6d993cb1f47f38af1d80e48163da": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 253663987,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbFloydMemNewAlbanyIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-09-25",
+  "last_updated_raw": "2026-09-25",
+  "name": "Baptist Healthcare System Inc",
+  "page_url": "https://www.baptisthealth.com/patients-visitors/before-your-visit/price-transparency",
+  "website": "https://www.baptisthealth.com/locations/baptist-health-floyd"
+ },
+ "7151a5cd3f33399b2e76c8bc830718d6": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 5271,
+  "file_url": "https://www.neuropsychiatrichospitals.net/price-transparency/471265300_rivercrest-specialty-hospital,-llc_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Rivercrest Specialty Hospital, Llc",
+  "page_url": "https://www.neuropsychiatrichospitals.net/price-transparency",
+  "website": "https://www.neuropsychiatrichospitals.net/find-a-location/"
+ },
+ "73b50453d489a195c21eb71d683c9aea": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 3246051,
+  "file_url": "https://www.mapleheightsbehavioral.com/wp-content/uploads/pricing/2026/571/86-2242660_FWBH-LLC_standardcharges.csv",
+  "last_updated_on": "2025-12-31",
+  "last_updated_raw": "12/31/2025",
+  "name": "Fwbh, Llc",
+  "page_url": "https://www.mapleheightsbehavioral.com/admissions/insurance-payment/price-transparency",
+  "website": "https://www.mapleheightsbehavioral.com/"
+ },
+ "73c9181b796c28c2b8698fdbb423aa1d": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 385391294,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/351343019_st-marys-warrick-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Mary'S Warrick Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/boonville-ascension-st-vincent-warrick"
+ },
+ "75401dbafdc58fea7223e02c6d73b51f": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 49079928,
+  "file_url": "https://edge.sitecorecloud.io/encompasshee178-encompasshed9db-prodb258-07da/media/Project/EncompassHealth/encompasshealth/Files/1-price-transparency/721375246_Deaconess-Downtown-Encompass-Health-Deaconess-Rehabilitation-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "2026-01-01",
+  "name": "Deaconess Downtown Encompass Health Deaconess Rehabilitation Hospital",
+  "page_url": "https://www.encompasshealth.com/locations/deaconess-rehab-downtown/financial-information/price-transparency",
+  "website": "https://www.encompasshealth.com/locations/deaconess-rehab-downtown"
+ },
+ "759508b84d9a49df47730367ed0b842c": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 59879308,
+  "file_url": "https://www.powershealth.org/-/media/Files/PriceTransparency/351107009_Community-Hospital_standardcharges.zip",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Munster Medical Research Foundation Inc D/B/A Community Hospital",
+  "page_url": "https://www.powershealth.org/patients-and-visitors/patient-resources/standard-charges",
+  "website": "https://www.powershealth.org/locations/c/community-hospital"
+ },
+ "77f8c91c03e766d7331fb17b36e9a0fb": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1598358,
+  "file_url": "https://www.communityrehabhospitalnorth.com/docs/zirfcommunityrehabilitationhospitalnorthlibraries/mar2026/453414249_community-health-network-rehabilitation-hospital-llc_standardcharges.csv.zip",
+  "last_updated_on": "2026-03-24",
+  "last_updated_raw": "2026-03-24",
+  "name": "Community Health Network Rehabilitation Hospital Llc",
+  "page_url": "https://www.communityrehabhospitalnorth.com/patient-experience/financial-assistance",
+  "website": "https://www.communityrehabhospitalnorth.com/"
+ },
+ "7a106023728fdb2130c60fd86be7929e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 148055720,
+  "file_url": "https://hpt.trinity-health.org/351142669_plymouth-medical-center_standardcharges.zip",
+  "last_updated_on": "2026-03-31",
+  "last_updated_raw": "2026-03-31",
+  "name": "Plymouth Medical Center",
+  "page_url": "https://www.sjmed.com/patients-visitors/billing-and-assistance/request-price-estimate",
+  "website": "https://www.sjmed.com/patients-visitors/plymouth-medical-center/"
+ },
+ "7ccc19453464d8d991597dab0bfb15a1": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 5301,
+  "file_url": "https://www.neuropsychiatrichospitals.net/price-transparency/473943366_neuropsychiatric-hospital-of-indianapolis,-llc_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Neuropsychiatric Hospital Of Indianapolis, Llc",
+  "page_url": "https://www.neuropsychiatrichospitals.net/price-transparency",
+  "website": "https://www.neuropsychiatrichospitals.net/find-a-location/"
+ },
+ "7d8722d4394e2555494e24e8a28a9c5f": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 144944317,
+  "file_url": "https://hpt.trinity-health.org/350868157_mishawaka-medical-center_standardcharges.zip",
+  "last_updated_on": "2026-03-31",
+  "last_updated_raw": "2026-03-31",
+  "name": "Mishawaka Medical Center",
+  "page_url": "https://www.sjmed.com/patients-visitors/billing-and-assistance/request-price-estimate",
+  "website": "https://www.sjmed.com/location/mishawaka-medical-center-emergency-room"
+ },
+ "7e8e02149a8c667ad56ed6f8eade7ad3": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 49079880,
+  "file_url": "https://edge.sitecorecloud.io/encompasshee178-encompasshed9db-prodb258-07da/media/Project/EncompassHealth/encompasshealth/Files/1-price-transparency/721375246_Encompass-Health-Deaconess-Rehabilitation-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "2026-01-01",
+  "name": "Encompass Health Deaconess Rehabilitation Hospital",
+  "page_url": "https://www.encompasshealth.com/locations/deaconess-rehab/financial-information/price-transparency",
+  "website": "https://www.encompasshealth.com/locations/deaconess-rehab"
+ },
+ "7ed91f5092d84e938185b5cf8d000b75": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 51800623,
+  "file_url": "https://www.beaconhealthsystem.org/wp-content/uploads/2026/03/350835006_Community-Hospital-of-Bremen_standardcharges-8.csv?v=2",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "2026-01-01",
+  "name": "Community Hospital Of Bremen Inc",
+  "page_url": "https://www.beaconhealthsystem.org/hospital-chargemaster/",
+  "website": "https://locations.beaconhealthsystem.org/in/bremen/community-hospital-of-bremen"
+ },
+ "8131e46392cb70b88b4103197b59beb2": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2349034555,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Hamilton_Surgery_Center.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Hamilton Surgery Center Llc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-surgery-center-hamilton"
+ },
+ "8132d4183e57b76d46a86ef97c40ba6b": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 136033429,
+  "file_url": "https://www.marionhealth.com/documents/35-0868130_Marion-General-Hospital_Standard-Charges.csv",
+  "last_updated_on": "2026-03-17",
+  "last_updated_raw": "3/17/2026",
+  "name": "Marion General Hospital",
+  "page_url": "https://www.marionhealth.com/patients-visitors/billing-insurance/estimating-my-healthcare-cost/",
+  "website": "https://www.marionhealth.com/"
+ },
+ "821d5a475831dcf65141183d08373d13": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 48936264,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/364492612_st-vincent-heart-center-of-indiana-llc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Heart Center Of Indiana Llc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/carmel-ascension-st-vincent-heart-center"
+ },
+ "8336ca4a0bb394f9758aa11e93e568b8": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1944006740,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/South_Campus_Surgery_Center.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "South Campus Surgery Center Llc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-surgery-center-south"
+ },
+ "83a6ddd32074528ff868afe245796e39": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 53289997,
+  "file_url": "https://www.crh.org/docs/default-source/standard-charges/351129669_columbus_regional_hospital_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Columbus Regional Hospital",
+  "page_url": "https://www.crh.org/online-services/price-estimate",
+  "website": "https://www.crh.org/"
+ },
+ "8520d44c617047bb23c2502ddee7c1dc": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 7796524940,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Community_Hospital_East.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Community Health Network, Inc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-heart-and-vascular-hospital"
+ },
+ "86a0e184dade9107534c2111da2e8764": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 76400103,
+  "file_url": "https://resources.selectmedical.com/Pricing-Transparency/inpatient-rehabilitation/25-1684676_Select_Medical_Rehabilitation_Hospital_At_Lutheran_Hospital_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Rehab Hospital Of Fort Wayne, Llc D/B/A Select Medical Rehabilitation Hospital At Lutheran Hospital",
+  "page_url": "https://www.selectrehabilitationhospital.com/patients-and-caregivers/admissions/price-transparency",
+  "website": "https://www.selectrehabilitationhospital.com/locations-and-tours/select-medical-rehabilitation-hospital-at-lutheran-hospital/"
+ },
+ "879151ab86c49c14a06652727bd5d03e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 285827,
+  "file_url": "https://uhsfilecdn.eskycity.net/bh/203062075_wellstone_standardcharges.csv",
+  "last_updated_on": "2026-05-12",
+  "last_updated_raw": "2026-05-12",
+  "name": "Wellstone",
+  "page_url": "https://www.wellstonehospital.com/standard-services/",
+  "website": "https://www.wellstonehospital.com/"
+ },
+ "87bdd4ab95a0601e30163d0e42debf02": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 21578,
+  "file_url": "https://www.nec.org/wp-content/uploads/2026/06/351403134_Northeastern-Center_standardcharges-1.csv",
+  "last_updated_on": "2026-06-01",
+  "last_updated_raw": "6/1/2026",
+  "name": "Northeastern Center",
+  "page_url": "https://www.nec.org/about-northeastern-center/price-transparency/",
+  "website": "https://www.nec.org/"
+ },
+ "8b3c22b749da4e204f9dbb4268fa0496": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 346727887,
+  "file_url": "https://sthpiprd.blob.core.windows.net/machine-readable-files/8113/350593390-1780535427_deaconess-hospital%2C-inc_standardcharges.csv",
+  "last_updated_on": "2026-02-13",
+  "last_updated_raw": "2026-02-13",
+  "name": "Deaconess Hospital, Inc",
+  "page_url": "https://www.deaconess.com/pay-my-bill/pricing",
+  "website": "https://www.deaconess.com/indiana/the-womens-hospital"
+ },
+ "8d008caf5a003547ae40825717f8bdab": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 225474,
+  "file_url": "https://www.sycamorespringshealth.com/docs/bhsycamorespringslibraries/3q26/275458146_sycamore-springs_standardcharges.csv",
+  "last_updated_on": "2026-07-31",
+  "last_updated_raw": "7/31/2026",
+  "name": "Sycamore Springs",
+  "page_url": "https://sycamorespringshealth.com/resources/accepted-insurance/#price-list",
+  "website": "https://sycamorespringshealth.com/locations/lafayette-in/"
+ },
+ "8ffea158cf5de304fcc79ba1cda4a8ee": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2405457,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/352085495_franciscan-health-crawfordsville_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Crawfordsville",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-crawfordsville"
+ },
+ "9189dbd67a16b0fd30b0d20b27eec6a9": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 329241394,
+  "file_url": "https://sthpiprd.blob.core.windows.net/machine-readable-files/8110/350877575_deaconess-health-system-gibson-general-hospital_standardcharges.csv",
+  "last_updated_on": "2026-02-11",
+  "last_updated_raw": "2026-02-11",
+  "name": "Deaconess Health System Gibson General Hospital",
+  "page_url": "https://search.hospitalpriceindex.com/hpi2/machineReadable/DeaconessGibsonHospital/8518",
+  "website": "https://www.deaconess.com/indiana/deaconess-gibson-hospital"
+ },
+ "91efca8f1e4eed30ddc4aee7d15c396b": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 4350,
+  "file_url": "https://www.in.gov/fssa/dmha/files/356000158-Richmond-State-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-01-13",
+  "last_updated_raw": "1/13/2026",
+  "name": "Richmond State Hospital",
+  "page_url": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/state-psychiatric-hospitals-billing-information/",
+  "website": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/richmond-state-hospital/"
+ },
+ "926b31d6f3291c94d56ab492d4a6455b": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 1023162766,
+  "file_url": "https://www.nwhealthlaporte.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/810722737_northwest-health-laporte_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "La Porte Hospital Company Llc",
+  "page_url": "https://www.nwhealthlaporte.com/pricing-information",
+  "website": "https://www.nwhealthlaporte.com/"
+ },
+ "93680d0c1a243fda56e469f857fde3ce": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 26094890,
+  "file_url": "https://amgihm.com/wp-content/uploads/2026/08/923639106_nw-indiana-amg-specialty-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-08-05",
+  "last_updated_raw": "8/5/2026",
+  "name": "Nw Indiana?Amg Specialty Hospital, Inc",
+  "page_url": "https://amgihm.com/patient-notices/price-transparency/",
+  "website": "https://amgihm.com/locations/indiana-crown-point/"
+ },
+ "94599de81040c844817c6432de17fa61": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 214028668,
+  "file_url": "https://sthpiprd.blob.core.windows.net/machine-readable-files/12590/461113518-1013251594_norton-healthcareindiana%2C-inc_standardcharges.csv",
+  "last_updated_on": "2026-06-03",
+  "last_updated_raw": "2026-06-03",
+  "name": "Norton Healthcareindiana, Inc",
+  "page_url": "https://search.hospitalpriceindex.com/hpi2/machineReadable/NortonScottHospital/12590",
+  "website": "https://nortonhealthcare.com/location/LOC0000192177/"
+ },
+ "9939e52595ddd1cba72493436453a9fc": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 71009438,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbPCHGREENCASTLEIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-06-30",
+  "last_updated_raw": "2026-06-30",
+  "name": "Putnam County Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Putnam_V2.aspx",
+  "website": "https://www.pchosp.org/"
+ },
+ "9a7541cb13600820ff4d9d278484aeaf": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 894611499,
+  "file_url": "https://www.lutherankosciuskohospital.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/621764613_lutheran-kosciusko-hospital_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Warsaw Health System Llc",
+  "page_url": "https://www.lutherankosciuskohospital.com/pricing-information",
+  "website": "https://www.lutherankosciuskohospital.com/"
+ },
+ "9c112705209e0c615e8171e352a6e502": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 33078650,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/351967665_parkview-whitley-hospital_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Whitley Hospital",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/locations/parkview-kosciusko-hospital"
+ },
+ "9cf5de871d2310fbaccf096e05f0bc5d": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 9796,
+  "file_url": "https://assurancehealthsystem.com/37-1787739_assurance-health-indianapolis-llc__standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Assurance Health Llc | Assurance Health Indianapolis Llc",
+  "page_url": "https://assurancehealthsystem.com/price-transparency",
+  "website": "https://assurancehealthsystem.com/locations/anderson/"
+ },
+ "9d5498489ffaa308b7e60e886c9cbb6d": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 28440255,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/260143823_parkview-ortho-hospital_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Ortho Hospital",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/locations/parkview-ortho-hospital"
+ },
+ "9d87b4116802654f66f56faed39bb2da": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 335156619,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/350784551_st-vincent-williamsport-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Williamsport Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/williamsport-ascension-st-vincent-williamsport"
+ },
+ "9daf13684a0d96dca2240095a9f6a34c": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 82037484,
+  "file_url": "https://methodisthospitals.org/wp-content/uploads/sites/2/2026/08/350868133_The_Methodist_Hospitals_Inc_Standardcharges-NLC.csv",
+  "last_updated_on": "2026-08-18",
+  "last_updated_raw": "8/18/2026",
+  "name": "The Methodist Hospitals, Inc",
+  "page_url": "https://methodisthospitals.org/insurance-financial-info/methodist-hospitals-price-transparency/",
+  "website": "https://methodisthospitals.org/location/northlake-campus-7/"
+ },
+ "9f523d6056f21729b48ccf0d4506d8c5": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 202388466,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbHancockRegional&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-09-25",
+  "last_updated_raw": "2026-09-25",
+  "name": "Hancock Regional Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Hancock_V3.aspx",
+  "website": "https://www.hancockhealth.org/"
+ },
+ "9fe3f0e893ff0af3976918cc9da2d8cb": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 17492141,
+  "file_url": "https://www.powershealth.org/-/media/Files/PriceTransparency/820854709_Powers-Health-Rehabilitation-Center_standardcharges.zip",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Community Stroke And Rehabilitation Inc D/B/A Powers Health Rehabilitation Center",
+  "page_url": "https://www.powershealth.org/patients-and-visitors/patient-resources/standard-charges",
+  "website": "https://www.powershealth.org/locations/p/powers-health-rehabilitation-center"
+ },
+ "a07a1c35db8e853e47977022cff9e97e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 5260,
+  "file_url": "https://www.neuropsychiatrichospitals.net/price-transparency/822569371_neurobehavioral-hospital,-llc_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Neurobehavioral Hospital, Llc",
+  "page_url": "https://www.neuropsychiatrichospitals.net/price-transparency",
+  "website": "https://www.neuropsychiatrichospitals.net/find-a-location/"
+ },
+ "a0840d370186ee225ee4d69a4f0a8e88": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 67300864,
+  "file_url": "https://cdn.iuhealth.org/resources/351814660_indiana-university-health-west-hospital-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health West Hospital Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-west-hospital"
+ },
+ "a17ec5a20e8dbbbfc4e138ad74745e49": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 66230882,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/350992717_st-joseph-hospital-and-health-center-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Joseph Hospital & Health Center, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/kokomo-ascension-st-vincent-kokomo"
+ },
+ "a1e226dc2971e5fa944101c16d041aa6": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 58599,
+  "file_url": "https://www.riverbendhospital.com/storage/app/media/Price%20Transparency%202026.8/311118357_river-bend-hospital_standardcharges.csv",
+  "last_updated_on": "2026-08-05",
+  "last_updated_raw": "08/05/2026",
+  "name": "River Bend Hospital",
+  "page_url": "https://www.riverbendhospital.com/financial-information",
+  "website": "https://www.riverbendhospital.com/"
+ },
+ "a2578d55aa038e3fe932b3d260cf85ce": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 6272504,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/352472136_franciscan-health-munster_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Munster",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-munster"
+ },
+ "a350a0686e333885d4c21134ac7740fb": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 3160717477,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Community_Howard_Regional_Health.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Community Howard Regional Health, Inc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-howard-regional-health"
+ },
+ "a4768ebc19e9c73fcf52a40cb016370d": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 4355,
+  "file_url": "https://www.in.gov/fssa/dmha/files/356000158-Evansville-State-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-01-13",
+  "last_updated_raw": "1/13/2026",
+  "name": "Evansville State Hospital",
+  "page_url": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/state-psychiatric-hospitals-billing-information/",
+  "website": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/evansville-state-hospital/"
+ },
+ "a53ca77305d8259ee93d289966d25577": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 80135230,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/460877261_st-vincent-anderson-regional-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Anderson Regional Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/anderson-ascension-st-vincent-anderson"
+ },
+ "a6d360f41b0bb12b25b65910c0aeff5a": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 48717152,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbHenryCounty&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-06-03",
+  "last_updated_raw": "2026-06-03",
+  "name": "Henry County Memorial Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Henry_V2.aspx",
+  "website": "https://www.hchcares.org/locations/henry-community-health-hospital/"
+ },
+ "a85993d114edea38d85862eccbfa6a50": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 29507717,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/352087092_parkview-noble-hospital_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Noble Hospital",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/locations/parkview-noble-hospital"
+ },
+ "a8d4d40a653f0ebbdc3f1a34e1fd337f": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 106356510,
+  "file_url": "https://resources.selectmedical.com/pricing-transparency/critical-illness-recovery/87-0789607_Select_Specialty_Hospital-Evansville_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Select Specialty Hospital Evansville",
+  "page_url": "https://www.selectspecialtyhospitals.com/patients-and-caregivers/admissions/price-transparency",
+  "website": "https://www.selectspecialtyhospitals.com/locations-and-tours/in/evansville/evansville/"
+ },
+ "a9135f44c2e9ebe11f8846453f367a75": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 4348,
+  "file_url": "https://www.in.gov/fssa/dmha/files/356000158-Logansport-State-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-01-13",
+  "last_updated_raw": "1/13/2026",
+  "name": "Logansport State Hospital",
+  "page_url": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/state-psychiatric-hospitals-billing-information/",
+  "website": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/logansport-state-hospital/"
+ },
+ "aaa771f0204c34aa0bf7345c5f9c7ac9": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 61225822,
+  "file_url": "https://cdn.iuhealth.org/resources/822736786_indiana-university-health-jay-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Jay Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-jay-hospital"
+ },
+ "ac4fde3a8bfa711cd1259eef326f7f1e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 131417,
+  "file_url": "https://uhsfilecdn.eskycity.net/bh/621740366_valle-vista_standardcharges.csv",
+  "last_updated_on": "2026-05-12",
+  "last_updated_raw": "2026-05-12",
+  "name": "Valle Vista Health System",
+  "page_url": "https://vallevistahospital.com/standard-services/",
+  "website": "https://vallevistahospital.com/"
+ },
+ "ad7829ce9d8403a94abeb8fd30b4513c": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 67370121,
+  "file_url": "https://cdn.iuhealth.org/resources/351955872_indiana-university-health-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-fishers"
+ },
+ "adeba6e1b0ac9368f96adae9f9c3f4aa": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 72018,
+  "file_url": "https://uhsfilecdn.eskycity.net/bh/200768028_michiana_standardcharges.csv",
+  "last_updated_on": null,
+  "last_updated_raw": null,
+  "name": "Michiana Behavioral Health",
+  "page_url": "https://michianabehavioralhealth.com/standard-services/",
+  "website": "https://michianabehavioralhealth.com/"
+ },
+ "b012937255191a08a15c39086e54889e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 709454,
+  "file_url": "https://www.pinnaclehealthcare.net/wp-content/uploads/2026/05/cms-hpt.csv",
+  "last_updated_on": "2026-03-09",
+  "last_updated_raw": "3/9/2026",
+  "name": "Pinnacle Healthcare, Llc",
+  "page_url": "https://www.pinnaclehealthcare.net/price-transparency/",
+  "website": "https://pinnaclehealthcare.net/"
+ },
+ "b0daed8301bb6f8ee26eaf3b182da9b0": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 40494207,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/350868085_parkview-regional-medical-center_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Regional Medical Center",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/medical-services/behavioral-health"
+ },
+ "b2f89a590f444671b1b19d7246342698": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2366503872,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/East_Campus_Surgery_Center.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "East Campus Surgery Center Llc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-surgery-center-east"
+ },
+ "b3816b8c6a1e762a3ecd02554c913e47": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 22178403,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/334188855_parkview-logansport-hospital_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Logansport Hospital",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/locations/parkview-logansport-hospital"
+ },
+ "b59b87968e1c464dfb53e8189053f3d9": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 2158343259,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Indianapolis_Endoscopy_Center.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Indianapolis Endoscopy Center Llp",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-endoscopy-center"
+ },
+ "b648d784370d8ff3c109736c34204ed6": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 22739,
+  "file_url": "https://s3.amazonaws.com/ycubaa-production-marlin-1-charge-management-public/facilities/ed8a061d-1cb7-44f9-91d5-142f8b903deb/852580772_indiana-behavioral-innovations-llc_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Indiana Behavioral Innovations, Llc",
+  "page_url": "https://www.yourcareeverywhere.com/content/medhost/your-care-everywhere/pricing-estimator-page.html?facility_id=ed8a061d-1cb7-44f9-91d5-142f8b903deb",
+  "website": "https://www.hendricksbehavioralhospital.com/"
+ },
+ "b9dbce909e0d28b22c10321364591309": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 48721845,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbWHROCHESTERIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-09-22",
+  "last_updated_raw": "2026-09-22",
+  "name": "Woodlawn Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Woodlawn_V2.aspx",
+  "website": "https://woodlawnhospital.org/"
+ },
+ "ba18c0596d0191fe33334eba18555e2d": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 3063595,
+  "file_url": "https://clariti-health.com/csp/clariti/machinereadable/v2/205071967_Physicians-Medical-Center-LLC_standardcharges.csv",
+  "last_updated_on": "2026-04-28",
+  "last_updated_raw": "2026-04-28",
+  "name": "Physicians Medical Center Llc",
+  "page_url": "https://clariti-health.com/csp/clariti/QuotableService.csp?orgKey=4345WE",
+  "website": "https://pmcregionalhospital.com/"
+ },
+ "bb1c075ce5a48ecc760b350e42b0d259": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 8614209,
+  "file_url": "https://www.mmhealth.org/wp-content/uploads/2026/06/356067049_Margaret-Mary-Health_standardcharges-2.csv",
+  "last_updated_on": "2026-04-08",
+  "last_updated_raw": "4/8/2026",
+  "name": "Margaret Mary Health",
+  "page_url": "https://www.mmhealth.org/for-patients/bill-payment/price-transparency",
+  "website": "https://www.mmhealth.org/"
+ },
+ "bbd1f740cbc63f8ab1bd0cd32f7e32b1": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 22837030,
+  "file_url": "https://www.powershealth.org/-/media/Files/PriceTransparency/352007327_St-Mary-Medical-Center_standardcharges.zip",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "St Mary Medical Center Inc D/B/A St Mary Medical Center Inc",
+  "page_url": "https://www.powershealth.org/patients-and-visitors/patient-resources/standard-charges",
+  "website": "https://www.powershealth.org/locations/s/st-mary-medical-center"
+ },
+ "becf62a92fe139f0a40b0811dcf20000": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 5743,
+  "file_url": "https://brightwellbehavioral.com/s/831779940_brightwellbehavioralhealth_machine_readable_file.csv",
+  "last_updated_on": "2026-04-15",
+  "last_updated_raw": "4/15/2026",
+  "name": "Clarksville Psych Hospital Dba Brightwell Behavioral Health",
+  "page_url": "https://brightwellbehavioral.com/price-transparency",
+  "website": "https://brightwellbehavioral.com/"
+ },
+ "bf5947f45710711225b961cb91f3625e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 8787145,
+  "file_url": "https://ernesthealth.com/pricing/2026/454885790_lafayette-regional-rehabilitation-hospital_standard-charges.json",
+  "last_updated_on": "2026-08-10",
+  "last_updated_raw": "2026-08-10",
+  "name": "Lafayette Regional Rehabilitation Hospital, Llc",
+  "page_url": "https://lrrh.ernesthealth.com/price-transparency/",
+  "website": "https://lrrh.ernesthealth.com/"
+ },
+ "bfd6ccd3ed0b8e5cfb5ec12eba7c5125": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 205901732,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/320029881_endoscopy-center-llc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "Endo Surgery Center",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/carmel-ascension-st-vincent-carmel-endoscopy-center"
+ },
+ "c19cb011e18ce65c02ea08e206640bbe": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 11493179,
+  "file_url": "https://riverview.org/sites/default/files/pdf/25-005054-1_riverview-health_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "4/1/2026",
+  "name": "Riverview Health",
+  "page_url": "https://www.riverview.org/cost-estimates",
+  "website": "https://www.riverview.org/location/riverview-health-noblesville-hospital"
+ },
+ "c25b550634975fc578c8613320f2d6ab": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 3854661774,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Community_Hospital_Anderson.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Community Hospital Anderson Of Madison County,Inc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-hospital-anderson"
+ },
+ "c47ab96c3d941ce305f08923872048cf": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 116959887,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/350869065_st-marys-health-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Mary'S Health, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/evansville-ascension-st-vincent-evansville"
+ },
+ "c496c003381cc814e10358f76a53f415": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 10512359,
+  "file_url": "https://hospitalpricedisclosure.com/download.aspx?pi=HabiPSV9AD3qxag*_*kdBJtg*-*",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Kindred Hospital Indianapolis",
+  "page_url": "https://hospitalpricedisclosure.com/default.aspx?pi=HabiPSV9AD3qxag*_*kdBJtg*-*",
+  "website": "https://www.kindredhospitals.com/locations/indiana/indianapolis"
+ },
+ "c4d2ac932eb66197bd521b8c34dcb45a": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 3293169,
+  "file_url": "https://www.rhs.care/wp-content/uploads/2025/09/351375696_strawhun_standardcharges.csv",
+  "last_updated_on": "2026-01-26",
+  "last_updated_raw": "1/26/2026",
+  "name": "Regional Mental Health Center",
+  "page_url": "https://www.rhs.care/quotes-charges",
+  "website": "https://www.rhs.care/"
+ },
+ "c61ccab26c56141cc9a214a92610fae6": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 81251415,
+  "file_url": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/price-transparency-files/in-csv/743107055_st-vincent-carmel-hospital-inc_standardcharges.csv",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "01/01/2026",
+  "name": "St Vincent Carmel Hospital, Inc",
+  "page_url": "https://healthcare.ascension.org/price-transparency",
+  "website": "https://healthcare.ascension.org/locations/indiana/inasc/carmel-ascension-st-vincent-carmel"
+ },
+ "c63ae07dec49bffcc081adfb75090338": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 26636559,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/350913537_franciscan-health-indianapolis-orthopedic_standardcharges.zip",
+  "last_updated_on": "2025-07-01",
+  "last_updated_raw": "2025-07-01",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Orthopedic Hospital Carmel",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-indianapolis-orthopedic-hospital"
+ },
+ "c9eba9bc72473862b4024f9bb5d12267": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 258661178,
+  "file_url": "https://sthpiprd.blob.core.windows.net/machine-readable-files/10275/350895832-1518916048_norton-kings-daughters-health-inc_standardcharges.csv",
+  "last_updated_on": "2026-05-05",
+  "last_updated_raw": "2026-05-05",
+  "name": "Norton Kings Daughters Health Inc",
+  "page_url": "https://search.hospitalpriceindex.com/hpi2/machineReadable/NortonKingsDaughtersHealth/10275",
+  "website": "https://nortonhealthcare.com/locations/kingsdaughters/"
+ },
+ "cbdec5b4b4eb8274b3c8eb6ec1cc216b": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 67984134,
+  "file_url": "https://s3.amazonaws.com/ycubaa-production-marlin-1-charge-management-public/facilities/24038e54-d9a2-4236-9081-ad3af29792c7/351121699_PERRY-COUNTY-MEMORIAL-HOSPITAL_standardcharges.zip",
+  "last_updated_on": "2026-06-08",
+  "last_updated_raw": "2026-06-08",
+  "name": "Perry County Memorial Hospital",
+  "page_url": "https://www.yourcareeverywhere.com/content/medhost/your-care-everywhere/pricing-estimator-page.html?facility_id=24038e54-d9a2-4236-9081-ad3af29792c7",
+  "website": "https://www.pchospital.org/"
+ },
+ "cc5f7fa7b6964d12231dee82968a6450": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 38561779,
+  "file_url": "https://amgihm.com/wp-content/uploads/2026/08/455219391_central-indiana-amg-specialty-hospital-llc_standardcharges.csv",
+  "last_updated_on": "2026-08-05",
+  "last_updated_raw": "8/5/2026",
+  "name": "Central Indiana Amg Specialty Hospital, Llc",
+  "page_url": "https://amgihm.com/patient-notices/price-transparency/",
+  "website": "https://amgihm.com/locations/indiana-muncie/"
+ },
+ "cc909084be70efe9fd7c939cf157f3c9": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 21853,
+  "file_url": "https://www.4chealthin.org/s/35-1362298_4CHealth_standardchargesJan20251-update.csv",
+  "last_updated_on": "2025-03-03",
+  "last_updated_raw": "3/3/2025",
+  "name": "Four County Comprehenseive Mental Health Center Inc",
+  "page_url": "https://www.4chealthin.org/patient-forms",
+  "website": "https://www.4chealthin.org/locations"
+ },
+ "ce75c959420b7f44f4b7ff5db244d581": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 323331,
+  "file_url": "https://www.brentwoodbehavioralhealth.com/getContentAsset/6c9ab142-90e0-4c3a-9234-dfdcacf43c05/141d77fc-2e06-49eb-b14c-2ff58f5ce730/brentwood_standardcharges.csv",
+  "last_updated_on": "2026-07-31",
+  "last_updated_raw": "2026-07-31",
+  "name": "Brentwood Springs",
+  "page_url": "https://www.brentwoodsprings.com/resources/accepted-insurance/#price-list",
+  "website": "https://brentwoodsprings.com/"
+ },
+ "d04b0489458e9129d955823816db0d8e": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 7072410,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/350913537_franciscan-health-carmel_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Carmel",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-carmel"
+ },
+ "d3e309ce84f2b607988e4a7bb5858d01": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 45814610,
+  "file_url": "https://goshenhealth.com/uploads/PricingDocuments/47-5619052_Goshen-Health-Surgery-Center-LLC_standardcharges.csv?v=1786991024",
+  "last_updated_on": "2026-08-13",
+  "last_updated_raw": "2026-08-13",
+  "name": "Goshen Health Surgery Center Llc",
+  "page_url": "https://goshenhealth.com/price-transparency",
+  "website": "https://goshenhealth.com/locations/goshen-surgery-center"
+ },
+ "d4add198a80117e7eeb8a9bbfed9b484": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 63866056,
+  "file_url": "https://cdn.iuhealth.org/resources/262772226_indiana-university-health-tipton-hospital-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Tipton Hospital Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-tipton-hospital"
+ },
+ "d7823afb9cc08e692489086e1f7b0ac7": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 86937,
+  "file_url": "https://oaklawn.org/wp-content/uploads/2026/07/351070041_oaklawn-psychiatric-center-inc_standardcharges.csv",
+  "last_updated_on": "2026-07-01",
+  "last_updated_raw": "7/1/2026",
+  "name": "Oaklawn Psychiatric Center Inc",
+  "page_url": "https://www.oaklawn.org/price-transparency",
+  "website": "https://oaklawn.org/"
+ },
+ "d915810d424be050ef4a715f03b75ec8": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 224131247,
+  "file_url": "https://goshenhealth.com/uploads/PricingDocuments/35-6001540_Goshen-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-08-14",
+  "last_updated_raw": "2026-08-14",
+  "name": "Goshen Hospital",
+  "page_url": "https://goshenhealth.com/price-transparency",
+  "website": "https://goshenhealth.com/"
+ },
+ "d999da3bd5f2c8431f8962facb09cfe8": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 862093313,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Community_Endoscopy_Center.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Community Endoscopy Center Llc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-digestive-center/"
+ },
+ "d9c9c07280759b46ece5dbd76c85e828": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 45945,
+  "file_url": "https://incompasshc.org/wp-content/uploads/2026/06/351129339_community-mental-health-center-inc_standardcharges.csv",
+  "last_updated_on": "2026-06-02",
+  "last_updated_raw": "6/2/2026",
+  "name": "Community Mental Health Center, Inc",
+  "page_url": "https://incompasshc.org/price-transparency/",
+  "website": "https://incompasshc.org"
+ },
+ "daba38565bca3bbfb14658fff03288e1": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 22961,
+  "file_url": "https://www.bowenhealth.org/351057889_BOWEN-HEALTH-INC_standardcharges.csv",
+  "last_updated_on": "2025-10-28",
+  "last_updated_raw": "10/28/2025",
+  "name": "Bowen Health Inc",
+  "page_url": "https://www.bowenhealth.org/price-transparency",
+  "website": "https://www.bowenhealth.org/kosciusko-county"
+ },
+ "deec84dfa0ed485b735fe3145ab69db7": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 51529409,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbDCHWASHINGTONIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-08-18",
+  "last_updated_raw": "2026-08-18",
+  "name": "Daviess County Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Daviess_V2.aspx",
+  "website": "https://www.dchosp.org/"
+ },
+ "df77d281e05a7d1fc4ac651d2d4f7d0a": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 72185494,
+  "file_url": "https://www.stelizabeth.com/610445850_st-elizabeth-dearborn_standardcharges.json",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "St Elizabeth Edgewood",
+  "page_url": "https://www.stelizabeth.com/billing/patient-pricing/patient-pricing-machine-readable/",
+  "website": "https://www.stelizabeth.com/location/details/st-elizabeth-dearborn/"
+ },
+ "e123836c5af5c9a4d5231f2ec1186dee": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 21230142,
+  "file_url": "https://parkview.com/-/media/parkview-media/file/price-transparency/471753440_parkview-wabash-hospital_standardcharges.ashx",
+  "last_updated_on": "2026-09-01",
+  "last_updated_raw": "9/1/2026",
+  "name": "Parkview Wabash Hospital, Inc",
+  "page_url": "https://www.parkview.com/patients-and-visitors/billing-and-insurance/request-an-estimate",
+  "website": "https://www.parkview.com/locations/parkview-wabash-hospital"
+ },
+ "e2a229bd6b80916215ce54d0e5710deb": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 108374362,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbRMHRUSHVILLEIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-04-27",
+  "last_updated_raw": "2026-04-27",
+  "name": "Rush Memorial Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Rush_V2.aspx",
+  "website": "https://www.rushmemorial.com/"
+ },
+ "e6e82dc36007f1ba08146670e4d43058": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 142366,
+  "file_url": "https://uhsfilecdn.eskycity.net/bh/351858510_bloomington-meadows_standardcharges.csv",
+  "last_updated_on": null,
+  "last_updated_raw": null,
+  "name": "Bloomington Meadows Hospital",
+  "page_url": "https://bloomingtonmeadows.com/standard-services/",
+  "website": "https://bloomingtonmeadows.com/"
+ },
+ "e8ebc6b96a1e4c6f9ef03c1e5e99b563": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 20820795,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/350876394_franciscan-health-michigan-city_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Michigan City",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-michigan-city"
+ },
+ "ea29165055bb890dddaa3a2b775b43d6": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1011939479,
+  "file_url": "https://www.blufftonregional.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/621792272_bluffton-regional-medical-center_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Bluffton Health System Llc",
+  "page_url": "https://www.blufftonregional.com/pricing-information",
+  "website": "https://www.blufftonregional.com/"
+ },
+ "ea839f60cba5756416a191ab663210e5": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 4353,
+  "file_url": "https://www.in.gov/fssa/dmha/files/356000158-Neurodiagnostic-Institute_standardcharges.csv",
+  "last_updated_on": "2026-01-13",
+  "last_updated_raw": "1/13/2026",
+  "name": "Neurodiagnostic Institute",
+  "page_url": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/state-psychiatric-hospitals-billing-information/",
+  "website": "https://secure.in.gov/fssa/dmha/state-psychiatric-hospitals/neurodiagnostic-institute/"
+ },
+ "eb96519483794feca799f6d5966e0dad": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 390905,
+  "file_url": "https://nwindianaer.com/wp-content/uploads/2026/08/831287043_northwest-indiana-hospital-llc_standardcharges.csv",
+  "last_updated_on": "2026-03-31",
+  "last_updated_raw": "3/31/2026",
+  "name": "Northwest Indiana Hospital, Llc",
+  "page_url": "https://nwindianaer.com/price-transparency/",
+  "website": "https://nwindianaer.com/"
+ },
+ "ec7cb6aaef52c9ba8c353cb21c02acb0": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 27400542,
+  "file_url": "https://d188lfxfyq6i9j.cloudfront.net/general-uploads/PDF-Assets/35-1163135_Jackson-County-Schneck-Memorial-Hospital_standardcharges.csv",
+  "last_updated_on": "2024-01-24",
+  "last_updated_raw": "1/24/2024",
+  "name": "Jackson County Schneck Memorial Hospital",
+  "page_url": "https://www.schneckmed.org/patients-visitors/patient-information/billing-insurance",
+  "website": "https://www.schneckmed.org/"
+ },
+ "edfcb8191026f3629df2749f647f331f": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 4341,
+  "file_url": "https://www.in.gov/fssa/dmha/files/356000158-Madison-State-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-01-13",
+  "last_updated_raw": "1/13/2026",
+  "name": "Madison State Hospital",
+  "page_url": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/state-psychiatric-hospitals-billing-information/",
+  "website": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/madison-state-hospital/"
+ },
+ "f1b013d99c7dd80dd7c59e8aafa9faf6": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 34703830,
+  "file_url": "https://images.franciscanhealth.org/pdfs/enterprise/price_transparency/350913537_franciscan-health-indianapolis_standardcharges.zip",
+  "last_updated_on": "2026-01-01",
+  "last_updated_raw": "1/1/2026",
+  "name": "Franciscan Alliance, Inc Dba Franciscan Health Indianapolis",
+  "page_url": "https://www.franciscanhealth.org/patient-resources/hospital-price-transparency",
+  "website": "https://directory.franciscanhealth.org/location/franciscan-health-indianapolis"
+ },
+ "f2c462c7352a7aa1b1fcad578147471e": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 61863457,
+  "file_url": "https://cdn.iuhealth.org/resources/237042323_indiana-university-health-bedford-inc._standardcharges.zip",
+  "last_updated_on": "2026-03-25",
+  "last_updated_raw": "2026-03-25",
+  "name": "Indiana University Health Bedford Inc",
+  "page_url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+  "website": "https://iuhealth.org/find-locations/iu-health-bedford-hospital"
+ },
+ "f2f81ea632d496ca2bd57ff9a763461a": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 3273930926,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Community_Hospital_Fairbanks.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Fairbanks Hospital, Inc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-fairbanks-recovery-center"
+ },
+ "f32f6e1fb5b26c6ccb8f6a334ca49597": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 24502481,
+  "file_url": "https://edge.sitecorecloud.io/unichicagomc-81nbqnb3/media/files/pricing-transparency/2026/922355855_uchicago-medicine-northwest-indiana_standardcharges.json",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Uchicago Medicine Northwest Indiana",
+  "page_url": "https://www.uchicagomedicine.org/patients-visitors/patient-information/billing/price-transparency",
+  "website": "https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-crown-point"
+ },
+ "f4540bb6d5daaea07894864af2b061ee": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 1133433130,
+  "file_url": "https://www.dukesmemorialhosp.com/Uploads/Public/Documents/charge-masters/charge-masters-2024/522379885_dukes-memorial-hospital_standardcharges.csv",
+  "last_updated_on": "2026-04-01",
+  "last_updated_raw": "2026-04-01",
+  "name": "Dukes Health System Llc",
+  "page_url": "https://www.dukesmemorialhosp.com/pricing-information",
+  "website": "https://www.dukesmemorialhosp.com/"
+ },
+ "f5502c5441b8a5458088deb80155ebfc": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 1394571,
+  "file_url": "https://clariti-health.com/csp/clariti/machinereadable/v2/352194353_United-Surgeons-LLC-DBA-Unity-Physicians-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-05-06",
+  "last_updated_raw": "2026-05-06",
+  "name": "United Surgeons Llc Dba Unity Physicians Hospital",
+  "page_url": "https://clariti-health.com/csp/clariti/QuotableService.csp?orgKey=2899VC",
+  "website": "https://www.unityphysicianshospital.com/"
+ },
+ "f5a5be748ee824bd121e1c1611ddf720": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 19991398,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbMajor&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-04-07",
+  "last_updated_raw": "2026-04-07",
+  "name": "Major Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Major_V2.aspx",
+  "website": "https://www.mymhp.org/locations/mhp-major-hospital/"
+ },
+ "f6065bde4e28206ab1f57c1e3e00722c": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1939224684,
+  "file_url": "https://media.ecommunity.com/PricingTransparency/Howard_Community_Surgery_Center.csv",
+  "last_updated_on": "2025-12-16",
+  "last_updated_raw": "2025-12-16",
+  "name": "Howard Community Surgery Center, Llc",
+  "page_url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+  "website": "https://www.ecommunity.com/locations/community-surgery-center-howard"
+ },
+ "f84398c297ab533aab033c90262e1bc9": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 2125,
+  "file_url": "https://www.mbhcares.com/getmedia/d7051a21-546f-4305-8234-02e82ef59667/MissionBehavioralHealth_MRF.csv",
+  "last_updated_on": "2026-04-15",
+  "last_updated_raw": "4/15/2026",
+  "name": "Mission Behavioral Health",
+  "page_url": "https://www.mbhcares.com/price-transparency",
+  "website": "https://www.mbhcares.com/"
+ },
+ "fa95232cd928a968c846e69a88ed51d8": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 1554593,
+  "file_url": "https://www.communityrehabhospitalsouth.com/docs/zirfcommunityrehabilitationhospitalsouthlibraries/mar2026/821385366_community-rehabilitation-hospital-south_standardcharges.csv.zip",
+  "last_updated_on": "2026-03-16",
+  "last_updated_raw": "2026-03-16",
+  "name": "Community Rehabilitation Hospital South",
+  "page_url": "https://www.communityrehabhospitalsouth.com/patient-experience/financial-assistance",
+  "website": "https://www.communityrehabhospitalsouth.com/"
+ },
+ "fb8253bc7a9c7ff73abb27cf2efbf8d6": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 236496,
+  "file_url": "https://www.porterstarke.org/351330771_porter-starke-services-inc-_standardcharges/",
+  "last_updated_on": "2026-08-06",
+  "last_updated_raw": "8/6/2026",
+  "name": "Porter Starke Services Inc",
+  "page_url": "https://www.porterstarke.org/insurance-billing/",
+  "website": "https://www.porterstarke.org/"
+ },
+ "fc344c3debccf7858663878978100dac": {
+  "downloaded": "2026-09-28",
+  "file_bytes": 4407,
+  "file_url": "https://www.in.gov/fssa/dmha/files/356000158-Evansville-Psychiatric-Childrens-Hospital_standardcharges.csv",
+  "last_updated_on": "2026-01-13",
+  "last_updated_raw": "1/13/2026",
+  "name": "Evansville Psychiatric Children'S Hospital",
+  "page_url": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/state-psychiatric-hospitals-billing-information/",
+  "website": "https://www.in.gov/fssa/dmha/state-psychiatric-hospitals/evansville-psychiatric-childrens-center/"
+ },
+ "fe2aa148b13739a181c30c41feeb89ce": {
+  "downloaded": "2026-10-04",
+  "file_bytes": 66157227,
+  "file_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Reports.aspx?dbName=dbHCHCORYDONIN&type=CDMWithoutLabel&fileType=CSV",
+  "last_updated_on": "2026-07-16",
+  "last_updated_raw": "2026-07-16",
+  "name": "Harrison County Hospital",
+  "page_url": "https://apps.para-hcfs.com/PTT/FinalLinks/Harrison_V3.aspx",
+  "website": "https://www.hchin.org/"
+ }
+}

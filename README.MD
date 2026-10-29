@@ -54,6 +54,13 @@ python load_to_sqlite.py --clean --cached-file data/shoppable_cache.json.gz
 
 `extract_shoppable.py` reads every hospital CSV in `data/`, applies the shoppable filter, and writes a compressed JSON file (~few MB). Subsequent database loads use the cache instead of re-parsing gigabytes of raw CSVs, which is significantly faster.
 
+### Price sources
+After downloading new files, rebuild the list of sources shown under each price table (file URL and the hospital's `last_updated_on` date):
+```bash
+python extract_hospital_sources.py
+```
+It writes `reference/hospital_sources.json`, keyed by the same hospital hash as the database, so it doesn't require a database rebuild.
+
 
 ## Deployment
     see DEPLOYMENT.md
@@ -88,6 +95,7 @@ https://visiblecharges.com
 |---|---|
 | `load_to_sqlite.py` | Index hospital pricing CSVs into SQLite (supports `--shoppable-only` and `--cached-file`) |
 | `extract_shoppable.py` | Pre-filter all CSVs to shoppable codes and save as `data/shoppable_cache.json.gz` |
+| `extract_hospital_sources.py` | Write `reference/hospital_sources.json`: each hospital's price file URL and `last_updated_on` date, shown under price tables |
 | `extract_expensive_codes.py` | Scan all CSVs for the top-N% most expensive CPT/HCPCS codes and append them to `reference/shoppable_codes.csv` |
 | `download_indiana.py` | Download Indiana hospital standard charge files from the hospitalpricingfiles.org API into `data/` |
 | `json_to_csv.py` | Convert a CMS price transparency JSON file (v2/v3) to the CMS tall CSV layout; `--refresh` does this automatically |

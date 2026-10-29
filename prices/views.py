@@ -1382,6 +1382,58 @@ def _get_implant_share():
     return shares
 
 
+_hospital_sources_cache = None
+
+def _get_hospital_sources():
+    """Hospital hash -> where its prices came from (reference/hospital_sources.json, built by
+    extract_hospital_sources.py): the price file URL, the hospital's own last_updated_on date, and when we downloaded it."""
+    global _hospital_sources_cache
+    if _hospital_sources_cache is not None:
+        return _hospital_sources_cache
+
+    sources = {}
+    path = os.path.join(settings.BASE_DIR, 'reference', 'hospital_sources.json')
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            sources = json.load(f)
+    except (OSError, ValueError) as e:
+        print(f"Could not load hospital sources from {path}: {e}")
+
+    _hospital_sources_cache = sources
+    return sources
+
+
+def _price_sources(hospital_ids):
+    """Source rows for the hospitals shown in a price table, sorted by name, plus the range of file dates."""
+    from datetime import date, timedelta
+    all_sources = _get_hospital_sources()
+    # CMS requires hospitals to update their files at least once a year
+    stale_before = (date.today() - timedelta(days=365)).isoformat()
+    rows = []
+    for h_id in hospital_ids:
+        src = all_sources.get(h_id)
+        if not src:
+            continue
+        updated = src.get('last_updated_on')
+        rows.append({
+            'name': src['name'],
+            'last_updated_on': date.fromisoformat(updated) if updated else None,
+            'stale': bool(updated) and updated < stale_before,
+            'downloaded': date.fromisoformat(src['downloaded']),
+            'file_url': src['file_url'],
+            'file_mb': round(src['file_bytes'] / 1e6) if src.get('file_bytes') else None,
+            'page_url': src.get('page_url'),
+        })
+    rows.sort(key=lambda r: r['name'].lower())
+    dates = sorted(r['last_updated_on'] for r in rows if r['last_updated_on'])
+    return {
+        'rows': rows,
+        'oldest': dates[0] if dates else None,
+        'newest': dates[-1] if dates else None,
+        'stale_count': sum(r['stale'] for r in rows),
+    }
+
+
 @require_GET
 def prices_details(request):
     """
@@ -1666,6 +1718,7 @@ def prices_details(request):
                 'distribution_svg': distribution_svg,
                 'unique_id': unique_id,
                 'implant_share': implant_share,
+                'sources': _price_sources({item['hospital_id'] for item in items}),
             }
             return render(request, 'prices/price_table.html', context)
             

@@ -93,3 +93,49 @@
     {% endwith %}
     {% endfor %}
 </div>
+
+{% if sources.rows %}
+<div class="px-3 py-2 bg-white text-muted small">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-1">
+        <span>
+            <i class="bi bi-file-earmark-text me-1"></i>
+            From {{ sources.rows|length }} hospital price file{{ sources.rows|length|pluralize }}{% if sources.oldest %},
+            dated {% if sources.oldest == sources.newest %}{{ sources.oldest|date:"M j, Y" }}{% else %}{{ sources.oldest|date:"M Y" }} &ndash; {{ sources.newest|date:"M Y" }}{% endif %}{% endif %}
+            {% if sources.stale_count %}<span class="text-warning-emphasis">&middot; {{ sources.stale_count }} over a year old</span>{% endif %}
+        </span>
+        <a href="#" class="link-secondary" data-bs-toggle="collapse" data-bs-target="#sources-{{ unique_id }}"
+           aria-expanded="false" aria-controls="sources-{{ unique_id }}">Show sources</a>
+    </div>
+    <div class="collapse" id="sources-{{ unique_id }}">
+        <div class="mt-2" style="max-height: 280px; overflow-y: auto;">
+        <table class="table table-sm table-borderless mb-0" style="font-size: 0.76rem;">
+            <thead>
+                <tr class="text-muted" style="font-size: 0.68rem; text-transform: uppercase; border-bottom: 1px solid #dee2e6;">
+                    <th>Hospital</th>
+                    <th style="cursor: help;" data-bs-toggle="tooltip" title="The date the hospital says its file is accurate as of (its last_updated_on field).">File dated</th>
+                    <th>Source</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sources.rows %}
+                <tr>
+                    <td>{{ s.name }}</td>
+                    <td class="text-nowrap {% if s.stale %}text-warning-emphasis{% endif %}">
+                        {% if s.last_updated_on %}{{ s.last_updated_on|date:"M j, Y" }}{% else %}Not stated{% endif %}
+                    </td>
+                    <td class="text-nowrap">
+                        <a href="{{ s.file_url }}" target="_blank" rel="noopener nofollow" class="link-secondary"
+                           title="Downloaded {{ s.downloaded|date:'M j, Y' }}">Price file{% if s.file_mb %} ({{ s.file_mb }} MB){% endif %}</a>
+                        {% if s.page_url %}&middot; <a href="{{ s.page_url }}" target="_blank" rel="noopener nofollow" class="link-secondary">Hospital page</a>{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        <div class="mt-1" style="font-size: 0.72rem;">
+            Prices are copied from each hospital's own file. We download the files periodically; hover a link to see when. Confirm the price with the hospital before you book.
+        </div>
+    </div>
+</div>
+{% endif %}

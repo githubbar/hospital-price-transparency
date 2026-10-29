@@ -28,6 +28,7 @@ scratch/
 *.zip
 *.json
 !reference/default_synonyms.json
+!reference/hospital_sources.json
 *.xlsx
 *.sqlite3
 *.gz
