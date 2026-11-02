@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.db import connection
 from django.test import SimpleTestCase, TestCase, Client
 from django.urls import reverse
+from prices.synonyms import expand_query_synonyms
 import io
 import json
 import os
@@ -127,15 +128,21 @@ class ProductionPerformanceTests(TestCase):
 class SpellcheckVocabularyTests(SimpleTestCase):
     databases = {'default'}
 
-    def test_vocabulary_read_after_state_db_attached(self):
+    def setUp(self):
         # unique_words is only in the state database, attached on demand. Production's static
         # total count skips the earlier attach, so spellcheck must attach it itself.
         tmp_dir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmp_dir, ignore_errors=True)
         state_db = os.path.join(tmp_dir, 'zz_aggregate.sqlite3')
         conn = sqlite3.connect(state_db)
-        conn.execute("CREATE TABLE unique_words (word TEXT PRIMARY KEY)")
-        conn.execute("INSERT INTO unique_words VALUES ('xylophonogram')")
+        conn.execute("CREATE TABLE unique_words (word TEXT PRIMARY KEY, doc_count INTEGER NOT NULL, in_standard_name INTEGER NOT NULL)")
+        conn.executemany("INSERT INTO unique_words VALUES (?, ?, ?)", [
+            ('xylophonogram', 40, 1),
+            ('xylophonogam', 2, 0),   # typo copied from a hospital's file
+            ('cleftogram', 2, 1),     # rare, but in a standard name
+            ('leftogram', 40, 1),
+            ('yleftogram', 2, 0),     # close to the common word, but a different first letter
+        ])
         conn.commit()
         conn.close()
 
@@ -153,10 +160,30 @@ class SpellcheckVocabularyTests(SimpleTestCase):
         self.addCleanup(detach)
         cache.set('total_records:zz', 4134)
         self.addCleanup(cache.delete, 'total_records:zz')
+        patcher = patch('prices.views.resolve_active_dbs', side_effect=attach)
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
+    def search_output(self, query):
         output = io.StringIO()
-        with patch('prices.views.resolve_active_dbs', side_effect=attach), redirect_stdout(output):
-            self.client.get(reverse('search'), {'q': 'xylophonogam', 'state': 'zz'})
-
-        self.assertIn("Corrected: 'xylophonogram'", output.getvalue())
+        with redirect_stdout(output):
+            self.client.get(reverse('search'), {'q': query, 'state': 'zz'})
         self.assertNotIn("Spellcheck error", output.getvalue())
+        return output.getvalue()
+
+    def test_unknown_word_corrected(self):
+        self.assertIn("Corrected: 'xylophonogram'", self.search_output('xylophonogrm'))
+
+    def test_rare_hospital_typo_also_searches_common_spelling(self):
+        self.assertIn("Also searching 'xylophonogram' for 'xylophonogam'", self.search_output('xylophonogam'))
+
+    def test_rare_word_in_standard_name_left_alone(self):
+        self.assertNotIn("Also searching", self.search_output('cleftogram'))
+
+    def test_rare_word_with_different_first_letter_left_alone(self):
+        self.assertNotIn("Also searching", self.search_output('yleftogram'))
+
+    def test_placeholder_numbering_can_start_after_existing_ones(self):
+        processed, placeholders = expand_query_synonyms('mammogram', 3)
+        self.assertEqual(processed, '__SYN_3__')
+        self.assertEqual(list(placeholders), ['__SYN_3__'])

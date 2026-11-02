@@ -9,6 +9,7 @@ Description:
 Usage:
       python load_to_sqlite.py [--input_file DATA_PATH] [--shoppable-only] [--cached-file PATH]
 """
+from collections import Counter
 import sqlite3
 import csv
 import gzip
@@ -166,9 +167,12 @@ def init_db(conn, clean=False):
     # Unique vocabulary words for typo auto-correction
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS unique_words (
-        word TEXT PRIMARY KEY
+        word TEXT PRIMARY KEY,
+        doc_count INTEGER NOT NULL DEFAULT 0,
+        in_standard_name INTEGER NOT NULL DEFAULT 0
     );
     """)
+    add_word_count_column(cursor)
 
     # Synonyms table for mapping consumer keywords
     cursor.execute("""
@@ -235,6 +239,36 @@ def extract_vocabulary_words(description):
         if w and not w.isdigit() and len(w) >= 3:
             words.append(w)
     return list(set(words))
+
+
+def add_word_count_column(cursor):
+    """Adds the word count columns to a database built before they existed."""
+    cursor.execute("PRAGMA table_info(unique_words)")
+    columns = [row[1] for row in cursor.fetchall()]
+    for column in ('doc_count', 'in_standard_name'):
+        if column not in columns:
+            cursor.execute(f"ALTER TABLE unique_words ADD COLUMN {column} INTEGER NOT NULL DEFAULT 0")
+
+
+def update_word_counts(cursor):
+    """
+    Records how many procedures use each vocabulary word and whether it appears in a
+    standard procedure name, so search can tell a typo copied from a hospital's file
+    from the common spelling it resembles.
+    """
+    counts = Counter()
+    cursor.execute("SELECT description, search_terms FROM fts_procedures")
+    for description, search_terms in cursor.fetchall():
+        counts.update(set(extract_vocabulary_words(f"{description or ''} {search_terms or ''}")))
+    standard_words = set()
+    cursor.execute("SELECT description FROM procedures")
+    for (description,) in cursor.fetchall():
+        standard_words.update(extract_vocabulary_words(description or ''))
+    cursor.execute("UPDATE unique_words SET doc_count = 0, in_standard_name = 0")
+    cursor.executemany("UPDATE unique_words SET doc_count = ? WHERE word = ?",
+                       [(count, word) for word, count in counts.items()])
+    cursor.executemany("UPDATE unique_words SET in_standard_name = 1 WHERE word = ?",
+                       [(word,) for word in standard_words])
 
 
 def load_shoppable_codes(csv_path=None):
@@ -835,6 +869,7 @@ def save_to_sqlite(conn, final_procedures, clear_existing_prices=True):
         print(f"Indexing {len(unique_words)} words in spelling vocabulary...")
         vocab_rows = [(w,) for w in unique_words]
         cursor.executemany("INSERT OR IGNORE INTO unique_words (word) VALUES (?)", vocab_rows)
+        update_word_counts(cursor)
 
         conn.commit()
         print("SQLite Database successfully populated and indexed!")

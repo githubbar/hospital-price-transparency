@@ -71,10 +71,11 @@ def load_synonyms_from_db():
     _cached_synonyms = synonyms_list
     return _cached_synonyms
 
-def expand_query_synonyms(query):
+def expand_query_synonyms(query, placeholder_start=0):
     """
     Scans the query for database-defined synonym matches.
     Replaces matched phrases with placeholders (e.g. __SYN_0__) to protect them from spellcheck.
+    placeholder_start keeps numbering clear of placeholders already in the query.
     Returns:
         (processed_query, placeholder_map)
     """
@@ -83,7 +84,7 @@ def expand_query_synonyms(query):
         
     processed_query = query
     placeholder_map = {}
-    placeholder_counter = 0
+    placeholder_counter = placeholder_start
     
     # Load dynamically from DB
     syn_patterns = load_synonyms_from_db()

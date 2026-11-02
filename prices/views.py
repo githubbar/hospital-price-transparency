@@ -673,6 +673,14 @@ def search(request):
             'aids', 'hcpcs', 'aprt', 'drg', 'msdrg', 'apcdrg', 'icd', 'icd9', 'icd10'
         }
         
+        # A vocabulary word this rare, and not in any standard procedure name, may be a typo copied
+        # from a hospital's file, when a close match with the same first letter is in at least
+        # this many procedures and this many times as many as the word
+        RARE_WORD_MIN_LENGTH = 5
+        RARE_WORD_MAX_DOCS = 5
+        COMMON_WORD_MIN_DOCS = 15
+        COMMON_WORD_MIN_RATIO = 4
+
         # Avoid checking placeholders (they start/end with __) and exempt acronyms
         words_to_correct = [
             w for w in re.findall(r'\b[a-zA-Z]{3,}\b', processed_query)
@@ -683,14 +691,20 @@ def search(request):
             try:
                 with connection.cursor() as cursor:
                     # unique_words is in the state database, which isn't attached until resolve_active_dbs runs
-                    vocab = []
+                    word_counts = {}
+                    standard_words = set()
                     for db in resolve_active_dbs(cursor, selected_states):
                         db_prefix = f"{db}_db." if db != "main" else ""
-                        cursor.execute(f"SELECT word FROM {db_prefix}unique_words")
-                        vocab.extend(row[0] for row in cursor.fetchall())
+                        cursor.execute(f"SELECT word, doc_count, in_standard_name FROM {db_prefix}unique_words")
+                        for vocab_word, doc_count, in_standard_name in cursor.fetchall():
+                            word_counts[vocab_word] = word_counts.get(vocab_word, 0) + doc_count
+                            if in_standard_name:
+                                standard_words.add(vocab_word)
+                    vocab = list(word_counts)
                     vocab_set = set(vocab)
                     
                     query_changed = False
+                    alternate_spellings = {}
                     for word in words_to_correct:
                         clean_word = word.lower()
                         if clean_word in EXEMPT_ACRONYMS:
@@ -702,8 +716,25 @@ def search(request):
                                 corrected_word = matches[0]
                                 corrected_query = re.sub(r'\b' + re.escape(word) + r'\b', corrected_word, corrected_query, flags=re.IGNORECASE)
                                 query_changed = True
+                        elif (clean_word not in standard_words and len(clean_word) >= RARE_WORD_MIN_LENGTH
+                                and word_counts[clean_word] <= RARE_WORD_MAX_DOCS):
+                            min_docs = max(word_counts[clean_word] * COMMON_WORD_MIN_RATIO, COMMON_WORD_MIN_DOCS)
+                            common_words = [w for w, doc_count in word_counts.items() if doc_count >= min_docs and w[0] == clean_word[0]]
+                            matches = difflib.get_close_matches(clean_word, common_words, n=1, cutoff=0.85)
+                            if matches:
+                                alternate_spellings[word] = matches[0]
                     if query_changed:
                         print(f"[spellcheck] Original: '{query}' -> Corrected: '{corrected_query}'")
+                        # A corrected word may now match a synonym it couldn't while misspelled
+                        corrected_query, new_placeholders = expand_query_synonyms(corrected_query, len(placeholder_map))
+                        placeholder_map.update(new_placeholders)
+                    for word, alternate in alternate_spellings.items():
+                        print(f"[spellcheck] Original: '{query}' -> Also searching '{alternate}' for '{word}'")
+                        alternate_query, alternate_map = expand_query_synonyms(alternate)
+                        alternate_clause = inject_synonyms_into_fts(alternate_query, alternate_map) if alternate_map else f"{alternate}*"
+                        placeholder = f"__SYN_{len(placeholder_map)}__"
+                        placeholder_map[placeholder] = f"({word}* OR {alternate_clause})"
+                        corrected_query = re.sub(r'\b' + re.escape(word) + r'\b', placeholder, corrected_query, flags=re.IGNORECASE)
             except Exception as e:
                 print(f"Spellcheck error: {e}")
 
