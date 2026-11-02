@@ -1,6 +1,15 @@
-from django.test import TestCase, Client
+from contextlib import redirect_stdout
+from unittest.mock import patch
+from django.core.cache import cache
+from django.db import connection
+from django.test import SimpleTestCase, TestCase, Client
 from django.urls import reverse
+import io
 import json
+import os
+import shutil
+import sqlite3
+import tempfile
 
 class SearchViewsTests(TestCase):
     def setUp(self):
@@ -113,3 +122,41 @@ class ProductionPerformanceTests(TestCase):
             except Exception as e:
                 print(f"Search #{i+1}: params={params} -> Failed: {e}")
 
+
+
+class SpellcheckVocabularyTests(SimpleTestCase):
+    databases = {'default'}
+
+    def test_vocabulary_read_after_state_db_attached(self):
+        # unique_words is only in the state database, attached on demand. Production's static
+        # total count skips the earlier attach, so spellcheck must attach it itself.
+        tmp_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp_dir, ignore_errors=True)
+        state_db = os.path.join(tmp_dir, 'zz_aggregate.sqlite3')
+        conn = sqlite3.connect(state_db)
+        conn.execute("CREATE TABLE unique_words (word TEXT PRIMARY KEY)")
+        conn.execute("INSERT INTO unique_words VALUES ('xylophonogram')")
+        conn.commit()
+        conn.close()
+
+        def attach(cursor, selected_states, force_full=False):
+            cursor.execute("PRAGMA database_list")
+            if 'zz_db' not in [row[1] for row in cursor.fetchall()]:
+                cursor.execute("ATTACH DATABASE ? AS zz_db", [state_db])
+            return ['zz']
+
+        def detach():
+            with connection.cursor() as cursor:
+                cursor.execute("PRAGMA database_list")
+                if 'zz_db' in [row[1] for row in cursor.fetchall()]:
+                    cursor.execute("DETACH DATABASE zz_db")
+        self.addCleanup(detach)
+        cache.set('total_records:zz', 4134)
+        self.addCleanup(cache.delete, 'total_records:zz')
+
+        output = io.StringIO()
+        with patch('prices.views.resolve_active_dbs', side_effect=attach), redirect_stdout(output):
+            self.client.get(reverse('search'), {'q': 'xylophonogam', 'state': 'zz'})
+
+        self.assertIn("Corrected: 'xylophonogram'", output.getvalue())
+        self.assertNotIn("Spellcheck error", output.getvalue())

@@ -682,8 +682,12 @@ def search(request):
         if words_to_correct:
             try:
                 with connection.cursor() as cursor:
-                    cursor.execute("SELECT word FROM unique_words")
-                    vocab = [row[0] for row in cursor.fetchall()]
+                    # unique_words is in the state database, which isn't attached until resolve_active_dbs runs
+                    vocab = []
+                    for db in resolve_active_dbs(cursor, selected_states):
+                        db_prefix = f"{db}_db." if db != "main" else ""
+                        cursor.execute(f"SELECT word FROM {db_prefix}unique_words")
+                        vocab.extend(row[0] for row in cursor.fetchall())
                     vocab_set = set(vocab)
                     
                     query_changed = False
