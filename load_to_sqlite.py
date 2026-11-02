@@ -853,7 +853,19 @@ def main():
     parser.add_argument('--cached-file', type=str, metavar='PATH',
                         help='Load from a pre-built shoppable_cache.json.gz (skips CSV parsing)')
     parser.add_argument('--output-db', type=str, help='Custom filename for the output SQLite database (e.g., ca.sqlite3)')
+    parser.add_argument('--allow-stale-cache', action='store_true',
+                        help='Load --cached-file even if shoppable_codes.csv was changed after the cache was built')
     args = parser.parse_args()
+
+    # The cache only holds codes that were on shoppable_codes.csv when extract_shoppable.py ran,
+    # so a list edited since then silently drops new codes and keeps removed ones.
+    if args.cached_file and os.path.exists(args.cached_file) and not args.allow_stale_cache:
+        codes_path = os.path.join(REFERENCE_DIR, 'shoppable_codes.csv')
+        if os.path.exists(codes_path) and os.path.getmtime(codes_path) > os.path.getmtime(args.cached_file):
+            print(f"ERROR: {codes_path} is newer than {args.cached_file}.")
+            print("  Re-run extract_shoppable.py so the cache matches the current code list,")
+            print("  or pass --allow-stale-cache to load the old cache anyway.")
+            sys.exit(1)
 
     db_path = DB_PATH
     if args.output_db:
